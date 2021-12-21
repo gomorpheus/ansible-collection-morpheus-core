@@ -1,0 +1,3 @@
+- name: Add Groups
+  include_tasks: add_groups.yml
+  loop: "{{ morpheus_groups }}"

@@ -1,0 +1,122 @@
+- name: Search for Task
+  uri:
+    url: "{{ morpheus_api }}/tasks?name={{ item.name | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: existing_task
+
+- block:
+    - name: Search for Ansible Git integration ID if required
+      uri:
+        url: "{{ morpheus_api }}/integrations?name={{ item.taskOptions.ansibleGitName | urlencode }}"
+        method: get
+        headers:
+          authorization: "BEARER {{ morpheus_token }}"
+        validate_certs: "{{ verify_ssl }}"
+      register: ansible_integration_search
+      when: item.taskOptions.ansibleGitName is defined
+
+    - name: Search for local script Git integration ID if required
+      uri:
+        url: "{{ morpheus_api }}/integrations?name={{ item.taskOptions.localScriptGitName | urlencode }}"
+        method: get
+        headers:
+          authorization: "BEARER {{ morpheus_token }}"
+        validate_certs: "{{ verify_ssl }}"
+      register: git_integration_search
+      when: item.taskOptions.localScriptGitName is defined
+
+    - name: Search for local script Git repository ID if required
+      uri:
+        url: "{{ morpheus_api }}/options/codeRepositories?integrationId={{ git_integration_search['json']['integrations'][0]['id'] }}"
+        method: get
+        headers:
+          authorization: "BEARER {{ morpheus_token }}"
+        validate_certs: "{{ verify_ssl }}"
+      register: git_repository_search
+      when: item.taskOptions.localScriptGitName is defined
+  when: item.taskOptions is defined
+
+- name: Set fact for Ansible Git integration ID
+  set_fact:
+    ansibleGitId: "{{ ansible_integration_search['json']['integrations'][0]['id'] }}"
+  when: item.taskOptions.ansibleGitName is defined
+
+- name: Set fact for local script Git integration ID
+  set_fact:
+    localScriptGitId: "{{ git_repository_search['json']['data'][0]['value'] }}"
+  when: item.taskOptions.localScriptGitName is defined
+
+- name: Create Task file option fact
+  set_fact:
+    file:
+      sourceType: "{{ item.file.sourceType }}"
+      content: "{{ item.file.content | default(omit) }}"
+      contentPath: "{{ item.file.contentPath | default(omit) }}"
+      contentRef: "{{ item.file.contentRef | default(omit) }}"
+  when: item.file is defined
+
+- name: Create Task taskOptions fact
+  set_fact:
+    taskOptions:
+      localScriptGitRef: "{{ item.taskOptions.localScriptGitRef | default(omit) }}"
+      host: "{{ item.taskOptions.host | default(omit) }}"
+      port: "{{ item.taskOptions.port | default(omit) }}"
+      username: "{{ item.taskOptions.username | default(omit) }}"
+      password: "{{ item.taskOptions.password | default(omit) }}"
+      ansiblePlaybook: "{{ item.taskOptions.ansiblePlaybook | default(omit) }}"
+      ansibleGitRef: "{{ item.taskOptions.ansibleGitRef | default(omit) }}"
+      ansibleSkipTags: "{{ item.taskOptions.ansibleSkipTags | default(omit) }}"
+  when: item.taskOptions is defined
+
+- name: Create Task json
+  set_fact:
+    task:
+      name: "{{ item.name }}"
+      code: "{{ item.code | default(omit) }}"
+      taskType:
+        code: "{{ item.taskType.code }}"
+      executeTarget: "{{ item.executeTarget }}"
+      resultType: "{{ item.resultType | default(omit) }}"
+      retryable: "{{ item.retryable | default(omit) }}"
+      retryCount: "{{ item.retryCount | default(omit) }}"
+      retryDelaySeconds: "{{ item.retryDelaySeconds | default(omit) }}"
+
+- name: Add file object parameters if required
+  set_fact:
+    task: "{{ task | combine({ 'file' : file }) }}"
+  when: item.file is defined
+
+- name: Add ansibleGitId if required
+  set_fact:
+    taskOptions: "{{ taskOptions | combine({ 'ansibleGitId' : ansibleGitId }) }}"
+  when: ansibleGitId is defined
+
+- name: Add localScriptGitId if required
+  set_fact:
+    taskOptions: "{{ taskOptions | combine({ 'localScriptGitId' : localScriptGitId }) }}"
+  when: localScriptGitId is defined
+
+- name: Add taskOptions parameters if required
+  set_fact:
+    task: "{{ task | combine({ 'taskOptions' : taskOptions }) }}"
+  when: item.taskOptions is defined
+
+- name: Nest task var in json
+  set_fact:
+    task_json:
+      task: "{{ task }}"
+
+- name: Create Task
+  uri:
+    url: "{{ morpheus_api }}/tasks"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ task_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newtask_out
+  when: existing_task['json']['meta']['total'] | int == 0

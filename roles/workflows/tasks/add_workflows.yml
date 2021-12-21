@@ -1,0 +1,56 @@
+- name: Search for Workflow
+  uri:
+    url: "{{ morpheus_api }}/task-sets?name={{ item.name | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: existing_workflow
+
+- name: Set provision type
+  set_fact:
+    workflow_type: "{{ item.type | default('provision') }}"
+
+- name: Create optionTypeIds list type
+  set_fact:
+    optionTypeIds: []
+  when: (item.optionTypeNames is defined) and (workflow_type == "operation")
+
+- name: Get Option Type IDs
+  include_tasks: get_option_type_ids.yml
+  loop_control:
+    loop_var: option_type_name
+  loop: "{{ item.optionTypeNames }}"
+  when: (item.optionTypeNames is defined) and (workflow_type == "operation")
+
+- name: Create taskIds list
+  set_fact:
+    taskIds: []
+
+- name: Get Task IDs
+  include_tasks: get_task_ids.yml
+  loop_control:
+    loop_var: task_names
+  loop: "{{ item.taskNames }}"
+
+- name: Create Workflow json
+  set_fact:
+    workflow:
+      taskSet:
+        name: "{{ item.name }}"
+        description: "{{ item.description | default(omit) }}"
+        type: "{{ workflow_type }}"
+        optionTypes: "{{ optionTypeIds | default(omit) }}"
+        tasks: "{{ taskIds }}"
+
+- name: Create Workflow
+  uri:
+    url: "{{ morpheus_api }}/task-sets"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ workflow }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newworkflow_out
+  when: existing_workflow['json']['meta']['total'] | int == 0

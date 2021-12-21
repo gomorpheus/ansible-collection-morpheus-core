@@ -1,0 +1,67 @@
+- name: Search for existing tenants
+  uri:
+    url: "{{ morpheus_api }}/accounts?name={{ item.name | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: tenantsearch_out
+
+- name: Search for Tenant role
+  uri:
+    url: "{{ morpheus_api }}/roles?authority={{ item.tenantrolename | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: existing_tenantrole
+  when: item.tenantrolename is defined
+
+- name: Set existing Tenant Role ID
+  set_fact:
+    tenantrole_id_fromname: "{{ existing_tenantrole.json.roles.0.id }}"
+  when: existing_tenantrole['json']['meta']['total'] | int == 1
+
+- name: Create Tenant JSON payload with role name lookup
+  set_fact:
+    tenant_json:
+      account:
+        name: "{{ item.name }}"
+        description: "{{ item.description | default(omit) }}"
+        subdomain: "{{ item.subdomain | default(omit) }}"
+        role:
+          id: "{{ tenantrole_id_fromname }}"
+        active: "{{ item.active | default(omit) }}"
+        currency: "{{ item.currency | default(omit) }}"
+        customerNumber: "{{ item.customerNumber | default(omit) }}"
+        accountNumber: "{{ item.accountNumber | default(omit) }}"
+        accountName: "{{ item.accountName | default(omit) }}"
+  when: item.tenantrolename is defined
+
+- name: Create tenant JSON payload with role id
+  set_fact:
+    tenant_json:
+      account:
+        name: "{{ item.name }}"
+        description: "{{ item.description | default(omit) }}"
+        subdomain: "{{ item.subdomain | default(omit) }}"
+        role:
+          id: "{{ tenantroleid }}"
+        active: "{{ item.active | default(omit) }}"
+        currency: "{{ item.currency | default(omit) }}"
+        customerNumber: "{{ item.customerNumber | default(omit) }}"
+        accountNumber: "{{ item.accountNumber | default(omit) }}"
+        accountName: "{{ item.accountName | default(omit) }}"
+  when: item.tenantroleid is defined
+
+- name: Create Tenant
+  uri:
+    url: "{{ morpheus_api }}/accounts"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ tenant_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newtenant_out
+  when: tenantsearch_out['json']['meta']['total'] == 0

@@ -1,0 +1,27 @@
+- name: Create Morpheus Provisioning Settings JSON
+  set_fact:
+    provisioning_settings_json:
+      provisioningSettings:
+        allowZoneSelection: "{{ morpheus_settings.allowZoneSelection | default(omit) }}"
+        allowServerSelection: "{{ morpheus_settings.allowServerSelection | default(omit) }}"
+        requireEnvironments: "{{ morpheus_settings.requireEnvironments | default(omit) }}"
+        showPricing: "{{ morpheus_settings.showPricing | default(omit) }}"
+        hideDatastoreStats: "{{ morpheus_settings.hideDatastoreStats | default(omit) }}"
+        crossTenantNamingPolicies: "{{ morpheus_settings.crossTenantNamingPolicies | default(omit) }}"
+        reuseSequence: "{{ morpheus_settings.reuseSequence | default(omit) }}"
+        cloudInitUsername: "{{ morpheus_settings.cloudInitUsername | default(omit) }}"
+        cloudInitPassword: "{{ morpheus_settings.cloudInitPassword | default(omit) }}"
+        windowsPassword: "{{ morpheus_settings.windowsPassword | default(omit) }}"
+        pxeRootPassword: "{{ morpheus_settings.pxeRootPassword | default(omit) }}"
+  when: provisioning_settings is defined
+
+- name: Update Morpheus Provisioning Settings
+  uri:
+    url: "{{ morpheus_api }}/provisioning-settings"
+    method: put
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ provisioning_settings_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: updated_provisioning_out

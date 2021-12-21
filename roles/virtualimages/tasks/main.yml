@@ -1,0 +1,3 @@
+- name: Add Virtual Images
+  include_tasks: add_virtual_images.yml
+  loop: "{{ morpheus_virtualimages }}"

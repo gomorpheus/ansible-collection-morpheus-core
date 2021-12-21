@@ -1,0 +1,11 @@
+morpheus_url: ""
+morpheus_api: "{{ morpheus_url }}/api"
+morpheus_token: ""
+verify_ssl: true
+
+# morpheus_tenants:
+#   - name: test tenant
+#     description: Test Tenant Description
+#     subdomain: testten
+#     tenantrolename: Tenant Admin
+#     currency: USD

@@ -1,0 +1,12 @@
+morpheus_url: ""
+morpheus_api: "{{ morpheus_url }}/api"
+morpheus_token: ""
+verify_ssl: true
+
+# morpheus_nodetypes:
+#   - name: "Test AL2 - us-east-1"
+#     shortName: al2useast1
+#     provisionTypeCode: amazon
+#     imageType: ami
+#     containerVersion: 2
+#     virtual_image_name: "Amazon Linux 2 - us-east-1"

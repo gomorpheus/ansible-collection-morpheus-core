@@ -1,0 +1,3 @@
+- name: Add Tasks
+  include_tasks: add_tasks.yml
+  loop: "{{ morpheus_tasks }}"

@@ -1,0 +1,4 @@
+requests
+ansible>=2.9
+urllib3
+pyyaml

@@ -1,0 +1,70 @@
+- name: Set default variables
+  set_fact:
+    found_name_version_pair: false
+
+- name: Search for Node Type
+  uri:
+    url: "{{ morpheus_api }}/library/container-types?provisionType={{ item.provisionTypeCode | urlencode }}&name={{ item.nodetype_name | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: nodetype_result
+
+- name: Set Node Type ID
+  set_fact:
+    nodetype_id: "{{ nodetype_result.json | json_query('containerTypes[0].id') }}"
+
+- name: Search for Instance Type
+  uri:
+    url: "{{ morpheus_api }}/library/instance-types?code={{ item.instancetypecode | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: instancetype_search
+
+- name: Set Instance Type ID
+  set_fact:
+    instancetype_id: "{{ instancetype_search.json | json_query('instanceTypes[0].id') }}"
+
+- name: Get Instance Type Layouts Detail
+  uri:
+    url: "{{ morpheus_api }}/library/instance-types/{{ instancetype_id }}/layouts"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: instancetype_layouts_result
+
+- name: Set jsonquery for layout
+  set_fact:
+    jmesquery: "instanceTypeLayouts[?name=='{{ item.name }}' && instanceVersion=='{{ item.instanceVersion }}' && provisionType.code=='{{ item.provisionTypeCode }}']"  # noqa line-length
+
+- name: Set fact for layout name/version pair discovered
+  set_fact:
+    found_name_version_pair: true
+  when: ( instancetype_layouts_result.json | json_query(jmesquery))
+
+- name: Create Layout json payload
+  set_fact:
+    layout_json:
+      instanceTypeLayout:
+        name: "{{ item.name }}"
+        instanceVersion: "{{ item.instanceVersion }}"
+        memoryRequirement: "{{ item.memoryRequirement }}"
+        provisionTypeCode: "{{ item.provisionTypeCode }}"
+        containerTypes:
+          - "{{ nodetype_id }}"
+
+- name: Create Layout
+  uri:
+    url: "{{ morpheus_api }}/library/instance-types/{{ instancetype_id }}/layouts"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ layout_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newlayout_out
+  when: not found_name_version_pair

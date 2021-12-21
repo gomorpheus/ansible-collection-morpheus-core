@@ -1,0 +1,17 @@
+morpheus_url: ""
+morpheus_api: "{{ morpheus_url }}/api"
+morpheus_token: ""
+verify_ssl: true
+
+# morpheus_optionlists:
+#   - name: "Cloud Service Levels"
+#     type: manual
+#     initialDataset: "'Basic','basic'\r\n'Medium','medium'\r\n'Supersize','supersize'"
+
+#   - name: Cloud
+#     type: manual
+#     initialDataset: "'Azure','azure'\r\n'Amazon Web Services','aws'\r\n'Google Compute Platform','gcp'"
+
+#   - name: Regions
+#     type: manual
+#     initialDataset: "'Central US','centralus'\r\n'East US','eastus'\r\n'East US 2','eastus2'\r\n'West US','westus'\r\n"

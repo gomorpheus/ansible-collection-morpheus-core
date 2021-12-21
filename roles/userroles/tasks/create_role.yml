@@ -1,0 +1,60 @@
+- name: Create role json
+  set_fact:
+    role_json:
+      role:
+        authority: "{{ item.name }}"
+        description: " {{ item.description | default('') }}"
+        roleType: "{{ item.role_type }}"
+        multitenant: "{{ item.multitenant | default(omit) }}"
+        multitenantLocked: "{{ item.multitenant_locked | default(omit) }}"
+
+- name: Check for existence of role
+  uri:
+    url: "{{ morpheus_api }}/roles?authority={{ item.name | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: existing_role
+
+# - debug:
+#     var: existing_role
+
+- name: Create base role
+  uri:
+    url: "{{ morpheus_api }}/roles"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ role_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newrole_out
+  when: existing_role['json']['meta']['total'] | int == 0
+
+- name: Set created role ID
+  set_fact:
+    role_id: "{{ newrole_out.json.role.id }}"
+  when: existing_role['json']['meta']['total'] | int == 0
+
+- name: Set existing role ID
+  set_fact:
+    role_id: "{{ existing_role.json.roles.0.id }}"
+  when: existing_role['json']['meta']['total'] | int == 1
+
+- name: Update permission bits
+  uri:
+    url: "{{ morpheus_api }}/roles/{{ role_id }}/update-permission"
+    method: put
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body:
+      permissionCode: "{{ inner_item.code }}"
+      access: "{{ inner_item.access }}"
+    validate_certs: "{{ verify_ssl }}"
+  failed_when: false
+  loop: "{{ item.role_feature_permissions }}"
+  loop_control:
+    loop_var: inner_item
+  when: item.role_feature_permissions is defined

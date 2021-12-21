@@ -1,0 +1,3 @@
+- name: Add Option Types
+  include_tasks: add_option_types.yml
+  loop: "{{ morpheus_optiontypes }}"

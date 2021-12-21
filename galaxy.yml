@@ -1,0 +1,20 @@
+namespace: "morpheus"
+name: "core"
+description: Ansible collection for interacting with Morpheus
+version: "0.2.1"
+readme: "README.md"
+authors:
+    - "Nick Celebic (https://www.github.com/tryfan)"
+license:
+    - "MIT"
+tags:
+    - morpheus
+    - cloud
+    - collection
+repository: "https://www.github.com/gomorpheus/ansible-collection-morpheus-core"
+build_ignore:
+    - "Dockerfile"
+    - "*.code-workspace"
+    - "azure-pipelines.yml"
+    - "testruns"
+    - ".idea"

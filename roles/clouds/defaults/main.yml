@@ -1,0 +1,41 @@
+morpheus_url: ""
+morpheus_api: "{{ morpheus_url }}/api"
+morpheus_token: ""
+verify_ssl: true
+
+# morpheus_clouds:
+#   - name: azure test
+#     description: meh
+#     code: azuretest
+#     location: somewhere
+#     visibility: private
+#     zoneType:
+#       code: azure
+#     groupName: test group
+#     accountName: root
+#     config:
+#       cloudType: global
+#       subscriberId: xxxxxxxx-286d-4914-a1a6-xxxxxxxxb6a8
+#       tenantId: xxxxxxxx-f849-4e4e-a4d0-xxxxxxxxcb55
+#       clientId: xxxxxxxx-3513-4045-b521-xxxxxxxxd90b
+#       clientSecret: "gxxxxxxxxxxxx"
+#       # resourceGroup: ""
+#       inventoryLevel: full
+#     # accountType: ""
+#     regionCode: eastus
+
+#   - name: aws test
+#     description: az personal
+#     code: awstest
+#     location: somewhereelse
+#     visibility: public
+#     groupName: aws group
+#     inventoryLevel: full
+#     zoneType:
+#       code: amazon
+#     config:
+#       importExisting: "on"
+#       isVpc: "true"
+#       endpoint: "ec2.us-east-2.amazonaws.com"
+#       accessKey: AKXXXXXXXXXXXXXXXXXX
+#       secretKey: 'xxxxxxxxxxxxxxxxxxx'

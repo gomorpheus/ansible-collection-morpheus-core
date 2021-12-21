@@ -1,0 +1,3 @@
+- name: Add Workflows
+  include_tasks: add_workflows.yml
+  loop: "{{ morpheus_workflows }}"

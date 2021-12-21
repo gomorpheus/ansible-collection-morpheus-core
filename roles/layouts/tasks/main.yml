@@ -1,0 +1,3 @@
+- name: Add Layouts
+  include_tasks: add_layouts.yml
+  loop: "{{ morpheus_layouts }}"

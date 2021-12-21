@@ -1,0 +1,23 @@
+- name: "Search for Task {{ task_names.name }}"
+  uri:
+    url: "{{ morpheus_api }}/tasks?name={{ task_names.name | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: existing_task
+
+- name: Set task list to empty
+  set_fact:
+    morpheus_task: []
+
+- name: Add Task and Phase to var
+  set_fact:
+    morpheus_task:
+      - taskId: "{{ existing_task.json.tasks.0.id }}"
+        taskPhase: "{{ task_names.phase | default('provision') }}"
+
+- name: Add Task ID and phase to list
+  set_fact:
+    taskIds: "{{ taskIds + morpheus_task }}"
+  when: existing_task['json']['meta']['total'] | int == 1

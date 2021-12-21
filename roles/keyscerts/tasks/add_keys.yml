@@ -1,0 +1,28 @@
+- name: Get Auth Key ID
+  uri:
+    url: "{{ morpheus_api }}/key-pairs?name={{ item.name | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: keysearch_out
+
+- name: Create key pair JSON payload
+  set_fact:
+    keypair_json:
+      keyPair:
+        name: "{{ item.name }}"
+        publicKey: "{{ item.publicKey }}"
+        privateKey: "{{ item.privateKey | default(omit) }}"
+
+- name: Create key pair
+  uri:
+    url: "{{ morpheus_api }}/key-pairs"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ keypair_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newkeypair_out
+  when: keysearch_out['json']['meta']['total'] == 0

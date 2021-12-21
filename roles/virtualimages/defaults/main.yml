@@ -1,0 +1,16 @@
+morpheus_url: ""
+morpheus_api: "{{ morpheus_url }}/api"
+morpheus_token: ""
+verify_ssl: true
+
+# morpheus_virtualimages:
+#   - name: "Amazon Linux 2 - us-east-2"
+#     imageType: ami
+#     isCloudInit: "true"
+#     installAgent: "true"
+#     externalId: "ami-077e31c4939f6a2f3"
+#   - name: "Morpheus TD CentOS 7.9 v1 VI"
+#     imageType: "vmdk"
+#     isCloudInit: "true"
+#     installAgent: "true"
+#     url: "https://morpheus-image-bucket.s3.amazonaws.com/vmware/morpheus-centos-7_9-v1-x86_64.ova"

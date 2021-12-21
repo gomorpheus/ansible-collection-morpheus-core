@@ -1,0 +1,50 @@
+morpheus_url: ""
+morpheus_api: "{{ morpheus_url }}/api"
+morpheus_token: ""
+verify_ssl: true
+
+# morpheus_tasks:
+#   - name: Add Subscription
+#     code: addsubscription
+#     resultType: json
+#     executeTarget: local
+#     taskOptions:
+#       localScriptGitName: my git repo
+#       localScriptGitRef: master
+#     taskType:
+#       code: script
+#     file:
+#       sourceType: local
+#       content: |
+#         echo "Do things in a shell"
+#         stat /bin/bash
+#         whoami
+
+#   - name: Configure Linux
+#     code: configlinux
+#     resultType: json
+#     executeTarget: local
+#     taskOptions:
+#       localScriptGitName: my git repo
+#       localScriptGitRef: master
+#     taskType:
+#       code: script
+#     file:
+#       sourceType: local
+#       content: |
+#         # This does other things
+#         echo "show me other stuff"
+#         echo "Install vim"
+#         yum -y install vim
+
+#   - name: VM Provisioning (skip updates)
+#     code:
+#     resultType:
+#     executeTarget: resource
+#     taskType:
+#       code: ansibleTask
+#     taskOptions:
+#       ansiblePlaybook: playbook1.yml
+#       ansibleGitRef: master
+#       ansibleGitName: git provision
+#       ansibleSkipTags: updates

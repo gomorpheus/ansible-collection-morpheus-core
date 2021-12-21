@@ -1,0 +1,74 @@
+- name: Check for existing Option Type
+  uri:
+    url: "{{ morpheus_api }}/library/option-types?name={{ item.name | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: existing_optiontype
+
+- name: Search for Option List
+  uri:
+    url: "{{ morpheus_api }}/library/option-type-lists?name={{ item.optionlistname | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: existing_optionlist
+  when: item.optionlistname is defined
+
+- block:
+    - name: "Error out if exactly one Option List of the same name is not found"
+      debug:
+        msg: "{{ existing_optionlist['json']['meta']['total'] }} option lists were found matching name {{ item.optionlistname }}"
+    - name: End Play
+      meta: end_play
+  when: (item.optionlistname is defined) and (existing_optionlist['json']['meta']['total'] | int != 1)
+
+- name: Create Option Type inner json
+  set_fact:
+    optionType:
+      name: "{{ item.name }}"
+      description: "{{ item.description | default(omit) }}"
+      fieldName: "{{ item.fieldName | default(omit) }}"
+      type: "{{ item.type | default(omit) }}"
+      fieldLabel: "{{ item.fieldLabel | default(omit) }}"
+      placeHolder: "{{ item.placeHolder | default(omit) }}"
+      defaultValue: "{{ item.defaultValue | default(omit) }}"
+      required: "{{ item.required | default(omit) }}"
+      exportMeta: "{{ item.exportMeta | default(omit) }}"
+
+- name: Add Option List ID if added by name
+  set_fact:
+    optionType: "{{ optionType | combine({ 'optionList' : inner_item }) }}"
+  when: item.optionlistname is defined
+  loop_control:
+    loop_var: inner_item
+  with_items:
+    - {id: "{{ existing_optionlist.json.optionTypeLists.0.id }}"}
+
+- name: Add Option List ID if present in vars
+  set_fact:
+    optionType: "{{ optionType | combine({ 'optionList' : inner_item }) }}"
+  when: item.optionlistid is defined
+  loop_control:
+    loop_var: inner_item
+  with_items:
+    - {id: "{{ item.optionlistid }}"}
+
+- name: Nesting Option Type json
+  set_fact:
+    optiontype_json:
+      optionType: "{{ optionType }}"
+
+- name: Create Option Type
+  uri:
+    url: "{{ morpheus_api }}/library/option-types"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ optiontype_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newoptiontype_out
+  when: existing_optiontype['json']['meta']['total'] | int == 0

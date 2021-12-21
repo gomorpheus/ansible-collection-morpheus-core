@@ -1,0 +1,37 @@
+- name: Check for existing Option List
+  uri:
+    url: "{{ morpheus_api }}/library/option-type-lists?name={{ item.name | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: existing_optionlist
+
+- name: Create Option List json
+  set_fact:
+    optionlist_json:
+      optionTypeList:
+        name: "{{ item.name }}"
+        description: "{{ item.description | default(omit) }}"
+        type: "{{ item.type | default(omit) }}"
+        sourceUrl: "{{ item.sourceUrl | default(omit) }}"
+        visibility: "{{ item.visibility | default(omit) }}"
+        sourceMethod: "{{ item.sourceMethod | default(omit) }}"
+        apiType: "{{ item.apiType | default(omit) }}"
+        ignoreSSLErrors: "{{ item.ignoreSSLErrors | default(omit) }}"
+        realTime: "{{ item.realTime | default(omit) }}"
+        initialDataset: "{{ item.initialDataset | default(omit) }}"
+        translationScript: "{{ item.translationScript | default(omit) }}"
+        requestScript: "{{ item.requestScript | default(omit) }}"
+
+- name: Create Option List
+  uri:
+    url: "{{ morpheus_api }}/library/option-type-lists"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ optionlist_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newoptionlist_out
+  when: existing_optionlist['json']['meta']['total'] | int == 0

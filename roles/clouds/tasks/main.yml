@@ -1,0 +1,3 @@
+- name: Add Clouds
+  include_tasks: add_clouds.yml
+  loop: "{{ morpheus_clouds }}"

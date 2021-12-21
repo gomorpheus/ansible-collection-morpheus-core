@@ -1,0 +1,3 @@
+- name: Add Node Types from Synced Virtual Images
+  include_tasks: add_node_types.yml
+  loop: "{{ morpheus_nodetypes }}"

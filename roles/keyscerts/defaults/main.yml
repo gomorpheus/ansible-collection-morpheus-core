@@ -1,0 +1,18 @@
+morpheus_url: ""
+morpheus_api: "{{ morpheus_url }}/api"
+morpheus_token: ""
+verify_ssl: true
+
+# morpheus_keyscerts:
+#   - name: test key
+#     privateKey: |
+#       -----BEGIN RSA PRIVATE KEY-----
+#       MIIG4wIBAAKCAYEAyfn3e447SJYwAu235c3cHe1nXYPed+w12n6fNEx8GaSSJ6qY
+#       rFSKU2k/HwivO0k8dpjKMNS2NlMnFCdhcx4Wp3WTN06/LiIEOApRAm6tm+0tTK0O
+#       1GAfQyjX9x3fbxsRRKeshsg640LNBfezxQLCBhzmpavlpRdUi+w/AkyAlAiIR/yO
+#       fSXELxudXCitcfVixJ7rgqR46bwejSUeQWcqJhIMJ9IZCXcUsb9BreFvyJHJkUYC
+#       9I3843EDVRMdj6oC8i/7DCV2e4ZiEcPgW6l092X6wDzfBpU+nEKJ6ibYnB/3nJAz
+#       ...
+#       DbwYZvDFtsa7XVjFwkVJhoCurwpXVO3cunmhzf9+F8vz88bcWi+0
+#       -----END RSA PRIVATE KEY-----
+#     publicKey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDJ+fd7jjtIljAC7bflzdwd7W....

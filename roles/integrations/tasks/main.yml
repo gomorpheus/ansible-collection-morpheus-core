@@ -1,0 +1,4 @@
+---
+- name: Add Integrations
+  include_tasks: add_integrations.yml
+  loop: "{{ morpheus_integrations }}"

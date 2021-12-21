@@ -1,0 +1,24 @@
+---
+- name: Create git JSON payload
+  set_fact:
+    git_integration_json:
+      integration:
+        name: "{{ item.name }}"
+        type: "{{ item.type }}"
+        serviceUrl: "{{ item.serviceUrl }}"
+        serviceUsername: "{{ item.serviceUsername | default(omit) }}"
+        servicePassword: "{{ item.servicePassword | default(omit) }}"
+        serviceToken: "{{ item.serviceToken | default(omit) }}"
+        serviceKey: "{{ serviceKeyId | default(omit) }}"
+        defaultBranch: "{{ item.defaultBranch | default(omit) }}"
+
+- name: Create git integration
+  uri:
+    url: "{{ morpheus_api }}/integrations"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ git_integration_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newintegration_out

@@ -1,0 +1,28 @@
+- name: Search for existing group
+  uri:
+    url: "{{ morpheus_api }}/groups?name={{ item.name | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: groupsearch_out
+
+- name: Create group JSON payload
+  set_fact:
+    group_json:
+      group:
+        name: "{{ item.name }}"
+        code: "{{ item.code | default(omit) }}"
+        location: "{{ item.location | default(omit) }}"
+
+- name: Create group
+  uri:
+    url: "{{ morpheus_api }}/groups"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ group_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newgroup_out
+  when: groupsearch_out['json']['meta']['total'] == 0

@@ -1,0 +1,75 @@
+- block:
+  - name: Search for existing tenant by name
+    uri:
+      url: "{{ morpheus_api }}/accounts?name={{ item.tenantname | urlencode }}"
+      method: get
+      headers:
+        authorization: "BEARER {{ morpheus_token }}"
+      validate_certs: "{{ verify_ssl }}"
+    register: tenantsearch_out
+
+  - name: Set existing Tenant Role ID
+    set_fact:
+      tenant_id_fromname: "{{ tenantsearch_out.json.accounts.0.id }}"
+    when: tenantsearch_out['json']['meta']['total'] | int == 1
+
+  - name: Set Tenant ID if by name
+    set_fact:
+      tenantid: "{{ tenant_id_fromname }}"
+  when: item.tenantname is defined
+
+- name: Set Tenant ID if by name
+  set_fact:
+    tenantid: "{{ item.tenantid }}"
+  when: item.tenantid is defined
+
+- name: Search for existing users
+  uri:
+    url: "{{ morpheus_api }}/users?username={{ item.username | urlencode }}&tenantId={{ tenantid }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: usersearch_out
+
+- name: Get available user roles for tenant
+  uri:
+    url: "{{ morpheus_api }}/users/available-roles?accountId={{ tenantid }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: available_user_roles
+
+# TODO allow for multiple roles eventually
+- name: Make json query for first role name
+  set_fact:
+    jsonq: "roles[?authority == '{{ item.role_names.0 }}'].id"
+
+- name: Get first role ID
+  set_fact:
+    roles:
+      - id: "{{ available_user_roles.json | json_query(jsonq) | min }}"
+
+- name: Create user json
+  set_fact:
+    user_json:
+      user:
+        username: "{{ item.username }}"
+        email: "{{ item.email }}"
+        firstName: "{{ item.firstName }}"
+        lastName: "{{ item.lastName }}"
+        password: "{{ item.password }}"
+        roles: "{{ roles }}"
+
+- name: Create User
+  uri:
+    url: "{{ morpheus_api }}/accounts/{{ tenantid }}/users"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ user_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newuser_out
+  when: usersearch_out['json']['meta']['total'] == 0

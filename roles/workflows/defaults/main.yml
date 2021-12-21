@@ -1,0 +1,29 @@
+morpheus_url: ""
+morpheus_api: "{{ morpheus_url }}/api"
+morpheus_token: ""
+verify_ssl: true
+
+# morpheus_workflows:
+#   - name: workflow1
+#     description: workflow description
+#     type: operation
+#     optionTypeNames:
+#       - anspass
+#       - Jenkins git Repo
+#     optaskNames:
+#       - task 1
+#       - task 2
+#     taskNames:
+#       - name: a test for subst
+#         phase: postProvision
+#       - name: ansible error
+#         phase: provision
+#       - name: ansible error 2
+
+#   - name: workflow2
+#     type: operation
+#     taskNames:
+#       - name: a test for subst
+#         phase: operation
+#       - name: ansible error 2
+#         phase: operation

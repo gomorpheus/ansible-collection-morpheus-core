@@ -1,0 +1,13 @@
+- name: Search for Option Type
+  uri:
+    url: "{{ morpheus_api }}/library/option-types?name={{ option_type_name | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: existing_optiontype
+
+- name: Add Option Type ID to list
+  set_fact:
+    optionTypeIds: "{{ optionTypeIds + [ existing_optiontype.json.optionTypes.0.id ] }}"
+  when: existing_optiontype['json']['meta']['total'] | int == 1

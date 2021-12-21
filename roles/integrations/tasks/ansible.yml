@@ -1,0 +1,32 @@
+---
+- name: Create Ansible JSON payload
+  set_fact:
+    ansible_integration_json:
+      integration:
+        name: "{{ item.name }}"
+        type: "{{ item.type }}"
+        serviceUrl: "{{ item.serviceUrl }}"
+        serviceUsername: "{{ item.serviceUsername | default(omit) }}"
+        servicePassword: "{{ item.servicePassword | default(omit) }}"
+        serviceToken: "{{ item.serviceToken | default(omit) }}"
+        serviceKey: "{{ serviceKeyId | default(omit) }}"
+        config:
+          defaultBranch: "{{ item.config.defaultBranch | default(omit) }}"
+          ansiblePlaybooks: "{{ item.config.ansiblePlaybooks | default(omit) }}"
+          ansibleRoles: "{{ item.config.ansibleRoles | default(omit) }}"
+          ansibleGroupVars: "{{ item.config.ansibleGroupVars | default(omit) }}"
+          ansibleHostVars: "{{ item.config.ansibleHostVars | default(omit) }}"
+          ansibleGalaxyEnabled: "{{ item.config.ansibleGalaxyEnabled | default(omit) }}"
+          ansibleVerbose: "{{ item.config.ansibleVerbose | default(omit) }}"
+          ansibleCommandBus: "{{ item.config.ansibleCommandBus | default(omit) }}"
+
+- name: Create ansible integration
+  uri:
+    url: "{{ morpheus_api }}/integrations"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ ansible_integration_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newintegration_out

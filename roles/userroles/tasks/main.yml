@@ -1,0 +1,3 @@
+- name: Create Role
+  include_tasks: create_role.yml
+  loop: "{{ user_roles }}"

@@ -1,0 +1,26 @@
+---
+morpheus_url: ""
+morpheus_api: "{{ morpheus_url }}/api"
+morpheus_token: ""
+verify_ssl: true
+
+# morpheus_integrations:
+#   - name: autotest git integration
+#     type: git
+#     serviceUrl: "https://github.com/xxxxxasdsa/xxxxxxx"
+
+#   - name: autotest git librarylocal
+#     type: git
+#     serviceUrl: "git@github.com:xxxxx/yyyyyyy.git"
+#     keyName: "ssh key" # ssh key name in Morpheus
+
+#   - name: autotest ansible labtest
+#     type: ansible
+#     serviceUrl: "git@github.com:xxxxxxxx/xxxxxxxxxxxxx.git"
+#     keyName: "ssh key 2"
+#     config:
+#       ansibleDefaultBranch: master
+#       ansiblePlaybooks: "/"
+#       ansibleGalaxyEnabled: "true"
+#       ansibleVerbose: "true"
+#       ansibleCommandBus: "true"

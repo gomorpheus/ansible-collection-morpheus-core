@@ -1,0 +1,3 @@
+- name: Add Keys
+  include_tasks: add_keys.yml
+  loop: "{{ morpheus_keyscerts }}"

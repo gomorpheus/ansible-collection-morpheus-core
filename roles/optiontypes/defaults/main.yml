@@ -1,0 +1,27 @@
+morpheus_url: ""
+morpheus_api: "{{ morpheus_url }}/api"
+morpheus_token: ""
+verify_ssl: true
+
+# morpheus_optiontypes:
+#   - name: Customer Abbreviation
+#     fieldLabel: Customer Abbreviation
+#     fieldName: customerabbreviation
+#     type: text
+#     placeHolder: testc
+#     required: "true"
+
+#   - name: Customer Name
+#     fieldLabel: Customer Name
+#     fieldName: customername
+#     type: text
+#     required: "true"
+
+#   - name: Customer Cloud
+#     description: Which cloud do you intend to setupc.
+#     fieldLabel: Customer Cloud
+#     fieldName: customercloud
+#     type: select
+#     defaultValue: azure
+#     optionlistname: Cloud
+#     required: "true"

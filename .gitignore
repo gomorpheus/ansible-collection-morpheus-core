@@ -1,0 +1,8 @@
+*.code-workspace
+*.pyc
+*.retry
+.vscode/
+tests/output
+.idea
+*.tar.gz
+testruns/

@@ -1,0 +1,32 @@
+---
+- name: Search for Integration
+  uri:
+    url: "{{ morpheus_api }}/integrations?name={{ item.name | urlencode }}&type={{ item.type | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: existing_integration
+
+- name: Get Auth Key ID
+  uri:
+    url: "{{ morpheus_api }}/key-pairs?name={{ item.keyName | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: keysearch_out
+  when: item.keyName is defined
+
+- name: Set Key ID
+  set_fact:
+    serviceKeyId: "{{ keysearch_out['json']['keyPairs'][0]['id'] }}"
+  when: (item.keyName is defined) and (keysearch_out['json']['meta']['total'] == 1)
+
+- name: Create git integration
+  include_tasks: git.yml
+  when: (existing_integration['json']['meta']['total'] != 1) and (item.type == "git")
+
+- name: Create Ansible integration
+  include_tasks: ansible.yml
+  when: (existing_integration['json']['meta']['total'] != 1) and (item.type == "ansible")

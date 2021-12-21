@@ -1,0 +1,11 @@
+morpheus_url: ""
+morpheus_api: "{{ morpheus_url }}/api"
+morpheus_token: ""
+verify_ssl: true
+
+# morpheus_users:
+#   - username: testuser
+#     tenantname: test tenant
+#     role_names:
+#       - subtenant limited user role
+#       - subtenant user role

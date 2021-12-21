@@ -1,0 +1,70 @@
+- block:
+    - name: "Error out if both Virtual Image ID and Name are supplied"
+      debug:
+        msg: "Only one of Virtual Image ID or Name can be specified.  Check {{ item.name }}"
+    - name: End Play
+      meta: end_play
+  when: (item.virtual_image_name is defined) and (item.virtual_image_id is defined)
+
+- name: Print names
+  debug:
+    msg: "Searching for {{ item.name }} and type {{ item.imageType }}"
+
+- name: Search for Virtual Image
+  uri:
+    url: "{{ morpheus_api }}/virtual-images?name={{ item.virtual_image_name | urlencode }}&imageType={{ item.imageType | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: existing_image
+  when: item.virtual_image_name is defined
+
+- block:
+    - name: "Error out if exactly one Virtual Image of the same name is not found"
+      debug:
+        msg: "{{ existing_image['json']['meta']['total'] }} virtual images were found matching name {{ item.name }} and type {{ item.imageType }}"
+    - name: End Play
+      meta: end_play
+  when: (item.virtual_image_name is defined) and (existing_image['json']['meta']['total'] | int != 1)
+
+- name: Check for existing Node Type
+  uri:
+    url: "{{ morpheus_api }}/library/container-types?name={{ item.name | urlencode }}&provisionType={{ item.provisionTypeCode | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: existing_nodetype
+
+- name: Set Virtual Image ID from Name
+  set_fact:
+    virtualimage_id: "{{ existing_image.json.virtualImages.0.id }}"
+  when: item.virtual_image_name is defined
+
+- name: Set Virtual Image ID from ID
+  set_fact:
+    virtualimage_id: "{{ item.virtual_image_id }}"
+  when: item.virtual_image_id is defined
+
+- name: Create Node Type json
+  set_fact:
+    nodetype_json:
+      containerType:
+        name: "{{ item.name }}"
+        shortName: "{{ item.shortName }}"
+        containerVersion: "{{ item.containerVersion }}"
+        provisionTypeCode: "{{ item.provisionTypeCode }}"
+        virtualImageId: "{{ virtualimage_id }}"
+
+- name: Create Node Type
+  uri:
+    url: "{{ morpheus_api }}/library/container-types"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ nodetype_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newnodetype_out
+  when: existing_nodetype['json']['meta']['total'] | int == 0

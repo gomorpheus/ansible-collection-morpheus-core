@@ -1,0 +1,29 @@
+- name: Check for existing Instance Type
+  uri:
+    url: "{{ morpheus_api }}/library/instance-types?code={{ item.code | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: existing_instancetype
+
+- name: Create Instance Type json
+  set_fact:
+    instancetype_json:
+      instanceType:
+        name: "{{ item.name }}"
+        code: "{{ item.code }}"
+        category: "{{ item.category }}"
+        featured: "{{ item.featured }}"
+
+- name: Create Instance Type
+  uri:
+    url: "{{ morpheus_api }}/library/instance-types"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ instancetype_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newinstancetype_out
+  when: existing_instancetype['json']['meta']['total'] | int == 0

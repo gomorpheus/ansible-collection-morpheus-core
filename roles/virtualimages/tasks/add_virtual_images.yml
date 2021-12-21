@@ -1,0 +1,58 @@
+- name: Search for Virtual Image
+  uri:
+    url: "{{ morpheus_api }}/virtual-images?name={{ item.name | urlencode }}&imageType={{ item.imageType | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: existing_image
+
+- block:
+    - name: "Error out if more than one Virtual Image of the same name is found"
+      debug:
+        msg: "{{ existing_image['json']['meta']['total'] }} virtual images were found matching name {{ item.name }} and type {{ item.provisionTypeCode }}"
+    - name: End Play
+      meta: end_play
+  when: (existing_image['json']['meta']['total'] | int > 1)
+
+- name: Create Virtual Image json for AMI
+  set_fact:
+    virtualimage_json:
+      virtualImage:
+        name: "{{ item.name }}"
+        imageType: "{{ item.imageType }}"
+        isCloudInit: "{{ item.isCloudInit }}"
+        installAgent: "{{ item.installAgent }}"
+        externalId: "{{ item.externalId }}"
+  when: item.imageType == "ami"
+
+- name: Create Virtual Image json all others
+  set_fact:
+    virtualimage_json:
+      virtualImage:
+        name: "{{ item.name }}"
+        imageType: "{{ item.imageType }}"
+        isCloudInit: "{{ item.isCloudInit }}"
+        installAgent: "{{ item.installAgent }}"
+  when: item.imageType != "ami"
+
+- name: Create Virtual Image
+  uri:
+    url: "{{ morpheus_api }}/virtual-images"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ virtualimage_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newvirtualimage_out
+  when: existing_image['json']['meta']['total'] | int == 0
+
+- name: Upload Virtual Image via URL
+  uri:
+    url: "{{ morpheus_api }}/virtual-images/{{ newvirtualimage_out['json']['virtualImage']['id'] }}/upload?url={{ item.url }}"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  when: (item.url is defined) and (existing_image['json']['meta']['total'] | int == 0)

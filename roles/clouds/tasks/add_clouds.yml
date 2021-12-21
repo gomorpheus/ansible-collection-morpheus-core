@@ -1,0 +1,134 @@
+- name: Search for existing Cloud
+  uri:
+    url: "{{ morpheus_api }}/zones?name={{ item.name | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: cloudsearch_out
+
+- name: Search for Group
+  uri:
+    url: "{{ morpheus_api }}/groups?name={{ item.groupName | urlencode }}"
+    method: get
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: group_search
+
+- name: Set Group ID
+  set_fact:
+    group_id: "{{ group_search.json | json_query('groups[0].id') }}"
+
+- name: Set tenant to root
+  set_fact:
+    tenantid: 1
+
+- block:
+    - name: Search for existing tenant by name
+      uri:
+        url: "{{ morpheus_api }}/accounts?name={{ item.tenantname | urlencode }}"
+        method: get
+        headers:
+          authorization: "BEARER {{ morpheus_token }}"
+        validate_certs: "{{ verify_ssl }}"
+      register: tenantsearch_out
+
+    - name: Set existing Tenant Role ID
+      set_fact:
+        tenant_id_fromname: "{{ tenantsearch_out.json.accounts.0.id }}"
+      when: tenantsearch_out['json']['meta']['total'] | int == 1
+
+    - name: Set Tenant ID if by name
+      set_fact:
+        tenantid: "{{ tenant_id_fromname }}"
+  when: item.tenantname is defined
+
+- name: Create cloud JSON payload for AWS
+  set_fact:
+    clouds_json:
+      zone:
+        name: "{{ item.name }}"
+        code: "{{ item.code | default(omit) }}"
+        description: "{{ item.description | default(omit) }}"
+        location: "{{ item.location | default(omit) }}"
+        visibility: "{{ item.visibility | default(omit) }}"
+        groupId: "{{ group_id }}"
+        inventoryLevel: "{{ item.inventoryLevel | default(omit) }}"
+        zoneType:
+          code: "{{ item.zoneType.code }}"
+        config:
+          importExisting: "{{ item.config.importExisting | default(omit) }}"
+          endpoint: "{{ item.config.endpoint }}"
+          accessKey: "{{ item.config.accessKey }}"
+          secretKey: "{{ item.config.secretKey }}"
+          vpc: "{{ item.config.vpc | default(omit) }}"
+          isVpc: "{{ item.config.isVpc | default(omit) }}"
+  when: item.zoneType.code == "amazon"
+
+- name: Create cloud JSON payload for Azure
+  set_fact:
+    clouds_json:
+      zone:
+        name: "{{ item.name }}"
+        code: "{{ item.code | default(omit) }}"
+        description: "{{ item.description | default(omit) }}"
+        location: "{{ item.location | default(omit) }}"
+        visibility: "{{ item.visibility | default(omit) }}"
+        groupId: "{{ group_id }}"
+        zoneType:
+          code: "{{ item.zoneType.code }}"
+        regionCode: "{{ item.regionCode | default(omit) }}"
+        accountType: "{{ item.accountType | default(omit) }}"
+        config:
+          cloudType: "{{ item.config.cloudType }}"
+          importExisting: "{{ item.config.importExisting | default(omit) }}"
+          subscriberId: "{{ item.config.subscriberId }}"
+          tenantId: "{{ item.config.tenantId }}"
+          clientId: "{{ item.config.clientId }}"
+          clientSecret: "{{ item.config.clientSecret }}"
+          resourceGroup: "{{ item.config.resourceGroup | default(omit) }}"
+          inventoryLevel: "{{ item.config.inventoryLevel | default(omit) }}"
+  when: item.zoneType.code == "azure"
+
+- name: Create cloud JSON payload for VMWare
+  set_fact:
+    clouds_json:
+      zone:
+        name: "{{ item.name }}"
+        code: "{{ item.code | default(omit) }}"
+        description: "{{ item.description | default(omit) }}"
+        location: "{{ item.location | default(omit) }}"
+        visibility: "{{ item.visibility | default(omit) }}"
+        groupId: "{{ group_id }}"
+        accountId: "{{ tenantid | default(omit) }}"
+        inventoryLevel: "{{ item.inventoryLevel | default(omit) }}"
+        zoneType:
+          code: "{{ item.zoneType.code }}"
+        config:
+          apiUrl: "{{ item.config.apiUrl }}"
+          username: "{{ item.config.username }}"
+          password: "{{ item.config.password }}"
+          apiVersion: "{{ item.config.apiVersion | default('7.0') }}"
+          datacenter: "{{ item.config.datacenter }}"
+          cluster: "{{ item.config.cluster | default(omit) }}"
+          resourcePool: "{{ item.config.resourcePool | default(omit) }}"
+          rpcMode: "{{ item.config.rpcMode | default('rpc') }}"
+          importExisting: "{{ item.config.importExisting | default(omit) }}"
+          enableVnc: "{{ item.config.enableVnc | default(omit) }}"
+          enableDiskTypeSelection: "{{ item.config.enableDiskTypeSelection | default(omit) }}"
+          enableNetworkTypeSelection: "{{ item.config.enableNetworkTypeSelection | default(omit) }}"
+          diskStorageType: "{{ item.config.diskStorageType | default(omit) }}"
+  when: item.zoneType.code == "vmware"
+
+- name: Create Cloud
+  uri:
+    url: "{{ morpheus_api }}/zones"
+    method: post
+    headers:
+      authorization: "BEARER {{ morpheus_token }}"
+    body_format: json
+    body: "{{ clouds_json }}"
+    validate_certs: "{{ verify_ssl }}"
+  register: newcloud_out
+  when: (cloudsearch_out['json']['meta']['total'] == 0) or (cloudsearch_out['json']['meta']['size'] == 0)
