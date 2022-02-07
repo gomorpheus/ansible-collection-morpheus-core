@@ -13,7 +13,7 @@
         cloudInitPassword: "{{ morpheus_settings.cloudInitPassword | default(omit) }}"
         windowsPassword: "{{ morpheus_settings.windowsPassword | default(omit) }}"
         pxeRootPassword: "{{ morpheus_settings.pxeRootPassword | default(omit) }}"
-  when: provisioning_settings is defined
+  when: morpheus_settings is defined
 
 - name: Update Morpheus Provisioning Settings
   uri:
