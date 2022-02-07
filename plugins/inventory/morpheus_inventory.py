@@ -21,7 +21,7 @@ DOCUMENTATION = r'''
         plugin:
             description: Morpheus Inventory
             required: true
-            choices: ['morpheus_inventory']
+            choices: ['morpheus_inventory', 'morpheus.core.morpheus_inventory']
         groups:
             description: whatever
             required: true
