@@ -62,10 +62,12 @@ class InventoryModule(BaseInventoryPlugin):
 
     def _set_version_from_morpheus(self):
 
+        headers = {'Authorization': "BEARER %s" % self.morpheus_token,
+                   "Content-Type": "application/json"}
         method = "get"
         verify = self.morpheus_opt_args['sslverify']
         versionapi = self.morpheus_api + "/ping"
-        v = getattr(requests, method)(versionapi, verify=verify)
+        v = getattr(requests, method)(versionapi, headers=headers, verify=verify)
         returned_v = v.json()
         self.morpheus_version = returned_v['buildVersion']
 
