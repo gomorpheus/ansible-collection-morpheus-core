@@ -24,6 +24,7 @@
         isCloudInit: "{{ item.isCloudInit }}"
         installAgent: "{{ item.installAgent }}"
         externalId: "{{ item.externalId }}"
+        osType: "{{ item.osType | default(omit) }}"
   when: item.imageType == "ami"
 
 - name: Create Virtual Image json all others
@@ -34,7 +35,10 @@
         imageType: "{{ item.imageType }}"
         isCloudInit: "{{ item.isCloudInit }}"
         installAgent: "{{ item.installAgent }}"
+        osType: "{{ item.osType | default(omit) }}"
   when: item.imageType != "ami"
+
+- debug: var=virtualimage_json
 
 - name: Create Virtual Image
   uri:
