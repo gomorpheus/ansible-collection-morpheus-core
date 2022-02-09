@@ -75,6 +75,10 @@ jobs:
         run: ansible-galaxy collection install /home/runner/work/ansible-collection-morpheus-core/ansible-collection-morpheus-core/morpheus-core-${{ steps.get_version.outputs.VERSION }}.tar.gz
 
       - name: Test collection
+        env:
+          MORPHURL: ${{ secrets.MORPHURL }}
+          MORPHUSER: ${{ secrets.MORPHUSER }}
+          MORPHPASS: ${{ secrets.MORPHPASS }}
         run: |
           echo ::add-mask::${MORPHURL}
           echo ::add-mask::${MORPHUSER}
