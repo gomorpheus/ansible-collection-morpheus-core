@@ -6,3 +6,4 @@
 - OS Type is now able to be set via name in `roles/virtualimages`: [#6](https://github.com/gomorpheus/ansible-collection-morpheus-core/issues/6)
 - Ansible requires that the FQCN be in the documentation part of the inventory plugin: [#3](https://github.com/gomorpheus/ansible-collection-morpheus-core/issues/3)
 - `roles/settings` had the wrong source var: [#2](https://github.com/gomorpheus/ansible-collection-morpheus-core/issues/2)
+- Version comparison was using distutils, which has been deprecated.  Switched to packaging. [#10](https://github.com/gomorpheus/ansible-collection-morpheus-core/issues/10)
