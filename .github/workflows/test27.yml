@@ -42,6 +42,7 @@ jobs:
           retention-days: 1
   test-collection:
     runs-on: ubuntu-latest
+    needs: build-collection
     strategy:
       matrix:
         # python-version: ['2.x', '3.6', '3.7', '3.8', '3.9']
