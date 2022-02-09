@@ -65,10 +65,11 @@ jobs:
         with:
           name: morpheus-core-${{ steps.get_version.outputs.VERSION }}.tar.gz
           path: .
+      
       - name: Install ansible and other dependencies
         run: |
           pip install '${{ matrix.ansible-version }}'
-          apt-get -y install jq
+          sudo apt-get -y install jq
 
       - name: Install morpheus.core collection
         run: ansible-galaxy collection install /home/runner/work/ansible-collection-morpheus-core/ansible-collection-morpheus-core/morpheus-core-${{ steps.get_version.outputs.VERSION }}.tar.gz
