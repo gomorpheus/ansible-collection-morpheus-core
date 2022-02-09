@@ -45,7 +45,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['2.x', '3.6', '3.7', '3.8', '3.9']
-        ansible-version: ['<2.10', '<2.11', '<6']
+        ansible-version: ['ansible<2.10', 'ansible<2.11', 'ansible<6']
     steps:
       - uses: actions/setup-python@v2
         with:
