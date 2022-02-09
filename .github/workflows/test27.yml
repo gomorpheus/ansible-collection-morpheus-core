@@ -44,12 +44,27 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['2.x', '3.6', '3.7', '3.8', '3.9']
-        ansible-version: ['ansible<2.10', 'ansible<2.11', 'ansible<6']
+        # python-version: ['2.x', '3.6', '3.7', '3.8', '3.9']
+        # ansible-version: ['ansible<2.10', 'ansible<2.11', 'ansible<6']
+        python-version: ['3.8']
+        ansible-version: ['ansible-core<2.12']
     steps:
+      - uses: actions/checkout@v2
+
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(grep version galaxy.yml | gawk -F\" '{print $2}')
+      
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+      
+      - name: Retrieve Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: morpheus-core-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          path: /home/runner/work/ansible-collection-morpheus-core/ansible-collection-morpheus-core/
       - name: Install ansible
         run: |
           pip install '${{ matrix.ansible-version }}'
+      - 
