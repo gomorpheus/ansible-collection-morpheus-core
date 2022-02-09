@@ -67,4 +67,4 @@ jobs:
       - name: Install ansible
         run: |
           pip install '${{ matrix.ansible-version }}'
-      - 
+          ansible-galaxy collection install /home/runner/work/ansible-collection-morpheus-core/ansible-collection-morpheus-core/morpheus-core-${{ steps.get_version.outputs.VERSION }}.tar.gz
