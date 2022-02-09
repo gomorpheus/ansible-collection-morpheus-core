@@ -45,10 +45,11 @@ jobs:
     strategy:
       matrix:
         python-version: ['2.x', '3.6', '3.7', '3.8', '3.9']
+        ansible-version: ['<2.10', '<2.11', '<6']
     steps:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install ansible
         run: |
-          pip install 'ansible<2.10'
+          pip install '${{ matrix.ansible-version }}'
