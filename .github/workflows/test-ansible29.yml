@@ -67,7 +67,7 @@ jobs:
       - name: Install ansible and dependencies
         run: |
           pip install '${{ matrix.ansible-version }}'
-          apt-get -y install jq
+          sudo apt-get -y install jq
 
       - name: Install morpheus.core collection
         run: |
