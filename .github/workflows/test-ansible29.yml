@@ -1,6 +1,6 @@
 # .github/workflows/manual.yml
 
-name: Test Inventory on Python 2.7
+name: Test Inventory on Ansible 2.9
 on: [workflow_dispatch]
 jobs:
   build-collection:
