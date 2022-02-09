@@ -6,7 +6,7 @@ import os
 import yaml
 import sys
 from builtins import str
-from distutils.version import LooseVersion
+from packaging import version
 from ansible.plugins.inventory import BaseInventoryPlugin
 from ansible.errors import AnsibleParserError
 
@@ -72,9 +72,9 @@ class InventoryModule(BaseInventoryPlugin):
         self.morpheus_version = returned_v['buildVersion']
 
     def _set_morpheus_oldmetadata(self):
-        if LooseVersion(self.morpheus_version) < LooseVersion("4.2.5"):
+        if version.parse(self.morpheus_version) < version.parse("4.2.5"):
             self.morpheus_oldmetadata = True
-        if (LooseVersion(self.morpheus_version) >= LooseVersion("5.0")) and (LooseVersion(self.morpheus_version) < LooseVersion("5.2.1")):
+        if (version.parse(self.morpheus_version) >= version.parse("5.0")) and (version.parse(self.morpheus_version) < version.parse("5.2.1")):
             self.morpheus_oldmetadata = True
 
     def _get_data_from_morpheus(self, searchtype, searchstring=None):
@@ -229,7 +229,7 @@ class InventoryModule(BaseInventoryPlugin):
                 raise AnsibleParserError("Cannot find morpheus private key in workspace directory")
         if searchtype == "label":
             for instance in rawresponse['instances']:
-                if LooseVersion(self.morpheus_version) > LooseVersion("5.0"):
+                if version.parse(self.morpheus_version) > version.parse("5.0"):
                     for label in instance['labels']:
                         if str(searchstring).lower() == str(label).lower():
                             self._add_morpheus_instance(group, instance)

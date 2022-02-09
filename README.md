@@ -19,7 +19,9 @@
 
 ## Requirements
 
-- Ansible >= 2.9
+- Ansible >= 2.9 or ansible-core >= 2.11
+- requests
+- packaging
 
 ## Installation
 
