@@ -11,7 +11,7 @@ jobs:
       - name: Prerequisite install
         run: |
           sudo apt remove ansible
-          sudo pip install ansible-core==2.11
+          sudo pip install 'ansible-core<2.12'
           
       - name: Build collection
         run: |
@@ -63,7 +63,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: morpheus-core-${{ steps.get_version.outputs.VERSION }}.tar.gz
-          path: /home/runner/work/ansible-collection-morpheus-core/ansible-collection-morpheus-core/
+          path: .
       - name: Install ansible
         run: |
           pip install '${{ matrix.ansible-version }}'
