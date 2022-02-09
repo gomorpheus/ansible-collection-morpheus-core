@@ -70,6 +70,7 @@ jobs:
           apt-get -y install jq
 
       - name: Install morpheus.core collection
+        run: |
           ansible-galaxy collection install /home/runner/work/ansible-collection-morpheus-core/ansible-collection-morpheus-core/morpheus-core-${{ steps.get_version.outputs.VERSION }}.tar.gz
           sudo mkdir -p /usr/share/ansible/plugins/inventory
           cp ~/.ansible/collections/ansible_collections/morpheus/core/plugins/inventory/morpheus_inventory.py /usr/share/ansible/plugins/inventory/
