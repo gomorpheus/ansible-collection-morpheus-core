@@ -65,8 +65,19 @@ jobs:
         with:
           name: morpheus-core-${{ steps.get_version.outputs.VERSION }}.tar.gz
           path: .
-      - name: Install ansible
+      - name: Install ansible and other dependencies
         run: |
           pip install '${{ matrix.ansible-version }}'
-          ansible-galaxy collection install /home/runner/work/ansible-collection-morpheus-core/ansible-collection-morpheus-core/morpheus-core-${{ steps.get_version.outputs.VERSION }}.tar.gz
-          ansible-doc -t inventory -l | grep morpheus
+          apt-get -y install jq
+
+      - name: Install morpheus.core collection
+        run: ansible-galaxy collection install /home/runner/work/ansible-collection-morpheus-core/ansible-collection-morpheus-core/morpheus-core-${{ steps.get_version.outputs.VERSION }}.tar.gz
+
+      - name: Test collection
+        run: |
+          echo ::add-mask::${MORPHURL}
+          echo ::add-mask::${MORPHUSER}
+          echo ::add-mask::${MORPHPASS}
+          MORPHEUSTOKEN=$(curl -XPOST "${MORPHURL}/oauth/token?grant_type=password&scope=write&client_id=morph-api" --data-urlencode "username=${MORPHUSER}" --data-urlencode "password=${MORPHPASS}" | jq -r '.access_token')
+
+
