@@ -44,11 +44,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['2.x']
+        python-version: ['2.x', '3.6', '3.7', '3.8', '3.9']
     steps:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install ansible
         run: |
-          pip install ansible==2.9
+          pip install 'ansible<2.10'
