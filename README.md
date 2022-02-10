@@ -14,6 +14,7 @@
       - [App](#app)
       - [Cloud](#cloud)
     - [Token Requirement](#token-requirement)
+    - [Troubleshooting](#troubleshooting)
   - [Ansible Roles for Morpheus Setup](#ansible-roles-for-morpheus-setup)
   - [Support Expectations](#support-expectations)
 
@@ -22,6 +23,7 @@
 - Ansible >= 2.9 or ansible-core >= 2.11
 - requests
 - packaging
+- future (required for python 2.7)
 
 ## Installation
 
@@ -223,6 +225,10 @@ install -o morpheus-local -g morpheus-local -m 0770 -d /var/opt/morpheus/morpheu
 In your task, specify `--vault-password-file /var/opt/morpheus/morpheus-ui/ansiblevault/<file>` in order to use the password.
 
 Information on encrypting strings and variables for ansible is located [HERE](https://docs.ansible.com/ansible/latest/user_guide/vault.html)
+
+### Troubleshooting
+
+By using `-vv` or higher whether using `ansible-inventory` or using the inventory in a playbook, the plugin will output extra information for use in troubleshooting.  Output will be prefixed by: `morpheus_inventory: `
 
 ## Ansible Roles for Morpheus Setup
 
