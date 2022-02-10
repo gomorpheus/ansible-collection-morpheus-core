@@ -75,7 +75,7 @@ jobs:
           sudo mkdir -p /usr/share/ansible/plugins/inventory
           cp ~/.ansible/collections/ansible_collections/morpheus/core/plugins/inventory/morpheus_inventory.py /usr/share/ansible/plugins/inventory/
       
-      - name: Test collection
+      - name: Generate Inventory
         env:
           MORPHURL: ${{ secrets.MORPHURL }}
           MORPHUSER: ${{ secrets.MORPHUSER }}
@@ -85,4 +85,20 @@ jobs:
           echo ::add-mask::${MORPHUSER}
           echo ::add-mask::${MORPHPASS}
           MORPHEUSTOKEN=$(curl -XPOST "${MORPHURL}/oauth/token?grant_type=password&scope=write&client_id=morph-api" --data-urlencode "username=${MORPHUSER}" --data-urlencode "password=${MORPHPASS}" | jq -r '.access_token')
-          
+          echo ::add-mask::${MORPHTOKEN}
+          cat <<EOF > morpheusinv.yml
+          plugin: morpheus_inventory
+          morpheus_url: "$MORPHURL"
+          morpheus_api_key: "$MORPHEUSTOKEN"
+          groups:
+            - name: centos1only
+              searchtype: name
+              searchstring: centos1
+            - name: cloudgroup
+              searchtype: cloud
+              searchstring: 1
+          EOF
+      
+      - name: Run plugin
+        run: |
+          ansible-inventory -i morpheusinv.yml --list

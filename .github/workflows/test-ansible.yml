@@ -84,5 +84,6 @@ jobs:
           echo ::add-mask::${MORPHUSER}
           echo ::add-mask::${MORPHPASS}
           MORPHEUSTOKEN=$(curl -XPOST "${MORPHURL}/oauth/token?grant_type=password&scope=write&client_id=morph-api" --data-urlencode "username=${MORPHUSER}" --data-urlencode "password=${MORPHPASS}" | jq -r '.access_token')
+          echo ::add-mask::${MORPHTOKEN}
 
 
