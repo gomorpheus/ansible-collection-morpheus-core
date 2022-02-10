@@ -110,4 +110,4 @@ jobs:
           jq -e ".centos1only.hosts[0] == .centos.hosts[0]" inventory-output.json
           jq -e ".ubuntu.hosts[0]" inventory-output.json
           jq -e ".windows.hosts[0]" inventory-output.json
-          jq -e "fail" inventory-output.json
+          jq -e ".fail" inventory-output.json
