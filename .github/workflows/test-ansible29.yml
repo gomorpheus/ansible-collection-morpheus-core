@@ -85,7 +85,7 @@ jobs:
           echo ::add-mask::${MORPHUSER}
           echo ::add-mask::${MORPHPASS}
           MORPHEUSTOKEN=$(curl -XPOST "${MORPHURL}/oauth/token?grant_type=password&scope=write&client_id=morph-api" --data-urlencode "username=${MORPHUSER}" --data-urlencode "password=${MORPHPASS}" | jq -r '.access_token')
-          echo ::add-mask::${MORPHTOKEN}
+          echo ::add-mask::${MORPHEUSTOKEN}
           cat <<EOF > morpheusinv.yml
           plugin: morpheus_inventory
           morpheus_url: "$MORPHURL"
@@ -101,4 +101,13 @@ jobs:
       
       - name: Run plugin
         run: |
-          ansible-inventory -i morpheusinv.yml --list
+          ansible-inventory -i morpheusinv.yml --list >> inventory-output.json
+
+      - name: Test output
+        run : |
+          jq -e ".centos.hosts[0]" inventory-output.json
+          jq -e ".centos1only.hosts[0]" inventory-output.json
+          jq -e ".centos1only.hosts[0] == .centos.hosts[0]" inventory-output.json
+          jq -e ".ubuntu.hosts[0]" inventory-output.json
+          jq -e ".windows.hosts[0]" inventory-output.json
+          jq -e "fail" inventory-output.json
