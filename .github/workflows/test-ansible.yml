@@ -68,13 +68,13 @@ jobs:
       
       - name: Install ansible and other dependencies
         run: |
-          pip install '${{ matrix.ansible-version }}'
+          pip install '${{ matrix.ansible-version }}' requests future packaging
           sudo apt-get -y install jq
 
       - name: Install morpheus.core collection
         run: ansible-galaxy collection install /home/runner/work/ansible-collection-morpheus-core/ansible-collection-morpheus-core/morpheus-core-${{ steps.get_version.outputs.VERSION }}.tar.gz
 
-      - name: Test collection
+      - name: Generate Inventory
         env:
           MORPHURL: ${{ secrets.MORPHURL }}
           MORPHUSER: ${{ secrets.MORPHUSER }}
@@ -84,6 +84,27 @@ jobs:
           echo ::add-mask::${MORPHUSER}
           echo ::add-mask::${MORPHPASS}
           MORPHEUSTOKEN=$(curl -XPOST "${MORPHURL}/oauth/token?grant_type=password&scope=write&client_id=morph-api" --data-urlencode "username=${MORPHUSER}" --data-urlencode "password=${MORPHPASS}" | jq -r '.access_token')
-          echo ::add-mask::${MORPHTOKEN}
+          echo ::add-mask::${MORPHEUSTOKEN}
+          cat <<EOF > morpheusinv.yml
+          plugin: morpheus.core.morpheus_inventory
+          morpheus_url: "$MORPHURL"
+          morpheus_api_key: "$MORPHEUSTOKEN"
+          groups:
+            - name: centos1only
+              searchtype: name
+              searchstring: centos1
+            - name: cloudgroup
+              searchtype: cloud
+              searchstring: 1
+          EOF
 
+      - name: Run plugin
+        run: ansible-inventory -i morpheusinv.yml --list >> inventory-output.json
 
+      - name: Test output
+        run : |
+          jq -e ".centos.hosts[0]" inventory-output.json
+          jq -e ".centos1only.hosts[0]" inventory-output.json
+          jq -e ".centos1only.hosts[0] == .centos.hosts[0]" inventory-output.json
+          jq -e ".ubuntu.hosts[0]" inventory-output.json
+          jq -e ".windows.hosts[0]" inventory-output.json
