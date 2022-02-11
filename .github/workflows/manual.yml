@@ -11,8 +11,14 @@ jobs:
       - name: Prerequisite install
         run: |
           sudo apt remove ansible
-          sudo pip install ansible
+          sudo pip install ansible ansible-lint flake8
           
+      - name: Lint collection
+        run: |
+          cd $GITHUB_WORKSPACE
+          ansible-lint
+          find . -name *.py | xargs -n 1 flake8 --max-line-length 160 
+      
       - name: Build collection
         run: |
           cd $GITHUB_WORKSPACE
@@ -20,7 +26,7 @@ jobs:
       
       - name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -c2-)
+        run: echo ::set-output name=VERSION::$(grep version galaxy.yml | gawk -F\" '{print $2}')
       
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.0
@@ -40,6 +46,7 @@ jobs:
       #Minimum 1 day. Maximum 90 days unless changed from the repository settings page.
 
           retention-days: 10
+      
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
