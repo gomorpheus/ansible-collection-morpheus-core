@@ -38,8 +38,6 @@
         osType: "{{ item.osType | default(omit) }}"
   when: item.imageType != "ami"
 
-- debug: var=virtualimage_json
-
 - name: Create Virtual Image
   uri:
     url: "{{ morpheus_api }}/virtual-images"
