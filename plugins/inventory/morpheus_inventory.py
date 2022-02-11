@@ -194,7 +194,7 @@ class InventoryModule(BaseInventoryPlugin):
             else:
                 group = platform
             self.inventory.add_group(group)
-            self.print_verbose_message("Matched %s with platform %s, adding to group %s" % (container['name'], group, group))
+            self.print_verbose_message("Matched %s with platform %s, adding to group %s" % (container['externalHostname'], group, group))
         container_hostname = container['externalHostname']
         self.inventory.add_host(
             host=container_hostname,
