@@ -311,10 +311,25 @@ class InventoryModule(BaseInventoryPlugin):
                 with open(morpheusextravarsfile, 'r') as stream:
                     self.extravars = yaml.safe_load(stream)
                 self.morpheus_url = self.extravars['morpheus']['morpheus']['applianceUrl']
-                self.morpheus_token = config_data['morpheus_api_key']
+                if 'morpheus_api_key' in config_data:
+                    self.print_verbose_message("Using Morpheus token from inventory file")
+                    self.morpheus_token = config_data['morpheus_api_key']
+                elif 'apiAccessToken' in self.extravars['morpheus']['morpheus'].keys():
+                    self.print_verbose_message("Using ephemeral Morpheus token from Morpheus task")
+                    self.morpheus_token = self.extravars['morpheus']['morpheus']['apiAccessToken']
+                else:
+                    raise AnsibleParserError("Morpheus token not found in ephemeral task vars or inventory file")                    
             else:
-                self.morpheus_url = config_data['morpheus_url']
-                self.morpheus_token = config_data['morpheus_api_key']
+                if 'morpheus_url' in config_data:
+                    self.print_verbose_message("Using Morpheus URL from inventory file")
+                    self.morpheus_url = config_data['morpheus_url']
+                else:
+                    raise AnsibleParserError("Morpheus URL not found in inventory file")
+                if 'morpheus_api_key' in config_data:
+                    self.print_verbose_message("Using Morpheus token from inventory file")
+                    self.morpheus_token = config_data['morpheus_api_key']
+                else:
+                    raise AnsibleParserError("Morpheus token not found in inventory file")
 
             self.morpheus_api = self.morpheus_url + "/api"
             if 'morpheus_client_id' in config_data:
