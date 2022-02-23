@@ -84,16 +84,52 @@ class InventoryModule(BaseInventoryPlugin):
             self.morpheus_oldmetadata = True
             self.print_verbose_message("Using old metadata model")
 
-    def _get_data_from_morpheus(self, searchtype, searchstring=None):
+    def _get_morpheus_paged_api_results(self, path):
         headers = {'Authorization': "BEARER %s" % self.morpheus_token,
                    "Content-Type": "application/json"}
         method = "get"
         verify = self.morpheus_opt_args['sslverify']
+        if "?" in path:
+            path = path + "&sort=id"
+        else:
+            path = path + "?sort=id"
+        urlFullPath = self.morpheus_api + path
+        r = getattr(requests, method)(urlFullPath, headers=headers, verify=verify)
+        result = r.json()
+        if 'meta' in result.keys():
+            if result['meta']['total'] <= result['meta']['max']:
+                return result
+            else:
+                mainkey = list(result.keys())[0]
+                offset = result['meta']['max']
+                moreResults = True
+                while moreResults is True:
+                    # Get next result set, adding the offset
+                    newFullPath = urlFullPath + "&offset=%s" % offset
+                    nextR = getattr(requests, method)(newFullPath, headers=headers, verify=verify)
+                    nextResult = nextR.json()
+                    # Add the nextResult list to the original result
+                    result[mainkey] = result[mainkey] + nextResult[mainkey]
+                    # If the offset plus the latest result size equals the total returned items, then exit
+                    if nextResult['meta']['offset'] + nextResult['meta']['size'] == result['meta']['total']:
+                        moreResults = False
+                    # Else increment the offset and run again
+                    else:
+                        offset = offset + nextResult['meta']['max']
+                return result
+        else:
+            return result
+
+    def _get_data_from_morpheus(self, searchtype, searchstring=None):
+        # headers = {'Authorization': "BEARER %s" % self.morpheus_token,
+        #            "Content-Type": "application/json"}
+        # method = "get"
+        # verify = self.morpheus_opt_args['sslverify']
 
         if searchtype in ["label", "name", "tag"]:
-            path = "/instances?max=-1"
+            path = "/instances"
         elif searchtype == "app":
-            path = "/apps?max=-1"
+            path = "/apps"
         elif searchtype == "cloud":
             cloudid = None
             if searchstring is None:
@@ -109,8 +145,10 @@ class InventoryModule(BaseInventoryPlugin):
 
             if not cloud_is_numeric:
                 self.print_verbose_message("Searching for cloud by name")
-                cloudurl = self.morpheus_api + "/zones?max=-1"
-                cloudr = getattr(requests, method)(cloudurl, headers=headers, verify=verify)
+                path = "/zones"
+                # cloudurl = self.morpheus_api + "/zones?max=-1"
+                # cloudr = getattr(requests, method)(cloudurl, headers=headers, verify=verify)
+                cloudr = self._get_morpheus_paged_api_results(path)
                 cloudoutput = cloudr.json()
                 if 'error' in cloudoutput.keys():
                     raise AnsibleParserError("Error in Morpheus API call: %s" % cloudoutput['error'])
@@ -123,23 +161,25 @@ class InventoryModule(BaseInventoryPlugin):
                     raise AnsibleParserError("Could not find a cloud with code: %s" % searchstring)
             else:
                 cloudid = searchstring
-            path = "/instances?zoneId=%s&max=-1" % cloudid
-        url = self.morpheus_api + path
-        r = getattr(requests, method)(url, headers=headers, verify=verify)
-        if 'error' in r.json().keys():
+            path = "/instances?zoneId=%s" % cloudid
+        # url = self.morpheus_api + path
+        r = self._get_morpheus_paged_api_results(path)
+        # r = getattr(requests, method)(url, headers=headers, verify=verify)
+        if 'error' in r.keys():
             raise AnsibleParserError("Error in Morpheus API call: %s" % r.json()['error'])
-        return r.json()
+        return r
 
-    def _get_containers_from_morpheus(self, instanceid):
-        headers = {'Authorization': "BEARER %s" % self.morpheus_token,
-                   "Content-Type": "application/json"}
+    # def _get_containers_from_morpheus(self, instanceid):
+    #     # headers = {'Authorization': "BEARER %s" % self.morpheus_token,
+    #     #            "Content-Type": "application/json"}
 
-        path = "/instances/%s/containers?max=-1" % instanceid
-        url = self.morpheus_api + path
-        method = "get"
-        verify = self.morpheus_opt_args['sslverify']
-        r = getattr(requests, method)(url, headers=headers, verify=verify)
-        return r.json()
+    #     path = "/instances/%s/containers" % instanceid
+    #     # url = self.morpheus_api + path
+    #     # method = "get"
+    #     # verify = self.morpheus_opt_args['sslverify']
+    #     # r = getattr(requests, method)(url, headers=headers, verify=verify)
+    #     r = self._get_morpheus_paged_api_results(path)
+    #     return r
 
     def _set_morpheus_connection_vars(self, hostname, ip, containerid, noagent=False, platform=None):
         if noagent == "null" or noagent is False:
@@ -172,20 +212,23 @@ class InventoryModule(BaseInventoryPlugin):
                 self.print_verbose_message("Found %s with tag %s=%s, adding to group %s" % (instance['name'], tag['name'], tag['value'], group))
                 self._add_morpheus_instance(group, instance)
 
-    def _get_server_details(self, serverid):
-        headers = {'Authorization': "BEARER %s" % self.morpheus_token,
-                   "Content-Type": "application/json"}
-        method = "get"
-        verify = self.morpheus_opt_args['sslverify']
-        path = "/servers/%s" % serverid
-        url = self.morpheus_api + path
-        r = getattr(requests, method)(url, headers=headers, verify=verify)
-        resultdict = r.json()
+    # def _get_server_details(self, serverid):
+    #     # headers = {'Authorization': "BEARER %s" % self.morpheus_token,
+    #     #            "Content-Type": "application/json"}
+    #     # method = "get"
+    #     # verify = self.morpheus_opt_args['sslverify']
+    #     path = "/servers/%s" % serverid
+    #     # url = self.morpheus_api + path
+    #     # r = getattr(requests, method)(url, headers=headers, verify=verify)
+    #     resultdict = self._get_morpheus_paged_api_results(path)
+    #     # resultdict = r.json()
 
-        return resultdict['server']
+    #     return resultdict['server']
 
     def _add_morpheus_container(self, group, containerid, container, platform_query=False):
-        server = self._get_server_details(container['server']['id'])
+        serverQueryPath = "/servers/%s" % container['server']['id']
+        serverResult = self._get_morpheus_paged_api_results(serverQueryPath)
+        server = serverResult['server']
         platform = server['serverOs']['category']
         if platform_query:
             if platform is None:
@@ -220,13 +263,17 @@ class InventoryModule(BaseInventoryPlugin):
             platform_query = True
 
         if len(instance['containers']) > 1:
-            containerdata = self._get_containers_from_morpheus(instance['id'])
+            containerQueryPath = "/instances/%s/containers" % instance['id']
+            containerdata = self._get_morpheus_paged_api_results(containerQueryPath)
+            # containerdata = self._get_containers_from_morpheus(instance['id'])
             for containerid in instance['containers']:
                 for container in containerdata['containers']:
                     if containerid == container['id']:
                         self._add_morpheus_container(group, containerid, container, platform_query)
         else:
-            containerdata = self._get_containers_from_morpheus(instance['id'])
+            containerQueryPath = "/instances/%s/containers" % instance['id']
+            containerdata = self._get_morpheus_paged_api_results(containerQueryPath)
+            # containerdata = self._get_containers_from_morpheus(instance['id'])
             containerid = containerdata['containers'][0]['id']
             self._add_morpheus_container(group, containerid, containerdata['containers'][0], platform_query)
 
@@ -318,7 +365,7 @@ class InventoryModule(BaseInventoryPlugin):
                     self.print_verbose_message("Using ephemeral Morpheus token from Morpheus task")
                     self.morpheus_token = self.extravars['morpheus']['morpheus']['apiAccessToken']
                 else:
-                    raise AnsibleParserError("Morpheus token not found in ephemeral task vars or inventory file")                    
+                    raise AnsibleParserError("Morpheus token not found in ephemeral task vars or inventory file")
             else:
                 if 'morpheus_url' in config_data:
                     self.print_verbose_message("Using Morpheus URL from inventory file")
