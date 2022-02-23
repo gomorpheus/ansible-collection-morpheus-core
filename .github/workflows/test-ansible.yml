@@ -100,7 +100,7 @@ jobs:
 
       - name: Run plugin
         run: |
-          ansible-inventory -i morpheus
+          ansible-inventory -i morpheusinv.yml --list -vv
           ansible-inventory -i morpheusinv.yml --list >> inventory-output.json
 
       - name: Test output
@@ -172,6 +172,7 @@ jobs:
       
       - name: Run plugin
         run: |
+          ansible-inventory -i morpheusinv.yml --list -vv
           ansible-inventory -i morpheusinv.yml --list >> inventory-output.json
 
       - name: Test output
