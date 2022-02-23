@@ -105,7 +105,9 @@ Within Morpheus, the dynamic inventory plugin will query the API and return a se
 ---
 **NOTES**
 
-Morpheus versions <= 5.0.0  require an API token in the inventory file to provide access to the Morpheus API.  Look in the Examples section for an example using Ansible Vault.
+Morpheus versions <= 5.0.0 require an API token in the inventory file to provide access to the Morpheus API.  Look in the Examples section for an example using Ansible Vault.
+
+Morpheus versions >= 5.0.0 can use an ephemeral API token if run as a Morpheus task.  This has only been tested against 5.4.3, but should work all the way back to 5.0.0.
 
 ### Examples
 
