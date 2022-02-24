@@ -121,11 +121,6 @@ class InventoryModule(BaseInventoryPlugin):
             return result
 
     def _get_data_from_morpheus(self, searchtype, searchstring=None):
-        # headers = {'Authorization': "BEARER %s" % self.morpheus_token,
-        #            "Content-Type": "application/json"}
-        # method = "get"
-        # verify = self.morpheus_opt_args['sslverify']
-
         if searchtype in ["label", "name", "tag"]:
             path = "/instances"
         elif searchtype == "app":
@@ -146,8 +141,6 @@ class InventoryModule(BaseInventoryPlugin):
             if not cloud_is_numeric:
                 self.print_verbose_message("Searching for cloud by name")
                 path = "/zones"
-                # cloudurl = self.morpheus_api + "/zones?max=-1"
-                # cloudr = getattr(requests, method)(cloudurl, headers=headers, verify=verify)
                 cloudr = self._get_morpheus_paged_api_results(path)
                 cloudoutput = cloudr.json()
                 if 'error' in cloudoutput.keys():
@@ -162,24 +155,10 @@ class InventoryModule(BaseInventoryPlugin):
             else:
                 cloudid = searchstring
             path = "/instances?zoneId=%s" % cloudid
-        # url = self.morpheus_api + path
         r = self._get_morpheus_paged_api_results(path)
-        # r = getattr(requests, method)(url, headers=headers, verify=verify)
         if 'error' in r.keys():
             raise AnsibleParserError("Error in Morpheus API call: %s" % r.json()['error'])
         return r
-
-    # def _get_containers_from_morpheus(self, instanceid):
-    #     # headers = {'Authorization': "BEARER %s" % self.morpheus_token,
-    #     #            "Content-Type": "application/json"}
-
-    #     path = "/instances/%s/containers" % instanceid
-    #     # url = self.morpheus_api + path
-    #     # method = "get"
-    #     # verify = self.morpheus_opt_args['sslverify']
-    #     # r = getattr(requests, method)(url, headers=headers, verify=verify)
-    #     r = self._get_morpheus_paged_api_results(path)
-    #     return r
 
     def _set_morpheus_connection_vars(self, hostname, ip, containerid, noagent=False, platform=None):
         if noagent == "null" or noagent is False:
@@ -211,19 +190,6 @@ class InventoryModule(BaseInventoryPlugin):
                 self.inventory.add_group(group)
                 self.print_verbose_message("Found %s with tag %s=%s, adding to group %s" % (instance['name'], tag['name'], tag['value'], group))
                 self._add_morpheus_instance(group, instance)
-
-    # def _get_server_details(self, serverid):
-    #     # headers = {'Authorization': "BEARER %s" % self.morpheus_token,
-    #     #            "Content-Type": "application/json"}
-    #     # method = "get"
-    #     # verify = self.morpheus_opt_args['sslverify']
-    #     path = "/servers/%s" % serverid
-    #     # url = self.morpheus_api + path
-    #     # r = getattr(requests, method)(url, headers=headers, verify=verify)
-    #     resultdict = self._get_morpheus_paged_api_results(path)
-    #     # resultdict = r.json()
-
-    #     return resultdict['server']
 
     def _add_morpheus_container(self, group, containerid, container, platform_query=False):
         serverQueryPath = "/servers/%s" % container['server']['id']
@@ -265,7 +231,6 @@ class InventoryModule(BaseInventoryPlugin):
         if len(instance['containers']) > 1:
             containerQueryPath = "/instances/%s/containers" % instance['id']
             containerdata = self._get_morpheus_paged_api_results(containerQueryPath)
-            # containerdata = self._get_containers_from_morpheus(instance['id'])
             for containerid in instance['containers']:
                 for container in containerdata['containers']:
                     if containerid == container['id']:
@@ -273,7 +238,6 @@ class InventoryModule(BaseInventoryPlugin):
         else:
             containerQueryPath = "/instances/%s/containers" % instance['id']
             containerdata = self._get_morpheus_paged_api_results(containerQueryPath)
-            # containerdata = self._get_containers_from_morpheus(instance['id'])
             containerid = containerdata['containers'][0]['id']
             self._add_morpheus_container(group, containerid, containerdata['containers'][0], platform_query)
 
