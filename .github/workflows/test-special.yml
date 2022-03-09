@@ -60,10 +60,10 @@ jobs:
     needs: build-collection
     strategy:
       matrix:
-        python-version: ['2.x', '3.6', '3.7', '3.8', '3.9']
-        ansible-version: ['ansible<2.11', 'ansible<6', 'ansible-core<2.12', ansible-core]
+        python-version: ['2.x', '3.8']
+        # ansible-version: ['ansible<2.11', 'ansible<6', 'ansible-core<2.12', ansible-core]
         # python-version: ['3.8']
-        # ansible-version: ['ansible-core<2.12']
+        ansible-version: ['ansible-core<2.12']
     steps:
       - uses: actions/checkout@v2
 
@@ -99,7 +99,7 @@ jobs:
           echo ::add-mask::${MORPHURL}
           echo ::add-mask::${MORPHUSER}
           echo ::add-mask::${MORPHPASS}
-          MORPHEUSTOKEN=$(curl -XPOST "${MORPHURL}/oauth/token?grant_type=password&scope=write&client_id=morph-api" --data-urlencode "username=${MORPHUSER}" --data-urlencode "password=${MORPHPASS}" | jq -r '.access_token')
+          MORPHEUSTOKEN=$(curl -k -XPOST "${MORPHURL}/oauth/token?grant_type=password&scope=write&client_id=morph-api" --data-urlencode "username=${MORPHUSER}" --data-urlencode "password=${MORPHPASS}" | jq -r '.access_token')
           echo ::add-mask::${MORPHEUSTOKEN}
           curl -o morpheusinv.yml $INVURL
           echo "plugin: morpheus.core.morpheus_inventory" >> morpheusinv.yml
@@ -108,14 +108,14 @@ jobs:
           cat morpheusinv.yml
           
       - name: Run plugin
-        run: ansible-inventory -i morpheusinv.yml --list >> inventory-output.json
+        run: ansible-inventory -i morpheusinv.yml --list -vvv
 
   test-collection-ansible-29:
     runs-on: ubuntu-latest
     needs: build-collection
     strategy:
       matrix:
-        python-version: ['2.x', '3.6', '3.7', '3.8', '3.9']
+        python-version: ['2.x', '3.8']
         ansible-version: ['ansible<2.10']
     steps:
       - uses: actions/checkout@v2
@@ -155,13 +155,14 @@ jobs:
           echo ::add-mask::${MORPHURL}
           echo ::add-mask::${MORPHUSER}
           echo ::add-mask::${MORPHPASS}
-          MORPHEUSTOKEN=$(curl -XPOST "${MORPHURL}/oauth/token?grant_type=password&scope=write&client_id=morph-api" --data-urlencode "username=${MORPHUSER}" --data-urlencode "password=${MORPHPASS}" | jq -r '.access_token')
+          MORPHEUSTOKEN=$(curl -k -XPOST "${MORPHURL}/oauth/token?grant_type=password&scope=write&client_id=morph-api" --data-urlencode "username=${MORPHUSER}" --data-urlencode "password=${MORPHPASS}" | jq -r '.access_token')
           echo ::add-mask::${MORPHEUSTOKEN}
           curl -o morpheusinv.yml $INVURL
           echo "plugin: morpheus_inventory" >> morpheusinv.yml
           echo "morpheus_url: ${MORPHURL}" >> morpheusinv.yml
           echo "morpheus_api_key: ${MORPHEUSTOKEN}" >> morpheusinv.yml
+          cat morpheusinv.yml
       
       - name: Run plugin
         run: |
-          ansible-inventory -i morpheusinv.yml --list >> inventory-output.json
+          ansible-inventory -i morpheusinv.yml --list -vvv
