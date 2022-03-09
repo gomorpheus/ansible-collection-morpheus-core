@@ -61,9 +61,9 @@ jobs:
     strategy:
       matrix:
         python-version: ['2.x', '3.8']
-        ansible-version: ['ansible<2.11', 'ansible<6', 'ansible-core<2.12', ansible-core]
+        # ansible-version: ['ansible<2.11', 'ansible<6', 'ansible-core<2.12', ansible-core]
         # python-version: ['3.8']
-        # ansible-version: ['ansible-core<2.12']
+        ansible-version: ['ansible-core<2.12']
     steps:
       - uses: actions/checkout@v2
 
