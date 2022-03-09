@@ -1,6 +1,6 @@
 # .github/workflows/test-ansible.yml
 
-name: Test Inventory on Ansible
+name: Run specific testing
 on: 
   workflow_dispatch:
     inputs:
