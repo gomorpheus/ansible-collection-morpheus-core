@@ -108,7 +108,7 @@ jobs:
           cat morpheusinv.yml
           
       - name: Run plugin
-        run: ansible-inventory -i morpheusinv.yml --list -vv
+        run: ansible-inventory -i morpheusinv.yml --list -vvv
 
   test-collection-ansible-29:
     runs-on: ubuntu-latest
@@ -165,4 +165,4 @@ jobs:
       
       - name: Run plugin
         run: |
-          ansible-inventory -i morpheusinv.yml --list -vv
+          ansible-inventory -i morpheusinv.yml --list -vvv
