@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.2.3
+- Verbose messages caused a problem with the app search type: [#26](https://github.com/gomorpheus/ansible-collection-morpheus-core/issues/26)
+
 ## v0.2.2
 
 - In 5.4.3, Morpheus is requiring authentication for version information from `/api/ping`: [#7](https://github.com/gomorpheus/ansible-collection-morpheus-core/issues/7)
