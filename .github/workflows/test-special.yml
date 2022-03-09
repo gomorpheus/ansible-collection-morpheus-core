@@ -99,7 +99,7 @@ jobs:
           echo ::add-mask::${MORPHURL}
           echo ::add-mask::${MORPHUSER}
           echo ::add-mask::${MORPHPASS}
-          MORPHEUSTOKEN=$(curl -XPOST "${MORPHURL}/oauth/token?grant_type=password&scope=write&client_id=morph-api" --data-urlencode "username=${MORPHUSER}" --data-urlencode "password=${MORPHPASS}" | jq -r '.access_token')
+          MORPHEUSTOKEN=$(curl -k -XPOST "${MORPHURL}/oauth/token?grant_type=password&scope=write&client_id=morph-api" --data-urlencode "username=${MORPHUSER}" --data-urlencode "password=${MORPHPASS}" | jq -r '.access_token')
           echo ::add-mask::${MORPHEUSTOKEN}
           curl -o morpheusinv.yml $INVURL
           echo "plugin: morpheus.core.morpheus_inventory" >> morpheusinv.yml
@@ -155,7 +155,7 @@ jobs:
           echo ::add-mask::${MORPHURL}
           echo ::add-mask::${MORPHUSER}
           echo ::add-mask::${MORPHPASS}
-          MORPHEUSTOKEN=$(curl -XPOST "${MORPHURL}/oauth/token?grant_type=password&scope=write&client_id=morph-api" --data-urlencode "username=${MORPHUSER}" --data-urlencode "password=${MORPHPASS}" | jq -r '.access_token')
+          MORPHEUSTOKEN=$(curl -k -XPOST "${MORPHURL}/oauth/token?grant_type=password&scope=write&client_id=morph-api" --data-urlencode "username=${MORPHUSER}" --data-urlencode "password=${MORPHPASS}" | jq -r '.access_token')
           echo ::add-mask::${MORPHEUSTOKEN}
           curl -o morpheusinv.yml $INVURL
           echo "plugin: morpheus_inventory" >> morpheusinv.yml
@@ -166,4 +166,3 @@ jobs:
       - name: Run plugin
         run: |
           ansible-inventory -i morpheusinv.yml --list -vv
-          
