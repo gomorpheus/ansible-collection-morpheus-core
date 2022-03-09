@@ -105,6 +105,7 @@ jobs:
           echo "plugin: morpheus.core.morpheus_inventory" >> morpheusinv.yml
           echo "morpheus_url: ${MORPHURL}" >> morpheusinv.yml
           echo "morpheus_api_key: ${MORPHEUSTOKEN}" >> morpheusinv.yml
+          cat morpheusinv.yml
           
       - name: Run plugin
         run: ansible-inventory -i morpheusinv.yml --list >> inventory-output.json
