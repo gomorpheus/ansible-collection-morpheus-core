@@ -264,8 +264,7 @@ class InventoryModule(BaseInventoryPlugin):
                     for apptier in app['appTiers']:
                         if searchstring['apptier'] in apptier['tier']['name']:
                             for instance in apptier['appInstances']:
-                                self.print_verbose_message("Matched %s in app %s and tier %s, adding to group %s" %
-                                                           (instance['name'], app['name'], apptier['tier']['name'], group))
+                                self.print_verbose_message("Matched %s in app %s and tier %s, adding to group %s" % (instance['instance']['name'], app['name'], apptier['tier']['name'], group))
                                 self._add_morpheus_instance(group, instance['instance'])
         elif searchtype == "cloud":
             for instance in rawresponse['instances']:
