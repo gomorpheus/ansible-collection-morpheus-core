@@ -60,7 +60,7 @@ jobs:
     needs: build-collection
     strategy:
       matrix:
-        python-version: ['2.x', '3.6', '3.7', '3.8', '3.9']
+        python-version: ['2.x', '3.8']
         ansible-version: ['ansible<2.11', 'ansible<6', 'ansible-core<2.12', ansible-core]
         # python-version: ['3.8']
         # ansible-version: ['ansible-core<2.12']
@@ -115,7 +115,7 @@ jobs:
     needs: build-collection
     strategy:
       matrix:
-        python-version: ['2.x', '3.6', '3.7', '3.8', '3.9']
+        python-version: ['2.x', '3.8']
         ansible-version: ['ansible<2.10']
     steps:
       - uses: actions/checkout@v2
