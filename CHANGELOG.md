@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.2.4
+- Added `baseRoleId` to `userroles` role
+
 ## v0.2.3
 - Verbose messages caused a problem with the app search type: [#26](https://github.com/gomorpheus/ansible-collection-morpheus-core/issues/26)
 
