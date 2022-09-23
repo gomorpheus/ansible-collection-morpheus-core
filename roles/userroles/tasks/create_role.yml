@@ -7,6 +7,7 @@
         roleType: "{{ item.role_type }}"
         multitenant: "{{ item.multitenant | default(omit) }}"
         multitenantLocked: "{{ item.multitenant_locked | default(omit) }}"
+        baseRoleId: "{{ item.base_role_id | default(omit) }}"
 
 - name: Check for existence of role
   uri:
