@@ -64,6 +64,7 @@
           secretKey: "{{ item.config.secretKey }}"
           vpc: "{{ item.config.vpc | default(omit) }}"
           isVpc: "{{ item.config.isVpc | default(omit) }}"
+          stsAssumeRole: "{{ item.config.stsAssumeRole | default(omit) }}"
   when: item.zoneType.code == "amazon"
 
 - name: Create cloud JSON payload for Azure

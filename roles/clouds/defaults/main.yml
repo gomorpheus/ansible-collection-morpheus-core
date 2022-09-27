@@ -37,5 +37,6 @@ verify_ssl: true
 #       importExisting: "on"
 #       isVpc: "true"
 #       endpoint: "ec2.us-east-2.amazonaws.com"
-#       accessKey: AKXXXXXXXXXXXXXXXXXX
-#       secretKey: 'xxxxxxxxxxxxxxxxxxx'
+#       accessKey: "AKXXXXXXXXXXXXXXXXXX"
+#       secretKey: "xxxxxxxxxxxxxxxxxxx"
+#       stsAssumeRole: "arn:aws:iam::xxxxxxxxxxxx:role/xxxxxxxxxxxx"
