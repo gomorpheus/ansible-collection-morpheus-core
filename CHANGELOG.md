@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.2.5
+- Added AWS assume role support to cloud role
+
 ## v0.2.4
 - Added `baseRoleId` to `userroles` role
 
