@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.3.0
+- Added httpapi connection plugin
+
 ## v0.2.5
 - Added AWS assume role support to cloud role
 
