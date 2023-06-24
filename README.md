@@ -261,6 +261,8 @@ all:
     ansible_httpapi_use_ssl: true
 ```
 
+**Note:** It is not recommended to keep plaintext credentials in files. Where possible use Ansible Vault to encrypt secrets.
+
 ## Ansible Roles for Morpheus Setup
 
 These roles are designed for net new Morpheus configurations.  They are _NOT_ designed for removing existing items.
