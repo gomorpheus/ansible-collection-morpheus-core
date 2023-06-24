@@ -15,7 +15,7 @@ author: James Riach
 httpapi : morpheus
 short_description: Httpapi Plugin for Morpheus
 description:
-  - Httpapi plugin to connect to and manage morpheus instances through the morpheus api
+  - Httpapi plugin to connect to and manage morpheus appliances through the morpheus api
 version_added: "0.3.0"
 options:
     morpheus_user:
@@ -79,7 +79,7 @@ class HttpApi(HttpApiBase):
 
         if api_token:
             self.access_token = api_token
-            self.headers['Authorization'] = self.access_token
+            self.headers['Authorization'] = 'Bearer {0}'.format(self.access_token)
 
             # Call the whoami endpoint as a means of checking token validity
             response = self.send_request(path=WHOAMI_PATH)
