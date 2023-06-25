@@ -1,16 +1,18 @@
 namespace: "morpheus"
 name: "core"
 description: Ansible collection for interacting with Morpheus
-version: "0.2.5"
+version: "0.3.0"
 readme: "README.md"
 authors:
     - "Nick Celebic (https://www.github.com/tryfan)"
+    - "James Riach (https://github.com/McGlovin1337)"
 license:
     - "MIT"
 tags:
     - morpheus
     - cloud
     - collection
+    - httpapi
 repository: "https://www.github.com/gomorpheus/ansible-collection-morpheus-core"
 build_ignore:
     - "Dockerfile"
