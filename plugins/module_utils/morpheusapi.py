@@ -11,6 +11,7 @@ author: James Riach
 '''
 
 APPLIANCE_SETTINGS_PATH = '/api/appliance-settings'
+HEALTH_PATH = '/api/health'
 LICENSE_PATH = '/api/license'
 
 
@@ -24,4 +25,8 @@ class MorpheusApi():
 
     def get_appliance_license(self):
         response = self.connection.send_request(path=LICENSE_PATH)
+        return response['contents']
+
+    def get_appliance_health(self):
+        response = self.connection.send_request(path=HEALTH_PATH)
         return response['contents']

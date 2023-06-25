@@ -10,16 +10,45 @@ description:
     - Gathers Morpheus Appliance Facts
 version_added: 0.3.0
 author: James Riach
+options:
+    gather_subset:
+        description:
+            - "Specify or restrict the facts that are gathered.
+              Possible values: C(all), C(database), C(elastic), C(license), C(rabbitmq),
+              C(settings), C(system), C(threads).
+              The minimum subset is: C(license), C(settings), C(system).
+              To specify a specific subset, use C(!all, !min) and then specify the fact(s) required."
+        type: list
+        elements: str
+        default: "all"
+    gather_timeout:
+        description:
+            - Timeout period for collecting individual facts
+        type: int
+        default: 10
+    filter:
+        description:
+            - Match facts to one of the specified patterns.
+        type: list
+        elements: str
+        default: []
 '''
 
 EXAMPLES = r'''
 - name: Gather All Facts
   morpheus.core.appliance_facts:
 
+- name: Gather Minimum Facts
+  morpheus.core.appliance_facts:
+    gather_subset:
+      - "!all"
+
 - name: Gather License Facts
   morpheus.core.appliance_facts:
     gather_subset:
-      - license
+      - "!all"
+      - "!min"
+      - "license"
 '''
 
 RETURN = r'''
@@ -187,26 +216,36 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.facts.namespace import PrefixFactNamespace
 from ansible.module_utils.facts import ansible_collector
 from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_database import MorpheusDatabaseFactCollector
+from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_elastic import MorpheusElasticFactCollector
 from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_license import MorpheusLicenseFactCollector
+from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_rabbitmq import MorpheusRabbitmqFactCollector
 from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_settings import MorpheusSettingsFactCollector
+from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_system import MorpheusSystemFactCollector
+from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_threads import MorpheusThreadsFactCollector
 
 
 def run_module():
     module = AnsibleModule(
-        argument_spec=dict(gather_subset=dict(default=["all"], required=False, type='list'),
+        argument_spec=dict(gather_subset=dict(default=["all"], required=False, type='list', elements='str'),
                            gather_timeout=dict(default=10, required=False, type='int'),
-                           filter=dict(default="*", required=False),),
+                           filter=dict(default=[], required=False, type='list', elements='str'),),
         supports_check_mode=True
     )
 
     gather_subset = module.params['gather_subset']
     gather_timeout = module.params['gather_timeout']
     filter_spec = module.params['filter']
-    minimal_gather_subset = frozenset()
+    minimal_gather_subset = frozenset(['license', 'settings', 'system'])
 
     collectors = [
+        MorpheusDatabaseFactCollector,
+        MorpheusElasticFactCollector,
         MorpheusLicenseFactCollector,
+        MorpheusRabbitmqFactCollector,
         MorpheusSettingsFactCollector,
+        MorpheusSystemFactCollector,
+        MorpheusThreadsFactCollector,
     ]
 
     namespace = PrefixFactNamespace(namespace_name='ansible', prefix='ansible_')
