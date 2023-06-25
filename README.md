@@ -269,6 +269,13 @@ These roles are designed for net new Morpheus configurations.  They are _NOT_ de
 
 See README files in `roles/` for information regarding the roles in this collection
 
+## Modules
+Individual Module Documentation can be found included with the module and can be viewed with ```ansible-doc -t module morpheus.core.module_name```
+
+|Module Name|Description|
+|---|---|
+|appliance_facts|Gathers appliance settings and license facts of the target Morpheus Appliance
+
 ## Support Expectations
 
 Please refer to the [Morpheus Open Source Code Support Policy](https://support.morpheusdata.com/s/article/Morpheus-Open-Source-Code-Support-Policy)
