@@ -9,7 +9,7 @@ from ansible.module_utils.connection import ConnectionError
 import json
 import re
 
-DOCUMENTATION = """
+DOCUMENTATION = r'''
 ---
 author: James Riach
 httpapi : morpheus
@@ -36,7 +36,7 @@ options:
             - name: ANSIBLE_MORPHEUS_TOKEN
         vars:
             - name: ansible_morpheus_token
-"""
+'''
 
 LOGIN_PATH = '/oauth/token?client_id=morph-api&grant_type=password&scope=write'
 WHOAMI_PATH = '/api/whoami'
