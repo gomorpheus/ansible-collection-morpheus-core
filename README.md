@@ -19,6 +19,7 @@
     - [Parameters](#parameters)
     - [Example Inventory](#example-inventory)
   - [Ansible Roles for Morpheus Setup](#ansible-roles-for-morpheus-setup)
+  - [Modules](#modules)
   - [Support Expectations](#support-expectations)
 
 ## Requirements
