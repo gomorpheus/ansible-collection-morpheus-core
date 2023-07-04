@@ -8,10 +8,10 @@ Configure Morpheus Appliance Settings
 |appliance_url||Defines the URL of the Morpheus Appliance|
 |internal_appliance_url||Defines the Internal URL of the Morpheus Appliance|
 |cors_allowed||Define origins allowed to access the Morpheus API|
-|registration_enabled|Choices:<br/> - true<br/> - false|Enable new users to register a new tenant|
+|registration_enabled|Choices:<br/> <ul><li>true</li><li>false</li></ul>|Enable new users to register a new tenant|
 |default_role_id||Set the default Tenant Role applied to new Tenant Registrations|
 |default_user_role_id||Set the default User Role applied the user created from Tenant Registration|
-|docker_privilged_mode|Choices:<br/> - true<br/> - false|Enable or Disable Docker privileged mode|
+|docker_privilged_mode|Choices:<br/> <ul><li>true</li><li>false</li></ul>|Enable or Disable Docker privileged mode|
 |password_min_length||Define the minimum length for passwords|
 |password_min_upper_case||Define the minimum number of upper case characters in passwords|
 |password_min_numbers||Define the minimum number of numbers in passwords|
@@ -37,10 +37,10 @@ Configure Morpheus Appliance Settings
 |proxy_workstation||Set the Proxy Workstation|
 |currency_provider||Define a Currency Provider|
 |currency_key||Set the API Key for the defined Currency Provider|
-|enable_all_zone_types|Choices:<br/> - true<br/> - false|Enable All Cloud (Zone) Types|
+|enable_all_zone_types|Choices:<br/> <ul><li>true</li><li>false</li></ul>|Enable All Cloud (Zone) Types|
 |enable_zone_types||Specify List of Cloud (Zone) Types to Enable|
 |disable_zone_types||Specify List of Cloud (Zone) Types to Disable|
-|disable_all_zone_types|Choices:<br/> - true<br/> - false|Disable All Cloud (Zone) Types|
+|disable_all_zone_types|Choices:<br/> <ul><li>true</li><li>false</li></ul>|Disable All Cloud (Zone) Types|
 ||||
 
 ## Attributes
