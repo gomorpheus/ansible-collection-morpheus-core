@@ -18,6 +18,6 @@ class MorpheusThreadsFactCollector(BaseFactCollector):
 
         appliance_health = morph_api.get_appliance_health()
 
-        facts['threads'] = appliance_health['health']['threads']
+        facts['threads'] = appliance_health['threads']
 
         return facts
