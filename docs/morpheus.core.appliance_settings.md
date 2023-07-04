@@ -41,7 +41,6 @@ Configure Morpheus Appliance Settings
 |enable_zone_types||Specify List of Cloud (Zone) Types to Enable|
 |disable_zone_types||Specify List of Cloud (Zone) Types to Disable|
 |disable_all_zone_types|Choices:<br/> <ul><li>true</li><li>false</li></ul>|Disable All Cloud (Zone) Types|
-||||
 
 ## Attributes
 
@@ -49,7 +48,6 @@ Configure Morpheus Appliance Settings
 |---|---|---|
 |check_mode|Full|Can run in ```check_mode``` and predict changed status without performing any modifications|
 |diff_mode|Full|Will return what has changed (or needs changing when run with ```check_mode```)|
-||||
 
 ## Examples
 
@@ -74,7 +72,6 @@ Configure Morpheus Appliance Settings
 |---|---|---|
 |success|always|If the API Request was Successful|
 |appliance_settings|on success|Appliance Settings after successful API request|
-||||
 
 ## Status
 
