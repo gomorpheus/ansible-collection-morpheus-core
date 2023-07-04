@@ -274,7 +274,8 @@ Individual Module Documentation can be found included with the module and can be
 
 |Module Name|Description|
 |---|---|
-|appliance_facts|Gathers appliance settings and license facts of the target Morpheus Appliance
+|appliance_facts|Gathers appliance settings and license facts of the target Morpheus Appliance|
+|[appliance_settings](docs/morpheus.core.appliance_settings.md)|Configure Morpheus Appliance Settings|
 
 ## Support Expectations
 
