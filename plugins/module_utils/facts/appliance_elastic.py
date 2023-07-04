@@ -18,6 +18,6 @@ class MorpheusElasticFactCollector(BaseFactCollector):
 
         appliance_health = morph_api.get_appliance_health()
 
-        facts['elastic'] = appliance_health['health']['elastic']
+        facts['elastic'] = appliance_health['elastic']
 
         return facts
