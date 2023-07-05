@@ -16,6 +16,7 @@ import re
 APPLIANCE_SETTINGS_PATH = '/api/appliance-settings'
 HEALTH_PATH = '/api/health'
 LICENSE_PATH = '/api/license'
+MAINTENANCE_MODE_PATH = '{}/maintenance'.format(APPLIANCE_SETTINGS_PATH)
 
 
 def dict_diff(dict_after: dict, dict_before: dict) -> tuple:
@@ -152,6 +153,13 @@ def dict_keys_to_camel_case(dictionary: dict, recursive: bool = True) -> dict:
     return camel_dict
 
 
+def success_response(response: dict) -> bool:
+    try:
+        return response['success']
+    except KeyError:
+        return False
+
+
 class MorpheusApi():
     def __init__(self, connection) -> None:
         self.connection = connection
@@ -195,3 +203,8 @@ class MorpheusApi():
     def get_appliance_health(self):
         response = self.connection.send_request(path=HEALTH_PATH)
         return self._return_reponse_key(response, 'health')
+
+    def set_appliance_maintenance_mode(self, enabled: bool):
+        path = '{0}?enabled={1}'.format(MAINTENANCE_MODE_PATH, enabled)
+        response = self.connection.send_request(path=path, method='POST')
+        return self._return_reponse_key(response, '')
