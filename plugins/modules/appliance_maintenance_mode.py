@@ -72,7 +72,12 @@ def run_module():
     connection = Connection(module._socket_path)
     morpheus_api = MorpheusApi(connection)
 
-    original_state = morpheus_api.get_appliance_settings()['maintenanceMode']
+    # It seems some versions of the API has this key, and others don't
+    try:
+        original_state = morpheus_api.get_appliance_settings()['maintenanceMode']
+    except KeyError:
+        original_state = 'unknown'
+
     desired_state = True if module.params['state'] == 'enabled' else False
     diff = []
 
@@ -98,7 +103,14 @@ def run_module():
     if not result['success']:
         module.fail_json('API Request Failed', **result)
 
-    updated_state = morpheus_api.get_appliance_settings()['maintenanceMode']
+    # It seems some versions of the API has this key, and others don't
+    # If it doesn't exist we assume the state based on the success of the API request
+    try:
+        updated_state = morpheus_api.get_appliance_settings()['maintenanceMode']
+    except KeyError:
+        updated_state = True if result['success'] else False
+
+    result['changed'] = True if updated_state != original_state else False
 
     if module._diff:
         if updated_state != original_state:
