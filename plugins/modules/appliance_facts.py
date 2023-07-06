@@ -60,7 +60,7 @@ ansible_facts:
             "gather_subset": [
                 "all"
             ],
-            "license": {
+            "morpheus_license": {
                 "accountName": "MyCompany",
                 "amazonProductCodes": null,
                 "config": {},
@@ -135,7 +135,7 @@ ansible_facts:
                 "zoneTypes": null
             },
             "module_setup": true,
-            "settings": {
+            "morpheus_settings": {
                 "applianceUrl": "https://cmp.domain.tld",
                 "corsAllowed": null,
                 "currencyKey": null,

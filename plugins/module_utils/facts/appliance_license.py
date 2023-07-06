@@ -18,6 +18,6 @@ class MorpheusLicenseFactCollector(BaseFactCollector):
 
         appliance_license = morph_api.get_appliance_license()
 
-        facts['license'] = appliance_license['license']
+        facts['morpheus_license'] = appliance_license['license']
 
         return facts
