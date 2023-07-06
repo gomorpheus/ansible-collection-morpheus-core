@@ -28,6 +28,6 @@ class MorpheusSystemFactCollector(BaseFactCollector):
         for k in drop_keys:
             del appliance_health[k]
 
-        facts['system'] = appliance_health
+        facts['morpheus_system'] = appliance_health
 
         return facts
