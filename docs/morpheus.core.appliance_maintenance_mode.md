@@ -5,7 +5,7 @@ Set the Maintenance Mode state of the target Morpheus Appliance
 
 |Parameter|Choices/Defaults|Comments|
 |---|---|---|
-|state|Choices:<br/> <ul><li>enabled &larr;</li><li>disabled</li></ul>|Set the Maintenance Mode state|
+|state|Choices:<br/> <ul><li>enabled &larr;(default)</li><li>disabled</li></ul>|Set the Maintenance Mode state|
 
 ## Attributes
 
