@@ -18,6 +18,6 @@ class MorpheusSettingsFactCollector(BaseFactCollector):
 
         appliance_settings = morph_api.get_appliance_settings()
 
-        facts['settings'] = appliance_settings['applianceSettings']
+        facts['morpheus_settings'] = appliance_settings['applianceSettings']
 
         return facts
