@@ -15,6 +15,9 @@
       - [Cloud](#cloud)
     - [Token Requirement](#token-requirement)
     - [Troubleshooting](#troubleshooting)
+  - [httpapi Plugin Usage](#httpapi-plugin-usage)
+    - [Parameters](#parameters)
+    - [Example Inventory](#example-inventory)
   - [Ansible Roles for Morpheus Setup](#ansible-roles-for-morpheus-setup)
   - [Support Expectations](#support-expectations)
 
@@ -232,11 +235,46 @@ Information on encrypting strings and variables for ansible is located [HERE](ht
 
 By using `-vv` or higher whether using `ansible-inventory` or using the inventory in a playbook, the plugin will output extra information for use in troubleshooting.  Output will be prefixed by: `morpheus_inventory: `
 
+## httpapi Plugin Usage
+The httpapi plugin allows one to interact with Morpheus Appliances through Ansible modules by specifying appliances in Ansible Inventories.
+
+### Parameters
+The following Parameters are specific to this module. Other standard httpapi parameters apply.
+
+|Parameter|Comments|
+|---|---|
+|morpheus_user|Specifying a user will login to the api and retrieve an authentication token. <br /> **ANSIBLE_MORPHEUS_USER**|
+|morpheus_password|When using morpheus_user for authentication, morpheus_password should also be specified. <br /> **ANSIBLE_MORPHEUS_PASSWORD**|
+|morpheus_api_token|Use a pre-defined API Token instead of Username/Password. <br /> **ANSIBLE_MORPHEUS_TOKEN**
+
+### Example Inventory
+```yaml
+all:
+  hosts:
+    devcmp.example.tld:
+      ansible_morpheus_user: johndoe
+      ansible_morpheus_password: password
+    testcmp.example.tld:
+      ansible_morpheus_token: 12345abc-67de-89fa-12bc-345678defabc
+  vars:
+    ansible_network_os: morpheus.core.morpheus
+    ansible_httpapi_use_ssl: true
+```
+
+**Note:** It is not recommended to keep plaintext credentials in files. Where possible use Ansible Vault to encrypt secrets.
+
 ## Ansible Roles for Morpheus Setup
 
 These roles are designed for net new Morpheus configurations.  They are _NOT_ designed for removing existing items.
 
 See README files in `roles/` for information regarding the roles in this collection
+
+## Modules
+Individual Module Documentation can be found included with the module and can be viewed with ```ansible-doc -t module morpheus.core.module_name```
+
+|Module Name|Description|
+|---|---|
+|appliance_facts|Gathers appliance settings and license facts of the target Morpheus Appliance
 
 ## Support Expectations
 
