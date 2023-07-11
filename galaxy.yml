@@ -20,3 +20,6 @@ build_ignore:
     - "azure-pipelines.yml"
     - "testruns"
     - ".idea"
+    - "venv*"
+    - ".github"
+    - ".vscode"
