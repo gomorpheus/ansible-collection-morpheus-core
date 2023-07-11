@@ -32,6 +32,9 @@ Set the Maintenance Mode state of the target Morpheus Appliance
 |---|---|---|
 |success|always|If the API Request was Successful|
 
+## Notes
+It seems not all versions of the Morpheus API return a key for the current Maintenance Mode state, therefore when using this module with diff mode enabled, it may not accurately reflect a change.
+
 ## Status
 
 ### Authors
