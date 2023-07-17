@@ -1,8 +1,9 @@
 # Changelog
 
-## v 0.x.x
+## v0.x.x
 - Added `appliance_settings` module
 - Added `appliance_maintenance_mode` module
+- Added `instance_info` module
 
 ## v0.3.0
 - Added httpapi connection plugin
