@@ -108,80 +108,80 @@ morpheus_instances:
         - List of instances with info
     returned: always
     sample:
-    "morpheus_instances": [
-        {
-            "cloud": {
-                "id": 31,
-                "name": "VMWare Cloud",
-                "type": "vmware"
-            },
-            "connection_info": [
-                {
-                    "ip": "192.168.0.10",
-                    "name": null,
-                    "port": null
-                }
-            ],
-            "date_created": "2023-06-01T13:37:00Z",
-            "description": "Webserver Instance",
-            "id": 100,
-            "instance_type": {
-                "code": "win2019",
-                "id": 110,
-                "name": "Windows Server 2019"
-            },
-            "instance_version": "2019",
-            "interfaces": [
-                {
-                    "id": "network-100",
-                    "ip_address": null,
-                    "ip_mode": null,
-                    "network": {
-                        "dhcp_server": false,
-                        "group": null,
-                        "id": 150,
-                        "name": "inside-network-001",
-                        "pool": {
-                            "id": 30,
-                            "name": "inside-network-pool-001"
+        - "morpheus_instances": [
+            {
+                "cloud": {
+                    "id": 31,
+                    "name": "VMWare Cloud",
+                    "type": "vmware"
+                },
+                "connection_info": [
+                    {
+                        "ip": "192.168.0.10",
+                        "name": null,
+                        "port": null
+                    }
+                ],
+                "date_created": "2023-06-01T13:37:00Z",
+                "description": "Webserver Instance",
+                "id": 100,
+                "instance_type": {
+                    "code": "win2019",
+                    "id": 110,
+                    "name": "Windows Server 2019"
+                },
+                "instance_version": "2019",
+                "interfaces": [
+                    {
+                        "id": "network-100",
+                        "ip_address": null,
+                        "ip_mode": null,
+                        "network": {
+                            "dhcp_server": false,
+                            "group": null,
+                            "id": 150,
+                            "name": "inside-network-001",
+                            "pool": {
+                                "id": 30,
+                                "name": "inside-network-pool-001"
+                            },
+                            "subnet": null
                         },
-                        "subnet": null
-                    },
-                    "network_interface_type_id": null
-                }
-            ],
-            "labels": [
-                "production",
-                "webservers"
-            ],
-            "name": "WebServ001",
-            "owner": {
-                "username": "patrick.clifton@domain.tld"
-            },
-            "plan": {
-                "name": "Cheap Plan 001"
-            },
-            "stats": {
-                "cpu_usage": 0,
-                "cpu_usage_avg": 0,
-                "cpu_usage_peak": 0.0,
-                "max_memory": 4293943296,
-                "max_storage": 53687091200,
-                "used_cpu": 0.0,
-                "used_memory": 2080228608,
-                "used_storage": 25341928960
-            },
-            "status": "running",
-            "volumes": [
-                {
-                    "name": "root",
-                    "resizeable": true,
-                    "root_volume": true,
-                    "size": 50
-                }
-            ]
-        }
-    ]
+                        "network_interface_type_id": null
+                    }
+                ],
+                "labels": [
+                    "production",
+                    "webservers"
+                ],
+                "name": "WebServ001",
+                "owner": {
+                    "username": "patrick.clifton@domain.tld"
+                },
+                "plan": {
+                    "name": "Cheap Plan 001"
+                },
+                "stats": {
+                    "cpu_usage": 0,
+                    "cpu_usage_avg": 0,
+                    "cpu_usage_peak": 0.0,
+                    "max_memory": 4293943296,
+                    "max_storage": 53687091200,
+                    "used_cpu": 0.0,
+                    "used_memory": 2080228608,
+                    "used_storage": 25341928960
+                },
+                "status": "running",
+                "volumes": [
+                    {
+                        "name": "root",
+                        "resizeable": true,
+                        "root_volume": true,
+                        "size": 50
+                    }
+                ]
+            }
+        ]
 '''
 
 import re
