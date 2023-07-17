@@ -108,7 +108,7 @@ morpheus_instances:
         - List of instances with info
     returned: always
     sample:
-        - "morpheus_instances": [
+        "morpheus_instances": [
             {
                 "cloud": {
                     "id": 31,
