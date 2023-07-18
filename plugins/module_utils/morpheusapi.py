@@ -11,15 +11,26 @@ author: James Riach
 '''
 
 import re
+import urllib.parse
 
 
 APPLIANCE_SETTINGS_PATH = '/api/appliance-settings'
 HEALTH_PATH = '/api/health'
+INSTANCES_PATH = '/api/instances'
 LICENSE_PATH = '/api/license'
 MAINTENANCE_MODE_PATH = '{}/maintenance'.format(APPLIANCE_SETTINGS_PATH)
 
 
 def dict_diff(dict_after: dict, dict_before: dict) -> tuple:
+    """Compare two dictionaries for differences
+
+    Args:
+        dict_after (dict): First Dictionary to Compare
+        dict_before (dict): Second Dictionary to Compare
+
+    Returns:
+        tuple: A tuple, (True, [diffrences]) if there are differences, otherwise (False, [])
+    """
     diff_list = []
 
     for k, val_a in dict_after.items():
@@ -81,6 +92,15 @@ def dict_diff(dict_after: dict, dict_before: dict) -> tuple:
 
 
 def dict_compare_equality(dict_a: dict, dict_b: dict) -> bool:
+    """Compare two dictionaries for equality
+
+    Args:
+        dict_a (dict): First Dictionary to Compare
+        dict_b (dict): Second Dictionary to Compare
+
+    Returns:
+        bool: True if both Dictionaries are the same, otherwise False
+    """
     if len(dict_a) != len(dict_b):
         return False
 
@@ -127,19 +147,51 @@ def dict_compare_equality(dict_a: dict, dict_b: dict) -> bool:
 
 
 def dict_keys_to_snake_case(dictionary: dict, recursive: bool = True) -> dict:
+    """Convert keys of a dictionary to snake_case format
+
+    Args:
+        dictionary (dict): The dictionary to convert
+        recursive (bool, optional): Recursively convert subkeys. Defaults to True.
+
+    Returns:
+        dict: Dictionary with keys in snake_case format
+    """
     snake_dict = {}
 
     for k in dictionary.keys():
         new_key_name = re.sub('((?<=[a-z0-9])[A-Z]|(?!^)(?<!_)[A-Z](?=[a-z]))', r'_\1', k).lower()
         snake_dict[new_key_name] = dictionary[k]
 
-        if recursive and isinstance(snake_dict[new_key_name], dict):
-            snake_dict[new_key_name] = dict_keys_to_snake_case(snake_dict[new_key_name])
+        if recursive:
+            if isinstance(snake_dict[new_key_name], list):
+                snake_dict[new_key_name] = [dict_keys_to_snake_case(item) if isinstance(item, dict) else item
+                                            for item in snake_dict[new_key_name]]
+                continue
+            if isinstance(snake_dict[new_key_name], set):
+                snake_dict[new_key_name] = {dict_keys_to_snake_case(item) if isinstance(item, dict) else item
+                                            for item in snake_dict[new_key_name]}
+                continue
+            if isinstance(snake_dict[new_key_name], tuple):
+                snake_dict[new_key_name] = (dict_keys_to_snake_case(item) if isinstance(item, dict) else item
+                                            for item in snake_dict[new_key_name])
+                continue
+            if isinstance(snake_dict[new_key_name], dict):
+                snake_dict[new_key_name] = dict_keys_to_snake_case(snake_dict[new_key_name])
+                continue
 
     return snake_dict
 
 
 def dict_keys_to_camel_case(dictionary: dict, recursive: bool = True) -> dict:
+    """Convert keys of a dictionary to camelCase format
+
+    Args:
+        dictionary (dict): The dictionary to convert
+        recursive (bool, optional): Recursively convert subkeys. Defaults to True.
+
+    Returns:
+        dict: Dictionary with keys in camelCase
+    """
     camel_dict = {}
 
     for k in dictionary.keys():
@@ -148,9 +200,56 @@ def dict_keys_to_camel_case(dictionary: dict, recursive: bool = True) -> dict:
         camel_dict[lower_camel_case_key] = dictionary[k]
 
         if recursive and isinstance(camel_dict[lower_camel_case_key], dict):
-            camel_dict[lower_camel_case_key] = dict_keys_to_camel_case(camel_dict[lower_camel_case_key])
+            if isinstance(camel_dict[lower_camel_case_key], list):
+                camel_dict[lower_camel_case_key] = [dict_keys_to_camel_case(item) if isinstance(item, dict) else item
+                                                    for item in camel_dict[lower_camel_case_key]]
+                continue
+            if isinstance(camel_dict[lower_camel_case_key], set):
+                camel_dict[lower_camel_case_key] = {dict_keys_to_camel_case(item) if isinstance(item, dict) else item
+                                                    for item in camel_dict[lower_camel_case_key]}
+                continue
+            if isinstance(camel_dict[lower_camel_case_key], tuple):
+                camel_dict[lower_camel_case_key] = (dict_keys_to_camel_case(item) if isinstance(item, dict) else item
+                                                    for item in camel_dict[lower_camel_case_key])
+                continue
+            if isinstance(camel_dict[lower_camel_case_key], dict):
+                camel_dict[lower_camel_case_key] = dict_keys_to_camel_case(camel_dict[lower_camel_case_key])
+                continue
 
     return camel_dict
+
+
+def dict_filter(dictionary: dict, filter_keys: list) -> dict:
+    """Return a filtered dictionary based on a list of keys to retain
+
+    Args:
+        dictionary (dict): The original dictionary to filter
+        filter_keys (list): A list of keys to retain.
+          To filter subkeys use a list or tuple in the format of ['key', ['subkeyA', 'subkeyB']]
+
+    Returns:
+        dict: A dictionary with only the keys specified in filter_keys
+    """
+    subkey_filters = {k: v for k, v in enumerate(filter_keys) if isinstance(v, (list, set, tuple))}
+
+    if len(subkey_filters) > 0:
+        for k, v in subkey_filters.items():
+            filter_keys[k] = v[0]
+
+    filtered_dict = {k: v for k, v in dictionary.items() if k in filter_keys}
+
+    if len(subkey_filters) > 0:
+        for _, v in subkey_filters.items():
+            try:
+                if isinstance(filtered_dict[v[0]], (list, set, tuple)):
+                    for idx, _ in enumerate(filtered_dict[v[0]]):
+                        filtered_dict[v[0]][idx] = dict_filter(filtered_dict[v[0]][idx], v[1])
+                    continue
+                filtered_dict[v[0]] = dict_filter(filtered_dict[v[0]], v[1])
+            except KeyError:
+                continue
+
+    return filtered_dict
 
 
 def success_response(response: dict) -> bool:
@@ -178,6 +277,28 @@ class MorpheusApi():
                 return response['contents']
             except KeyError:
                 return response
+
+    def _build_url(self, path: str, params: list[tuple] = None):
+        url_parts = list(urllib.parse.urlparse(path))
+        if params is not None:
+            url_parts[4] = urllib.parse.urlencode(params)
+        return urllib.parse.urlunparse(url_parts)
+
+    def _url_params(self, params: dict):
+        args = []
+
+        for k, v in params.items():
+            if v is None:
+                continue
+            if isinstance(v, list):
+                for item in v:
+                    args.append((k, item))
+                continue
+            if isinstance(v, bool):
+                v = str(v).lower()
+            args.append((k, v))
+
+        return args
 
     def get_appliance_settings(self):
         response = self.connection.send_request(path=APPLIANCE_SETTINGS_PATH)
@@ -208,3 +329,31 @@ class MorpheusApi():
         path = '{0}?enabled={1}'.format(MAINTENANCE_MODE_PATH, enabled)
         response = self.connection.send_request(path=path, method='POST')
         return self._return_reponse_key(response, '')
+
+    def get_instances(self, instance_id: int = None, name: str = None, details: bool = False,
+                      instance_type: str = None, agent_installed: bool = None, status: str = None,
+                      environment: str = None, show_deleted: bool = None, deleted: bool = None,
+                      labels: list = None, all_labels: bool = None, tags: str = None):
+        func_args = locals()
+
+        if instance_id is not None:
+            path = '{0}/{1}'.format(INSTANCES_PATH, instance_id)
+            args = [('details', str(details).lower())]
+            path = self._build_url(path, args)
+            response = self.connection.send_request(path=path)
+            return self._return_reponse_key(response, 'instance')
+
+        del func_args['instance_id']
+
+        if func_args['all_labels']:
+            func_args['all_labels'] = func_args.pop('labels')
+        else:
+            del func_args['all_labels']
+
+        params = dict_keys_to_camel_case(func_args)
+        url_params = self._url_params(params)
+
+        path = self._build_url(INSTANCES_PATH, url_params)
+
+        response = self.connection.send_request(path=path)
+        return self._return_reponse_key(response, 'instances')
