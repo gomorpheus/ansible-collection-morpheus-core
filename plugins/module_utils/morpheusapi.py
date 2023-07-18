@@ -304,9 +304,9 @@ class MorpheusApi():
         response = self.connection.send_request(path=APPLIANCE_SETTINGS_PATH)
         return self._return_reponse_key(response, 'applianceSettings')
 
-    def set_appliance_settings(self, module_params: dict):
+    def set_appliance_settings(self, api_params: dict):
         payload = dict_keys_to_camel_case(
-            {k: v for k, v in module_params.items() if v is not None}
+            {k: v for k, v in api_params.items() if v is not None}
         )
         body = {'applianceSettings': payload}
 
@@ -326,31 +326,20 @@ class MorpheusApi():
         return self._return_reponse_key(response, 'health')
 
     def set_appliance_maintenance_mode(self, enabled: bool):
-        path = '{0}?enabled={1}'.format(MAINTENANCE_MODE_PATH, enabled)
+        params = self._url_params({'enabled': enabled})
+        path = self._build_url(MAINTENANCE_MODE_PATH, params)
         response = self.connection.send_request(path=path, method='POST')
         return self._return_reponse_key(response, '')
 
-    def get_instances(self, instance_id: int = None, name: str = None, details: bool = False,
-                      instance_type: str = None, agent_installed: bool = None, status: str = None,
-                      environment: str = None, show_deleted: bool = None, deleted: bool = None,
-                      labels: list = None, all_labels: bool = None, tags: str = None):
-        func_args = locals()
-
-        if instance_id is not None:
-            path = '{0}/{1}'.format(INSTANCES_PATH, instance_id)
-            args = [('details', str(details).lower())]
+    def get_instances(self, api_params: dict):
+        if api_params['id'] is not None:
+            path = '{0}/{1}'.format(INSTANCES_PATH, api_params['id'])
+            args = [('details', str(api_params['details']).lower())]
             path = self._build_url(path, args)
             response = self.connection.send_request(path=path)
             return self._return_reponse_key(response, 'instance')
 
-        del func_args['instance_id']
-
-        if func_args['all_labels']:
-            func_args['all_labels'] = func_args.pop('labels')
-        else:
-            del func_args['all_labels']
-
-        params = dict_keys_to_camel_case(func_args)
+        params = dict_keys_to_camel_case(api_params)
         url_params = self._url_params(params)
 
         path = self._build_url(INSTANCES_PATH, url_params)

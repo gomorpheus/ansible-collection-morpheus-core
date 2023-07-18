@@ -260,20 +260,18 @@ def run_module():
     connection = Connection(module._socket_path)
     morpheus_api = MorpheusApi(connection)
 
-    response = morpheus_api.get_instances(
-        instance_id=module.params['id'],
-        name=module.params['name'] if not module.params['regex_name'] else None,
-        details='extra' in module.params['detail'],
-        instance_type=module.params['instance_type'],
-        agent_installed=module.params['agent_installed'],
-        status=module.params['status'],
-        environment=module.params['environment'],
-        show_deleted='include' in module.params['deleted'],
-        deleted='only' in module.params['deleted'],
-        labels=module.params['labels'],
-        all_labels=module.params['match_all_labels'],
-        tags=module.params['tags']
-    )
+    api_params = module.params
+    if module.params['regex_name']:
+        api_params['name'] = None
+    api_params['details'] = 'extra' in module.params['detail']
+    api_params['show_deleted'] = 'include' in module.params['deleted']
+    api_params['deleted'] = 'only' in module.params['deleted']
+    api_params['all_labels'] = api_params.pop('labels') if module.params['match_all_labels'] else None
+
+    for k in ['detail', 'match_all_labels', 'regex_name']:
+        del api_params[k]
+
+    response = morpheus_api.get_instances(api_params)
 
     if not isinstance(response, list):
         response = [response]
