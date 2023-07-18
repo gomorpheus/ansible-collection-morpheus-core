@@ -191,16 +191,16 @@ appliance_settings:
     type: dict
     sample:
         "appliance_settings": {
-            "applianceUrl": "https://cmp.domain.tld",
-            "corsAllowed": null,
-            "currencyKey": null,
-            "currencyProvider": null,
-            "defaultRoleId": null,
-            "defaultUserRoleId": null,
-            "disableAfterAttempts": "5",
-            "disableAfterDaysInactive": null,
-            "dockerPrivilegedMode": false,
-            "enabledZoneTypes": [
+            "appliance_url": "https://cmp.domain.tld",
+            "cors_allowed": null,
+            "currency_key": null,
+            "currency_provider": null,
+            "default_role_id": null,
+            "default_user_role_id": null,
+            "disable_after_attempts": "5",
+            "disable_after_days_inactive": null,
+            "docker_privileged_mode": false,
+            "enabled_zone_types": [
                 {
                     "id": 4,
                     "name": "Amazon"
@@ -242,27 +242,27 @@ appliance_settings:
                     "name": "vCloud Director"
                 }
             ],
-            "expirePwdDays": null,
-            "internalApplianceUrl": null,
-            "maintenanceMode": false,
-            "proxyDomain": null,
-            "proxyHost": null,
-            "proxyPassword": null,
-            "proxyPasswordHash": null,
-            "proxyPort": null,
-            "proxyUser": null,
-            "proxyWorkstation": null,
-            "registrationEnabled": false,
-            "smtpMailFrom": "morpheus@domain.tld",
-            "smtpPassword": null,
-            "smtpPasswordHash": null,
-            "smtpPort": "25",
-            "smtpSSL": false,
-            "smtpServer": "smtp.domain.tld",
-            "smtpTLS": true,
-            "smtpUser": null,
-            "statsRetainmentPeriod": null,
-            "warnUserDaysBefore": null
+            "expire_pwd_days": null,
+            "internal_appliance_url": null,
+            "maintenance_mode": false,
+            "proxy_domain": null,
+            "proxy_host": null,
+            "proxy_password": null,
+            "proxy_password_hash": null,
+            "proxy_port": null,
+            "proxy_user": null,
+            "proxy_workstation": null,
+            "registration_enabled": false,
+            "smtp_mail_from": "morpheus@domain.tld",
+            "smtp_password": null,
+            "smtp_password_hash": null,
+            "smtp_port": "25",
+            "smtp_server": "smtp.domain.tld",
+            "smtp_ssl": false,
+            "smtp_tls": true,
+            "smtp_user": null,
+            "stats_retainment_period": null,
+            "warn_user_days_before": null
         }
 '''
 
@@ -383,7 +383,7 @@ def run_module():
         result['diff'] = diff
 
     if result['success']:
-        result['appliance_settings'] = updated_settings
+        result['appliance_settings'] = dict_keys_to_snake_case(updated_settings)
 
     if not result['success']:
         module.fail_json('API Request Failed', **result)

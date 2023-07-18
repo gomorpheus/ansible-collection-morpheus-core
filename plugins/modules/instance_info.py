@@ -260,7 +260,7 @@ def run_module():
     connection = Connection(module._socket_path)
     morpheus_api = MorpheusApi(connection)
 
-    api_params = module.params
+    api_params = module.params.copy()
     if module.params['regex_name']:
         api_params['name'] = None
     api_params['details'] = 'extra' in module.params['detail']

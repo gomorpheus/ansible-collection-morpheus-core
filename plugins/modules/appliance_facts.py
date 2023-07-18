@@ -56,96 +56,99 @@ ansible_facts:
     description: Example of returned ansible_facts
     returned: always
     sample:
-    "ansible_facts": {
+        "ansible_facts": {
             "gather_subset": [
-                "all"
+                "!all",
+                "!min",
+                "license",
+                "settings"
             ],
+            "module_setup": true,
             "morpheus_license": {
-                "accountName": "MyCompany",
-                "amazonProductCodes": null,
+                "account_name": "MyCompany",
+                "amazon_product_codes": null,
                 "config": {},
-                "dateCreated": "2022-11-17T10:05:22Z",
-                "endDate": "2023-08-31T00:00:00Z",
+                "date_created": "2022-11-17T10:05:22Z",
+                "end_date": "2023-08-31T00:00:00Z",
                 "features": {
                     "activity": true,
                     "analytics": true,
-                    "approvalServices": true,
+                    "approval_services": true,
                     "approvals": true,
                     "apps": true,
                     "archives": true,
                     "automation": true,
-                    "automationServices": true,
-                    "backupServices": true,
+                    "automation_services": true,
+                    "backup_services": true,
                     "backups": true,
                     "boot": true,
-                    "buildServices": true,
+                    "build_services": true,
                     "clouds": true,
-                    "cmdbServices": true,
-                    "codeService": true,
+                    "cmdb_services": true,
+                    "code_service": true,
                     "cypher": true,
                     "dashboard": true,
-                    "deploymentServices": true,
+                    "deployment_services": true,
                     "deployments": true,
                     "discovery": true,
-                    "dnsServices": true,
+                    "dns_services": true,
                     "groups": true,
                     "guidance": true,
                     "hosts": true,
-                    "identityServices": true,
-                    "imageBuilder": true,
+                    "identity_services": true,
+                    "image_builder": true,
                     "instances": true,
-                    "ipamServices": true,
-                    "keyPairs": true,
+                    "ipam_services": true,
+                    "key_pairs": true,
                     "library": true,
-                    "loadBalancerServices": true,
-                    "loadBalancers": true,
+                    "load_balancer_services": true,
+                    "load_balancers": true,
                     "logging": true,
-                    "loggingServices": true,
+                    "logging_services": true,
                     "migrations": true,
                     "monitoring": true,
-                    "monitoringServices": true,
+                    "monitoring_services": true,
                     "network": true,
                     "plans": true,
                     "pricing": true,
                     "scheduling": true,
-                    "securityServices": true,
-                    "serviceDiscoveryServices": true,
-                    "sslCertificates": true,
+                    "security_services": true,
+                    "service_discovery_services": true,
+                    "ssl_certificates": true,
                     "storage": true,
                     "templates": true,
                     "tenants": true,
-                    "trustServices": true,
+                    "trust_services": true,
                     "usage": true,
-                    "userGroups": true,
+                    "user_groups": true,
                     "users": true,
-                    "virtualImages": true
+                    "virtual_images": true
                 },
-                "freeTrial": false,
-                "hardLimit": true,
-                "lastUpdated": "2022-11-17T10:05:22Z",
-                "maxInstances": 1000,
-                "maxMemory": 0,
-                "maxStorage": 0,
-                "multiTenant": true,
-                "productTier": "enterprise",
-                "reportStatus": true,
-                "startDate": "2022-08-22T00:00:00Z",
-                "supportLevel": "standard",
+                "free_trial": false,
+                "hard_limit": true,
+                "last_updated": "2022-11-17T10:05:22Z",
+                "max_instances": 1000,
+                "max_memory": 0,
+                "max_storage": 0,
+                "multi_tenant": true,
+                "product_tier": "enterprise",
+                "report_status": true,
+                "start_date": "2022-08-22T00:00:00Z",
+                "support_level": "standard",
                 "whitelabel": true,
-                "zoneTypes": null
+                "zone_types": null
             },
-            "module_setup": true,
             "morpheus_settings": {
-                "applianceUrl": "https://cmp.domain.tld",
-                "corsAllowed": null,
-                "currencyKey": null,
-                "currencyProvider": null,
-                "defaultRoleId": null,
-                "defaultUserRoleId": null,
-                "disableAfterAttempts": "5",
-                "disableAfterDaysInactive": null,
-                "dockerPrivilegedMode": false,
-                "enabledZoneTypes": [
+                "appliance_url": "https://cmp.domain.tld",
+                "cors_allowed": null,
+                "currency_key": null,
+                "currency_provider": null,
+                "default_role_id": null,
+                "default_user_role_id": null,
+                "disable_after_attempts": "5",
+                "disable_after_days_inactive": null,
+                "docker_privileged_mode": false,
+                "enabled_zone_types": [
                     {
                         "id": 4,
                         "name": "Amazon"
@@ -187,27 +190,27 @@ ansible_facts:
                         "name": "vCloud Director"
                     }
                 ],
-                "expirePwdDays": null,
-                "internalApplianceUrl": null,
-                "maintenanceMode": false,
-                "proxyDomain": null,
-                "proxyHost": null,
-                "proxyPassword": null,
-                "proxyPasswordHash": null,
-                "proxyPort": null,
-                "proxyUser": null,
-                "proxyWorkstation": null,
-                "registrationEnabled": false,
-                "smtpMailFrom": "morpheus@domain.tld",
-                "smtpPassword": null,
-                "smtpPasswordHash": null,
-                "smtpPort": "25",
-                "smtpSSL": false,
-                "smtpServer": "smtp.domain.tld",
-                "smtpTLS": true,
-                "smtpUser": null,
-                "statsRetainmentPeriod": null,
-                "warnUserDaysBefore": null
+                "expire_pwd_days": null,
+                "internal_appliance_url": null,
+                "maintenance_mode": false,
+                "proxy_domain": null,
+                "proxy_host": null,
+                "proxy_password": null,
+                "proxy_password_hash": null,
+                "proxy_port": null,
+                "proxy_user": null,
+                "proxy_workstation": null,
+                "registration_enabled": false,
+                "smtp_mail_from": "morpheus@domain.tld",
+                "smtp_password": null,
+                "smtp_password_hash": null,
+                "smtp_port": "25",
+                "smtp_server": "smtp.domain.tld",
+                "smtp_ssl": false,
+                "smtp_tls": true,
+                "smtp_user": null,
+                "stats_retainment_period": null,
+                "warn_user_days_before": null
             }
         }
 '''
@@ -215,7 +218,7 @@ ansible_facts:
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.facts.namespace import PrefixFactNamespace
 from ansible.module_utils.facts import ansible_collector
-from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import dict_keys_to_snake_case
 from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_database import MorpheusDatabaseFactCollector
 from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_elastic import MorpheusElasticFactCollector
 from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_license import MorpheusLicenseFactCollector
@@ -259,7 +262,7 @@ def run_module():
 
     fact_results = collector.collect(module=module)
 
-    module.exit_json(ansible_facts=fact_results)
+    module.exit_json(ansible_facts=dict_keys_to_snake_case(fact_results))
 
 
 def main():
