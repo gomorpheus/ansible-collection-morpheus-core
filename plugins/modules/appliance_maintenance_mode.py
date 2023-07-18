@@ -8,7 +8,7 @@ module: appliance_maintenance_mode
 short_description: Toggle Maintenance Mode of the target Morpheus Appliance
 description:
     - Toggles Maintenance Mode of the target Morpheus Appliance
-version_added: 0.3.0
+version_added: 0.4.0
 author: James Riach
 options:
     state:

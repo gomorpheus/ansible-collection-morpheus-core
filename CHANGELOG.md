@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.x.x
+## v0.4.0
 - Added `appliance_settings` module
 - Added `appliance_maintenance_mode` module
 - Added `instance_info` module

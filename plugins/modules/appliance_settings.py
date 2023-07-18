@@ -8,7 +8,7 @@ module: appliance_settings
 short_description: Configure Morpheus Appliance Settings
 description:
     - Configures Morpheus Appliance Settings
-version_added: 0.3.0
+version_added: 0.4.0
 author: James Riach
 options:
     appliance_url:

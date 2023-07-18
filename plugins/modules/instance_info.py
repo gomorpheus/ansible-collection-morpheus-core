@@ -8,7 +8,7 @@ module: instance_info
 short_description: Gather information about instances
 description:
     - Gathers information about Morpheus instances
-version_added: x.x.x
+version_added: 0.4.0
 author: James Riach
 options:
     id:
