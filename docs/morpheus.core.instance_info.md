@@ -35,6 +35,15 @@ Retrieve information about Morpheus Instances
   morpheus.core.instance_info:
     detail: summary
 
+- name: Get Info for instance by name
+  morpheus.core.instance_info:
+    name: WebServer001
+
+- name: Get Info for instances where name matches regular expression
+  morpheus.core.instance_info:
+    name: ^WebServer.*$
+    regex_name: true
+
 - name: Get Extra Info for a Specific Instance by id
   morpheus.core.instance_info:
     id: 200
