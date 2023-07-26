@@ -86,9 +86,54 @@ attributes:
 '''
 
 EXAMPLES = r'''
+- name: Restart a specific instance
+  morpheus.core.instance:
+    id: 200
+    state: restarted
+
+- name: Stop all instances matching regex name pattern
+  morpheus.core.instance:
+    name: ^PROD.*$
+    regex_name: true
+    match_name: all
+    state: stopped
+
+- name: Suspend the first instance that matches name
+  morpheus.core.instance:
+    name: PRODWEBSVR001
+    match_name: first
+    state: suspended
+
+- name: Remove instance but keep backups
+  morpheus.core.instance:
+    name: PRODWEBSVR002
+    match_name: first
+    state: absent
+    remove_options:
+      keep_backups: true
+
+- name: Backup all instances
+  morpheus.core.instance:
+    name: ^.*$
+    regex_name: true
+    match_name: all
+    state: backup
 '''
 
 RETURN = r'''
+instance_state:
+    description:
+        - State of the instance(s) following the requested action.
+    returned: always
+    sample:
+        "instance_state": [
+            {
+                "id": 200,
+                "locked": true,
+                "name": "PRODWEBSVR001",
+                "status": "running"
+            }
+        ]
 '''
 
 import re
