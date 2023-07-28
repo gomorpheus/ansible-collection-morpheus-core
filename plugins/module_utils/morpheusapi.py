@@ -12,6 +12,7 @@ author: James Riach
 
 import re
 import urllib.parse
+from ansible.errors import AnsibleModuleError
 
 
 APPLIANCE_SETTINGS_PATH = '/api/appliance-settings'
@@ -35,8 +36,8 @@ def dict_diff(dict_after: dict, dict_before: dict) -> tuple:
 
     for k, val_a in dict_after.items():
         diff = {
-            'after': '{0} = {1}'.format(k, val_a),
-            'before': 'Unknown'
+            'after': '{0} = {1}\n'.format(k, val_a),
+            'before': 'Unknown\n'
         }
 
         val_b = None
@@ -46,7 +47,7 @@ def dict_diff(dict_after: dict, dict_before: dict) -> tuple:
             diff_list.append(diff)
             continue
 
-        diff['before'] = '{0} = {1}'.format(k, val_b)
+        diff['before'] = '{0} = {1}\n'.format(k, val_b)
 
         if type(val_a) != type(val_b):
             diff_list.append(diff)
@@ -334,8 +335,14 @@ class MorpheusApi():
     def get_instances(self, api_params: dict):
         if api_params['id'] is not None:
             path = '{0}/{1}'.format(INSTANCES_PATH, api_params['id'])
-            args = [('details', str(api_params['details']).lower())]
-            path = self._build_url(path, args)
+            try:
+                detail = str(api_params['details']).lower()
+            except KeyError:
+                detail = 'false'
+            params = self._url_params({
+                'details': detail
+            })
+            path = self._build_url(path, params)
             response = self.connection.send_request(path=path)
             return self._return_reponse_key(response, 'instance')
 
@@ -346,3 +353,51 @@ class MorpheusApi():
 
         response = self.connection.send_request(path=path)
         return self._return_reponse_key(response, 'instances')
+
+    def backup_instance(self, instance_id: int):
+        path = '{0}/{1}/backup'.format(INSTANCES_PATH, instance_id)
+        response = self.connection.send_request(path=path, method='PUT')
+        return self._return_reponse_key(response, 'results')
+
+    def delete_instance(self, instance_id: int, api_params: dict):
+        path = '{0}/{1}'.format(INSTANCES_PATH, instance_id)
+        params = dict_keys_to_camel_case(api_params)
+        url_params = self._url_params(params)
+        path = self._build_url(path, url_params)
+        response = self.connection.send_request(path=path, method='DELETE')
+        return self._return_reponse_key(response, 'results')
+
+    def eject_instance(self, instance_id: int):
+        path = '{0}/{1}/eject'.format(INSTANCES_PATH, instance_id)
+        response = self.connection.send_request(path=path, method='PUT')
+        return self._return_reponse_key(response, 'results')
+
+    def lock_instance(self, instance_id: int):
+        path = '{0}/{1}/lock'.format(INSTANCES_PATH, instance_id)
+        response = self.connection.send_request(path=path, method='PUT')
+        return self._return_reponse_key(response, '')
+
+    def restart_instance(self, instance_id: int):
+        path = '{0}/{1}/restart'.format(INSTANCES_PATH, instance_id)
+        response = self.connection.send_request(path=path, method='PUT')
+        return self._return_reponse_key(response, 'results')
+
+    def start_instance(self, instance_id: int):
+        path = '{0}/{1}/start'.format(INSTANCES_PATH, instance_id)
+        response = self.connection.send_request(path=path, method='PUT')
+        return self._return_reponse_key(response, 'results')
+
+    def stop_instance(self, instance_id: int):
+        path = '{0}/{1}/stop'.format(INSTANCES_PATH, instance_id)
+        response = self.connection.send_request(path=path, method='PUT')
+        return self._return_reponse_key(response, 'results')
+
+    def suspend_instance(self, instance_id: int):
+        path = '{0}/{1}/suspend'.format(INSTANCES_PATH, instance_id)
+        response = self.connection.send_request(path=path, method='PUT')
+        return self._return_reponse_key(response, 'results')
+
+    def unlock_instance(self, instance_id: int):
+        path = '{0}/{1}/unlock'.format(INSTANCES_PATH, instance_id)
+        response = self.connection.send_request(path=path, method='PUT')
+        return self._return_reponse_key(response, '')
