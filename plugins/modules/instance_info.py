@@ -231,7 +231,7 @@ def run_module():
         'id': {'type': 'int'},
         'name': {'type': 'str'},
         'regex_name': {'type': 'bool', 'default': 'false'},
-        'detail': {'type': 'str', 'choices': ['minimal', 'full', 'extra', 'summary'], 'default': 'basic'},
+        'detail': {'type': 'str', 'choices': ['minimal', 'full', 'extra', 'summary'], 'default': 'minimal'},
         'instance_type': {'type': 'str'},
         'agent_installed': {'type': 'bool'},
         'status': {'type': 'str'},
