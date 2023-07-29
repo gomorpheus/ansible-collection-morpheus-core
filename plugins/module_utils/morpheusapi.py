@@ -326,6 +326,11 @@ class MorpheusApi():
         response = self.connection.send_request(path=HEALTH_PATH)
         return self._return_reponse_key(response, 'health')
 
+    def get_instance_snapshots(self, instance_id: int):
+        path = '{0}/{1}/snapshots'.format(INSTANCES_PATH, instance_id)
+        response = self.connection.send_request(path=path)
+        return self._return_reponse_key(response, 'snapshots')
+
     def set_appliance_maintenance_mode(self, enabled: bool):
         params = self._url_params({'enabled': enabled})
         path = self._build_url(MAINTENANCE_MODE_PATH, params)
