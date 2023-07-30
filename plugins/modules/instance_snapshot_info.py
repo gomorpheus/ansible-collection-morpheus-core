@@ -5,44 +5,14 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 module: instance_snapshot_info
-short_description: Gather Snapshot information for instances 
+short_description: Gather Snapshot information for instances
 description:
     - Gather Snapshot information for instances.
 version_added: 0.x.x
 author: James Riach
-options:
-    id:
-        description:
-            - Specify the id of an instance.
-        type: int
-    name:
-        description:
-            - Filter instances by name.
-        type: string
-    regex_name:
-        description:
-            - Treat the name parameter as a regular expression.
-        default: false
-        type: bool
-    environment:
-        description:
-            - Filter instances by environment.
-        type: string
-    labels:
-        description:
-            - Filter instances by matching labels.
-        type: list
-        elements: string
-    match_all_labels:
-        description:
-            - If labels have been specified, filter instances by those that match all specified labels.
-        default: false
-        type: bool
-    tags:
-        description:
-            - Filter instances by matching tags.
-        type: list
-        elements: string
+extends_documentation_fragment:
+    - morpheus.core.morpheus_instance_filter_base
+    - morpheus.core.morpheus_instance_filter_extended
 '''
 
 EXAMPLES = r'''
