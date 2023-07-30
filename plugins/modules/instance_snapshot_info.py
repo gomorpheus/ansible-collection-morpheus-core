@@ -11,8 +11,8 @@ description:
 version_added: 0.x.x
 author: James Riach
 extends_documentation_fragment:
-    - morpheus.core.morpheus_instance_filter_base
-    - morpheus.core.morpheus_instance_filter_extended
+    - morpheus.core.instance_filter_base
+    - morpheus.core.instance_filter_extended
 '''
 
 EXAMPLES = r'''
