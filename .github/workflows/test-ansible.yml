@@ -1,7 +1,7 @@
 # .github/workflows/test-ansible.yml
 
 name: Test Inventory on Ansible
-on: [workflow_dispatch, pull_request]
+on: [workflow_dispatch]
 jobs:
   build-collection:
     runs-on: ubuntu-latest
