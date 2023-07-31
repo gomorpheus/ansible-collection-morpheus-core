@@ -1,8 +1,13 @@
 # Changelog
 
+## v0.4.0
+- Added `appliance_settings` module
+- Added `appliance_maintenance_mode` module
+- Added `instance_info` module
+
 ## v0.3.0
 - Added httpapi connection plugin
-- Added appliance_facts module
+- Added `appliance_facts` module
 
 ## v0.2.5
 - Added AWS assume role support to cloud role

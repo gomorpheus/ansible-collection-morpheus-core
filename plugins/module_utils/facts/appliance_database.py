@@ -18,6 +18,6 @@ class MorpheusDatabaseFactCollector(BaseFactCollector):
 
         appliance_health = morph_api.get_appliance_health()
 
-        facts['morpheus_database'] = appliance_health['health']['database']
+        facts['morpheus_database'] = appliance_health['database']
 
         return facts

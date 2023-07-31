@@ -18,6 +18,6 @@ class MorpheusRabbitmqFactCollector(BaseFactCollector):
 
         appliance_health = morph_api.get_appliance_health()
 
-        facts['morpheus_rabbitmq'] = appliance_health['health']['rabbit']
+        facts['morpheus_rabbitmq'] = appliance_health['rabbit']
 
         return facts
