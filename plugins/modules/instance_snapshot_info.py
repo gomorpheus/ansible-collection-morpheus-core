@@ -10,6 +10,17 @@ description:
     - Gather Snapshot information for instances.
 version_added: 0.x.x
 author: James Riach
+options:
+    match_name:
+        description:
+            - Define instance selection method when specifying I(name) should more than one instance match.
+        default: all
+        choices:
+            - none
+            - first
+            - last
+            - all
+        type: string
 extends_documentation_fragment:
     - morpheus.core.instance_filter_base
     - morpheus.core.instance_filter_extended
@@ -69,15 +80,15 @@ instance_snapshots:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
-from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi, dict_keys_to_snake_case
 
-
-class InstanceSnapshots():
-    def __init__(self, instance_name: str, instance_id: int, snapshots: list[dict]) -> None:
-        self.instance_name = instance_name
-        self.instance_id = instance_id
-        self.snapshot_count = len(snapshots)
-        self.snapshots = [dict_keys_to_snake_case(snapshot) for snapshot in snapshots]
+try:
+    from module_utils.morpheusapi import MorpheusApi
+    from module_utils.morpheus_classes import InstanceSnapshots
+    from module_utils.morpheus_funcs import instance_filter
+except ModuleNotFoundError:
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheus_classes import InstanceSnapshots
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs import instance_filter
 
 
 def run_module():
@@ -85,6 +96,7 @@ def run_module():
         'id': {'type': 'int'},
         'name': {'type': 'str'},
         'regex_name': {'type': 'bool', 'default': 'false'},
+        'match_name': {'type': 'str', 'choices': ['none', 'first', 'last', 'all'], 'default': 'all'},
         'environment': {'type': 'str'},
         'labels': {'type': 'list', 'elements': 'str'},
         'match_all_labels': {'type': 'bool', 'default': 'false'},
@@ -110,18 +122,7 @@ def run_module():
     connection = Connection(module._socket_path)
     morpheus_api = MorpheusApi(connection)
 
-    api_params = module.params.copy()
-    if module.params['regex_name']:
-        api_params['name'] = None
-    api_params['all_labels'] = api_params.pop('labels') if module.params['match_all_labels'] else None
-
-    for k in ['match_all_labels', 'regex_name']:
-        del api_params[k]
-
-    instances = morpheus_api.get_instances(api_params)
-
-    if not isinstance(instances, list):
-        instances = [instances]
+    instances = instance_filter(morpheus_api, module.params)
 
     for instance in instances:
         snapshots = morpheus_api.get_instance_snapshots(instance['id'])
