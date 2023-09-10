@@ -20,6 +20,7 @@ HEALTH_PATH = '/api/health'
 INSTANCES_PATH = '/api/instances'
 LICENSE_PATH = '/api/license'
 MAINTENANCE_MODE_PATH = '{}/maintenance'.format(APPLIANCE_SETTINGS_PATH)
+SNAPSHOTS_PATH = '/api/snapshots'
 
 
 def dict_diff(dict_after: dict, dict_before: dict) -> tuple:
@@ -253,6 +254,7 @@ def dict_filter(dictionary: dict, filter_keys: list) -> dict:
     return filtered_dict
 
 
+# deprecated
 def success_response(response: dict) -> bool:
     try:
         return response['success']
@@ -364,6 +366,11 @@ class MorpheusApi():
         response = self.connection.send_request(path=path, method='PUT')
         return self._return_reponse_key(response, 'results')
 
+    def delete_all_instance_snapshots(self, instance_id: int):
+        path = '{0}/{1}/delete-all-snapshots'.format(INSTANCES_PATH, instance_id)
+        response = self.connection.send_request(path=path, method='DELETE')
+        return self._return_reponse_key(response, '')
+
     def delete_instance(self, instance_id: int, api_params: dict):
         path = '{0}/{1}'.format(INSTANCES_PATH, instance_id)
         params = dict_keys_to_camel_case(api_params)
@@ -371,6 +378,11 @@ class MorpheusApi():
         path = self._build_url(path, url_params)
         response = self.connection.send_request(path=path, method='DELETE')
         return self._return_reponse_key(response, 'results')
+
+    def delete_snapshot(self, snapshot_id: int):
+        path = '{0}/{1}'.format(SNAPSHOTS_PATH, snapshot_id)
+        response = self.connection.send_request(path=path, method='DELETE')
+        return self._return_reponse_key(response, '')
 
     def eject_instance(self, instance_id: int):
         path = '{0}/{1}/eject'.format(INSTANCES_PATH, instance_id)
@@ -386,6 +398,26 @@ class MorpheusApi():
         path = '{0}/{1}/restart'.format(INSTANCES_PATH, instance_id)
         response = self.connection.send_request(path=path, method='PUT')
         return self._return_reponse_key(response, 'results')
+
+    def snapshot_instance(self, api_params: dict):
+        path = '{0}/{1}/snapshot'.format(INSTANCES_PATH, api_params.pop('id'))
+        payload = dict_keys_to_camel_case(
+            {k: v for k, v in api_params.items() if v is not None}
+        )
+        body = {'snapshot': payload}
+
+        response = self.connection.send_request(
+            data=body,
+            path=path,
+            method='PUT'
+        )
+
+        return self._return_reponse_key(response, '')
+
+    def snapshot_revert(self, instance_id: int, snapshot_id: int):
+        path = '{0}/{1}/revert-snapshot/{2}'.format(INSTANCES_PATH, instance_id, snapshot_id)
+        response = self.connection.send_request(path=path, method='PUT')
+        return self._return_reponse_key(response, '')
 
     def start_instance(self, instance_id: int):
         path = '{0}/{1}/start'.format(INSTANCES_PATH, instance_id)

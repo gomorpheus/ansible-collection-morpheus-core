@@ -51,7 +51,7 @@ def instance_filter(morpheus_api: MorpheusApi, module_params: dict, key_filter: 
     try:
         params['all_labels'] = params.pop('labels') if module_params['match_all_labels'] else None
     except KeyError:
-        params['all_labels'] = False
+        params['all_labels'] = None
 
     # this could be extended to support further API parameters if needed
     valid_params = [
@@ -100,3 +100,29 @@ def instance_filter(morpheus_api: MorpheusApi, module_params: dict, key_filter: 
         }.get(match_name)
 
     return [dict_filter(instance, key_filter) if key_filter is not None else instance for instance in response]
+
+
+def success_response(response: dict) -> tuple:
+    """Return the value of the response success Key with a corresponding msg
+
+    Args:
+        response (dict): The response dictionary to lookup
+
+    Returns:
+        tuple: (bool, msg)
+    """
+    success = False
+    msg = ''
+
+    try:
+        success = response['success']
+    except KeyError:
+        success = False
+
+    try:
+        msg = response['msg']
+    except KeyError:
+        if not success:
+            msg = 'Unknown Failure'
+
+    return success, msg
