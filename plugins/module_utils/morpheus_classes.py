@@ -12,9 +12,9 @@ author: James Riach
 
 from datetime import datetime
 try:
-    from morpheusapi import dict_keys_to_snake_case
+    from morpheusapi import MorpheusApi, dict_keys_to_snake_case
 except ModuleNotFoundError:
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import dict_keys_to_snake_case
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi, dict_keys_to_snake_case
 
 
 class InstanceSnapshots():
