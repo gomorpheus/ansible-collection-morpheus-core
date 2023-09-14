@@ -13,16 +13,33 @@ author: James Riach
 from datetime import datetime
 try:
     from morpheusapi import MorpheusApi, dict_keys_to_snake_case
+    from morpheus_funcs import success_response
 except ModuleNotFoundError:
     from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi, dict_keys_to_snake_case
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs import success_response
 
 
 class InstanceSnapshots():
-    def __init__(self, instance_name: str, instance_id: int, snapshots: list[dict]) -> None:
+    def __init__(self, instance_name: str, instance_id: int,
+                 morpheus_api: MorpheusApi, reverse_sort: bool = False) -> None:
+        self._morpheus_api = morpheus_api
         self.instance_name = instance_name
         self.instance_id = instance_id
-        self.snapshot_count = len(snapshots)
-        self.snapshots = [dict_keys_to_snake_case(snapshot) for snapshot in snapshots]
+        self.snapshot_count = 0
+        self.snapshots = []
+
+        self.get_snapshots()
+        self.sort(reverse=reverse_sort)
+
+    def get_snapshots(self) -> None:
+        """Retrieve the Snapshots for the Instance
+        """
+        self.snapshots = [
+            dict_keys_to_snake_case(snapshot)
+            for snapshot in self._morpheus_api.get_instance_snapshots(self.instance_id)
+        ]
+
+        self.snapshot_count = len(self.snapshots)
 
     def sort(self, reverse: bool = False) -> None:
         """Sorts the list of snapshots by datetime
@@ -99,4 +116,3 @@ class SnapshotAction():
         del results['_morpheus_api']
         del results['snapshot_description']
         return results
-    

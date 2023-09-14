@@ -63,16 +63,17 @@ EXAMPLES = r'''
 RETURN = r'''
 '''
 
+from time import sleep
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:
     from module_utils.morpheusapi import MorpheusApi
     from module_utils.morpheus_classes import InstanceSnapshots, SnapshotAction
-    from module_utils.morpheus_funcs import instance_filter
+    from module_utils.morpheus_funcs import instance_filter, class_to_dict, dict_diff
 except ModuleNotFoundError:
     from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
     from ansible_collections.morpheus.core.plugins.module_utils.morpheus_classes import InstanceSnapshots, SnapshotAction
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs import instance_filter
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs import instance_filter, class_to_dict, dict_diff
 
 
 def exec_snapshot_actions(actions: list[SnapshotAction]) -> list[dict]:
@@ -145,19 +146,20 @@ def run_module():
             **result
         )
 
+    instances = None
     if module.params['id'] is not None or module.params['name'] is not None:
         instances = instance_filter(morpheus_api, module.params)
         sort = module.params['snapshot_age'] == 'newest'
         instance_snapshots = [
             InstanceSnapshots(instance['name'],
                               instance['id'],
-                              morpheus_api.get_instance_snapshots(instance['id']))
+                              morpheus_api,
+                              sort)
             for instance in instances
         ]
-        for snapshot in instance_snapshots:
-            snapshot.sort(reverse=sort)
+        for inst_snapshot in instance_snapshots:
             if module.params['state'] == 'absent':
-                snapshot.snapshots = [snapshot.snapshots[0]]
+                inst_snapshot.snapshots = [inst_snapshot.snapshots[0]]
 
     if module.params['state'] == 'remove_all':
         snapshot_actions = [
@@ -236,6 +238,38 @@ def run_module():
 
     result['snapshot_results'] = exec_snapshot_actions(snapshot_actions)
     result['changed'] = any(action_result['success'] for action_result in result['snapshot_results'])
+
+    if module._diff and instances is not None:
+        sleep(3)  # Allow enough time for actions to fully execute
+        updated_snapshots = [
+            InstanceSnapshots(instance['name'],
+                              instance['id'],
+                              morpheus_api,
+                              sort)
+            for instance in instances
+        ]
+
+        result['diff'] = []
+        for inst_snapshot in updated_snapshots:
+            before = class_to_dict(
+                next((inst for inst in instance_snapshots if inst.instance_id == inst_snapshot.instance_id), ValueError)
+            )
+            after = class_to_dict(inst_snapshot)
+
+            changed, diff = dict_diff(after, before)
+
+            if changed:
+                after_list = []
+                before_list = []
+                for d in diff:
+                    after_list.append(d['after'])
+                    before_list.append(d['before'])
+                result['diff'].append({
+                    'after_header': '{0} ({1})'.format(inst_snapshot.instance_name, inst_snapshot.instance_id),
+                    'after': '\n'.join(after_list),
+                    'before_header': '{0} ({1})'.format(inst_snapshot.instance_name, inst_snapshot.instance_id),
+                    'before': '\n'.join(before_list)
+                })
 
     module.exit_json(**result)
 

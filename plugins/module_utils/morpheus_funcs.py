@@ -17,6 +17,139 @@ except ModuleNotFoundError:
     from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi, dict_filter
 
 
+def class_to_dict(input_class: object) -> dict:
+    class_dict = input_class.__dict__
+    return {
+        k: v for k, v in class_dict.items()
+        if not k.startswith('_')
+    }
+
+
+def dict_diff(dict_after: dict, dict_before: dict) -> tuple:
+    """Compare two dictionaries for differences
+
+    Args:
+        dict_after (dict): First Dictionary to Compare
+        dict_before (dict): Second Dictionary to Compare
+
+    Returns:
+        tuple: A tuple, (True, [diffrences]) if there are differences, otherwise (False, [])
+    """
+    diff_list = []
+
+    for k, val_a in dict_after.items():
+        diff = {
+            'after': '{0} = {1}\n'.format(k, val_a),
+            'before': 'Unknown\n'
+        }
+
+        val_b = None
+        try:
+            val_b = dict_before[k]
+        except KeyError:
+            diff_list.append(diff)
+            continue
+
+        diff['before'] = '{0} = {1}\n'.format(k, val_b)
+
+        if type(val_a) != type(val_b):
+            diff_list.append(diff)
+            continue
+
+        if isinstance(val_a, list) and isinstance(val_b, list):
+            if len(val_a) != len(val_b):
+                diff_list.append(diff)
+                continue
+
+            try:
+                list_a = sorted(val_a)
+                list_b = sorted(val_b)
+
+                if list_a != list_b:
+                    diff_list.append(diff)
+                    continue
+            except TypeError:
+                matched_idx = []
+                for list_a_item in val_a:
+                    for idx_b, list_b_item in enumerate(val_b):
+                        if idx_b in matched_idx:
+                            continue
+                        if isinstance(list_a_item, dict) and isinstance(list_b_item, dict):
+                            if dict_compare_equality(list_a_item, list_b_item):
+                                matched_idx.append(idx_b)
+                if len(matched_idx) != len(val_b):
+                    diff_list.append(diff)
+                    continue
+
+        if isinstance(val_a, dict) and isinstance(val_b, dict):
+            _, sub_diff_list = dict_diff(val_a, val_b)
+            diff_list += sub_diff_list
+
+        if val_a != val_b:
+            diff_list.append(diff)
+            continue
+
+    if len(diff_list) > 0:
+        return True, diff_list
+
+    return False, diff_list
+
+
+def dict_compare_equality(dict_a: dict, dict_b: dict) -> bool:
+    """Compare two dictionaries for equality
+
+    Args:
+        dict_a (dict): First Dictionary to Compare
+        dict_b (dict): Second Dictionary to Compare
+
+    Returns:
+        bool: True if both Dictionaries are the same, otherwise False
+    """
+    if len(dict_a) != len(dict_b):
+        return False
+
+    for k, val_a in dict_a.items():
+        val_b = None
+        try:
+            val_b = dict_b[k]
+        except KeyError:
+            return False
+
+        if type(val_a) != type(val_b):
+            return False
+
+        if isinstance(val_a, dict) and isinstance(val_b, dict):
+            if not dict_compare_equality(val_a, val_b):
+                return False
+
+        if isinstance(val_a, list) and isinstance(val_b, list):
+            if len(val_a) != len(val_b):
+                return False
+
+            try:
+                list_a = sorted(val_a)
+                list_b = sorted(val_b)
+
+                if list_a != list_b:
+                    return False
+            except TypeError:
+                matched_idx = []
+                for list_a_item in val_a:
+                    for idx_b, list_b_item in enumerate(val_b):
+                        if idx_b in matched_idx:
+                            continue
+                        if isinstance(list_a_item, dict) and isinstance(list_b_item, dict):
+                            if dict_compare_equality(list_a_item, list_b_item):
+                                matched_idx.append(idx_b)
+                if len(matched_idx) != len(val_b):
+                    return False
+
+        if val_a != val_b:
+            return False
+
+    return True
+
+
 def instance_filter(morpheus_api: MorpheusApi, module_params: dict, key_filter: list = None) -> list:
     """Filters Morpheus Instances returned from the Morpheus API according to supplied module parameters.
         Module Parameters that are not valid API Parameters are stripped prior to calling get_instances() method.
