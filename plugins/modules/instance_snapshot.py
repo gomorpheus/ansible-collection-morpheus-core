@@ -63,6 +63,7 @@ EXAMPLES = r'''
 RETURN = r'''
 '''
 
+from copy import deepcopy
 from functools import partial
 from time import sleep
 from ansible.module_utils.basic import AnsibleModule
@@ -91,6 +92,31 @@ def exec_snapshot_actions(actions: list[SnapshotAction]) -> list[dict]:
         results.append(action.execute())
 
     return results
+
+
+def parse_check_mode(module_params: dict, instance_snapshot: InstanceSnapshots,
+                     action: SnapshotAction) -> InstanceSnapshots:
+
+    if module_params['state'] == 'remove_all':
+        instance_snapshot.snapshots = []
+        instance_snapshot.snapshot_count = 0
+        return instance_snapshot
+
+    if module_params['state'] == 'absent':
+        instance_snapshot.snapshots = [
+            snapshot for snapshot in instance_snapshot.snapshots
+            if snapshot['id'] != action.snapshot_id
+        ]
+        instance_snapshot.snapshot_count = len(instance_snapshot.snapshots)
+        return instance_snapshot
+
+    if module_params['state'] == 'present':
+        instance_snapshot.snapshots.append({
+            'name': action.snapshot_name,
+            'description': action.snapshot_description
+        })
+        instance_snapshot.snapshot_count = len(instance_snapshot.snapshots)
+        return instance_snapshot
 
 
 def snapshot_create(module_params: dict, morpheus_api: MorpheusApi, instances: list) -> list[SnapshotAction]:
@@ -226,7 +252,7 @@ def run_module():
         argument_spec=argument_spec,
         mutually_exclusive=mutually_exclusive,
         required_one_of=required_one_of,
-        supports_check_mode=False
+        supports_check_mode=True
     )
 
     connection = Connection(module._socket_path)
@@ -259,7 +285,10 @@ def run_module():
         ]
         for inst_snapshot in instance_snapshots:
             if module.params['state'] == 'absent':
-                inst_snapshot.snapshots = [inst_snapshot.snapshots[0]]
+                try:
+                    inst_snapshot.snapshots = [inst_snapshot.snapshots[0]]
+                except IndexError:
+                    inst_snapshot.snapshots = []
 
     action_func = {
         'absent': partial(
@@ -285,8 +314,11 @@ def run_module():
 
     snapshot_actions = action_func(morpheus_api=morpheus_api)
 
-    result['snapshot_results'] = exec_snapshot_actions(snapshot_actions)
-    result['changed'] = any(action_result['success'] for action_result in result['snapshot_results'])
+    result['snapshot_results'] = exec_snapshot_actions(snapshot_actions) \
+        if not module.check_mode else [class_to_dict(action) for action in snapshot_actions]
+
+    result['changed'] = any(action_result['success'] for action_result in result['snapshot_results']) \
+        if not module.check_mode else True
 
     if module._diff:
         result['diff'] = []
@@ -319,6 +351,15 @@ def run_module():
                                   morpheus_api,
                                   sort)
                 for instance in instances
+            ] if not module.check_mode else [
+                parse_check_mode(
+                    module_params=module.params,
+                    instance_snapshot=inst_snapshot,
+                    action=snapshot_action
+                )
+                for inst_snapshot in deepcopy(instance_snapshots)
+                for snapshot_action in snapshot_actions
+                if inst_snapshot.instance_id == snapshot_action.instance_id
             ]
 
             for inst_snapshot in updated_snapshots:
