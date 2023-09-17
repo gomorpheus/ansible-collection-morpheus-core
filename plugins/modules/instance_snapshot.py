@@ -49,18 +49,74 @@ options:
         description:
             - Specify the age of the snapshot to match.
         choices:
-            - newest
+            - latest
             - oldest
-        default: newest
+        default: latest
         type: string
 extends_documentation_fragment:
-    - morepheus.core.instance_filter_base
+    - morpheus.core.instance_filter_base
+attributes:
+    check_mode:
+        support: full
+    diff_mode:
+        support: full
 '''
 
 EXAMPLES = r'''
+- name: Snapshot All Instances
+  morpheus.core.instance_snapshot:
+    name: ^.*$
+    match_name: all
+    regex_name: true
+    snapshot_name: Ansible Snapshot
+    snapshot_description: Snapshot Created via Ansible
+    state: present
+
+- name: Remove All Snapshots for Specific Instance
+  morpheus.core.instance_snapshot:
+    id: 200
+    state: remove_all
+
+- name: Revert Instance to Oldest Snapshot matching Name
+  morpheus.core.instance_snapshot:
+    name: WebServer001
+    snapshot_name: Ansible Snapshot
+    snapshot_age: oldest
+    state: revert
+
+- name: Remove Specific Snapshot by Id
+  morpheus.core.instance_snapshot:
+    snapshot_id: 50
+    state: absent
+
+- name: Remove the Latest Snapshot matching Name for all Instances
+  morpheus.core.instance_snapshot:
+    name: ^.*$
+    match_name: all
+    regex_name: true
+    snapshot_name: Ansible Snapshot
+    state: absent
 '''
 
 RETURN = r'''
+snapshot_results:
+    description:
+        - List of results of each action performed against each instance and/or snapshot.
+    returned: always
+    sample:
+        "snapshot_results": [
+            {
+                "action": "create",
+                "instance_id": 1,
+                "instance_name": "WebServer001",
+                "msg": "",
+                "snapshot_date": null,
+                "snapshot_description": "Snapshot Created via Ansible",
+                "snapshot_id": null,
+                "snapshot_name": "Ansible Snapshot",
+                "success": true
+            }
+        ]
 '''
 
 from copy import deepcopy
@@ -227,7 +283,7 @@ def run_module():
         'snapshot_id': {'type': 'int'},
         'snapshot_name': {'type': 'str'},
         'snapshot_description': {'type': 'str'},
-        'snapshot_age': {'type': 'str', 'choices': ['newest', 'oldest'], 'default': 'newest'}
+        'snapshot_age': {'type': 'str', 'choices': ['latest', 'oldest'], 'default': 'latest'}
     }
 
     mutually_exclusive = [
@@ -275,7 +331,7 @@ def run_module():
     instance_snapshots = None
     if module.params['id'] is not None or module.params['name'] is not None:
         instances = instance_filter(morpheus_api, module.params)
-        sort = module.params['snapshot_age'] == 'newest'
+        sort = module.params['snapshot_age'] == 'latest'
         instance_snapshots = [
             InstanceSnapshots(instance['name'],
                               instance['id'],
