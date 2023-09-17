@@ -63,6 +63,7 @@ EXAMPLES = r'''
 RETURN = r'''
 '''
 
+from functools import partial
 from time import sleep
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
@@ -90,6 +91,104 @@ def exec_snapshot_actions(actions: list[SnapshotAction]) -> list[dict]:
         results.append(action.execute())
 
     return results
+
+
+def snapshot_create(module_params: dict, morpheus_api: MorpheusApi, instances: list) -> list[SnapshotAction]:
+    return [
+        SnapshotAction(
+            morpheus_api=morpheus_api,
+            action='create',
+            instance_id=instance['id'],
+            instance_name=instance['name'],
+            snapshot_name=module_params['snapshot_name'],
+            snapshot_description=module_params['snapshot_description']
+        )
+        for instance in instances
+    ]
+
+
+def snapshot_remove(module_params: dict, morpheus_api: MorpheusApi, instance_snapshots: InstanceSnapshots = None) -> list[SnapshotAction]:
+    if module_params['snapshot_id'] is not None:
+        return [
+            SnapshotAction(
+                morpheus_api=morpheus_api,
+                action='remove',
+                snapshot_id=module_params['snapshot_id']
+            )
+        ]
+
+    if module_params['snapshot_name'] is not None:
+        return [
+            SnapshotAction(
+                morpheus_api=morpheus_api,
+                action='remove',
+                instance_id=instance.instance_id,
+                instance_name=instance.instance_name,
+                snapshot_id=snapshot['id'],
+                snapshot_name=snapshot['name'],
+                snapshot_date=snapshot['date_created'],
+                snapshot_description=snapshot['description']
+            )
+            for instance in instance_snapshots
+            for snapshot in instance.snapshots
+            if snapshot['name'] == module_params['snapshot_name']
+        ]
+
+
+def snapshot_remove_all(morpheus_api: MorpheusApi, instances: list) -> list[SnapshotAction]:
+    return [
+        SnapshotAction(
+            morpheus_api=morpheus_api,
+            action='remove_all',
+            instance_id=instance['id'],
+            instance_name=instance['name']
+        )
+        for instance in instances
+    ]
+
+
+def snapshot_revert(module_params: dict, morpheus_api: MorpheusApi, instance_snapshots: InstanceSnapshots) -> list[SnapshotAction]:
+    if module_params['snapshot_id'] is not None:
+        actions = [
+            SnapshotAction(
+                morpheus_api=morpheus_api,
+                action='revert',
+                instance_id=instance.instance_id,
+                instance_name=instance.instance_name,
+                snapshot_id=snapshot['id'],
+                snapshot_name=snapshot['name'],
+                snapshot_date=snapshot['date_created'],
+                snapshot_description=snapshot['description']
+            )
+            for instance in instance_snapshots
+            for snapshot in instance.snapshots
+            if snapshot['id'] == module_params['snapshot_id']
+        ]
+
+    if module_params['snapshot_name'] is not None:
+        actions = [
+            SnapshotAction(
+                morpheus_api=morpheus_api,
+                action='revert',
+                instance_id=instance.instance_id,
+                instance_name=instance.instance_name,
+                snapshot_id=snapshot['id'],
+                snapshot_name=snapshot['name'],
+                snapshot_date=snapshot['date_created'],
+                snapshot_description=snapshot['description']
+            )
+            for instance in instance_snapshots
+            for snapshot in instance.snapshots
+            if snapshot['name'] == module_params['snapshot_name']
+        ]
+
+    # Filter actions to ensure an instance is only reverted once
+    snapshot_actions = []
+    for action in actions:
+        if not any(action.instance_id == revert.instance_id for revert in snapshot_actions):
+            snapshot_actions.append(action)
+
+    return snapshot_actions
 
 
 def run_module():
@@ -161,80 +260,29 @@ def run_module():
             if module.params['state'] == 'absent':
                 inst_snapshot.snapshots = [inst_snapshot.snapshots[0]]
 
-    if module.params['state'] == 'remove_all':
-        snapshot_actions = [
-            SnapshotAction(
-                morpheus_api=morpheus_api,
-                action='remove_all',
-                instance_id=instance['id'],
-                instance_name=instance['name']
-            )
-            for instance in instances
-        ]
+    action_func = {
+        'absent': partial(
+            snapshot_remove,
+            module_params=module.params,
+            instance_snapshots=instance_snapshots
+        ),
+        'present': partial(
+            snapshot_create,
+            module_params=module.params,
+            instances=instances
+        ),
+        'remove_all': partial(
+            snapshot_remove_all,
+            instances=instances
+        ),
+        'revert': partial(
+            snapshot_revert,
+            module_params=module.params,
+            instance_snapshots=instance_snapshots
+        )
+    }.get(module.params['state'])
 
-    if module.params['state'] == 'present':
-        snapshot_actions = [
-            SnapshotAction(
-                morpheus_api=morpheus_api,
-                action='create',
-                instance_id=instance['id'],
-                instance_name=instance['name'],
-                snapshot_name=module.params['snapshot_name'],
-                snapshot_description=module.params['snapshot_description']
-            )
-            for instance in instances
-        ]
-
-    if module.params['state'] in ['absent', 'revert']:
-        if module.params['snapshot_id'] is not None:
-            if module.params['state'] == 'revert':
-                snapshot_actions = [
-                    SnapshotAction(
-                        morpheus_api=morpheus_api,
-                        action='revert',
-                        instance_id=instance.instance_id,
-                        instance_name=instance.instance_name,
-                        snapshot_id=snapshot['id'],
-                        snapshot_name=snapshot['name'],
-                        snapshot_date=snapshot['date_created'],
-                        snapshot_description=snapshot['description']
-                    )
-                    for instance in instance_snapshots
-                    for snapshot in instance.snapshots
-                    if snapshot['id'] == module.params['snapshot_id']
-                ]
-            else:
-                snapshot_actions = [
-                    SnapshotAction(
-                        morpheus_api=morpheus_api,
-                        action='remove',
-                        snapshot_id=module.params['snapshot_id']
-                    )
-                ]
-
-        if module.params['snapshot_name'] is not None:
-            snapshot_actions = [
-                SnapshotAction(
-                    morpheus_api=morpheus_api,
-                    action='remove' if module.params['state'] == 'absent' else 'revert',
-                    instance_id=instance.instance_id,
-                    instance_name=instance.instance_name,
-                    snapshot_id=snapshot['id'],
-                    snapshot_name=snapshot['name'],
-                    snapshot_date=snapshot['date_created'],
-                    snapshot_description=snapshot['description']
-                )
-                for instance in instance_snapshots
-                for snapshot in instance.snapshots
-                if snapshot['name'] == module.params['snapshot_name']
-            ]
-
-        if module.params['state'] == 'revert':
-            instance_reverts = []
-            for action in snapshot_actions:
-                if not any(action.instance_id == revert.instance_id for revert in instance_reverts):
-                    instance_reverts.append(action)
-            snapshot_actions = instance_reverts
+    snapshot_actions = action_func(morpheus_api=morpheus_api)
 
     result['snapshot_results'] = exec_snapshot_actions(snapshot_actions)
     result['changed'] = any(action_result['success'] for action_result in result['snapshot_results'])
@@ -259,16 +307,11 @@ def run_module():
             changed, diff = dict_diff(after, before)
 
             if changed:
-                after_list = []
-                before_list = []
-                for d in diff:
-                    after_list.append(d['after'])
-                    before_list.append(d['before'])
                 result['diff'].append({
                     'after_header': '{0} ({1})'.format(inst_snapshot.instance_name, inst_snapshot.instance_id),
-                    'after': '\n'.join(after_list),
+                    'after': '\n'.join([d['after'] for d in diff]),
                     'before_header': '{0} ({1})'.format(inst_snapshot.instance_name, inst_snapshot.instance_id),
-                    'before': '\n'.join(before_list)
+                    'before': '\n'.join([d['before'] for d in diff])
                 })
 
     module.exit_json(**result)
