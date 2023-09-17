@@ -13,10 +13,10 @@ author: James Riach
 from datetime import datetime
 try:
     from morpheusapi import MorpheusApi, dict_keys_to_snake_case
-    from morpheus_funcs import success_response
+    from morpheus_funcs import class_to_dict, success_response
 except ModuleNotFoundError:
     from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi, dict_keys_to_snake_case
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs import success_response
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs import class_to_dict, success_response
 
 
 class InstanceSnapshots():
@@ -112,7 +112,4 @@ class SnapshotAction():
 
         action()
 
-        results = vars(self)
-        del results['_morpheus_api']
-        del results['snapshot_description']
-        return results
+        return class_to_dict(self)

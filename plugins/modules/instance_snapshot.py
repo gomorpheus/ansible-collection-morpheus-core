@@ -246,6 +246,7 @@ def run_module():
         )
 
     instances = None
+    instance_snapshots = None
     if module.params['id'] is not None or module.params['name'] is not None:
         instances = instance_filter(morpheus_api, module.params)
         sort = module.params['snapshot_age'] == 'newest'
@@ -287,32 +288,54 @@ def run_module():
     result['snapshot_results'] = exec_snapshot_actions(snapshot_actions)
     result['changed'] = any(action_result['success'] for action_result in result['snapshot_results'])
 
-    if module._diff and instances is not None:
-        sleep(3)  # Allow enough time for actions to fully execute
-        updated_snapshots = [
-            InstanceSnapshots(instance['name'],
-                              instance['id'],
-                              morpheus_api,
-                              sort)
-            for instance in instances
-        ]
-
+    if module._diff:
         result['diff'] = []
-        for inst_snapshot in updated_snapshots:
-            before = class_to_dict(
-                next((inst for inst in instance_snapshots if inst.instance_id == inst_snapshot.instance_id), ValueError)
-            )
-            after = class_to_dict(inst_snapshot)
+        sleep(3)  # Allow enough time for actions to fully execute
 
-            changed, diff = dict_diff(after, before)
+        if module.params['state'] == 'revert':
+            prepared_actions = [
+                'Revert {0} ({1}) to snapshot_id: {2}'.format(
+                    action.instance_name, action.instance_id, action.snapshot_id
+                )
+                for action in snapshot_actions
+            ]
+            result['diff'].append({
+                'prepared': '\n'.join(prepared_actions)
+            })
 
-            if changed:
-                result['diff'].append({
-                    'after_header': '{0} ({1})'.format(inst_snapshot.instance_name, inst_snapshot.instance_id),
-                    'after': '\n'.join([d['after'] for d in diff]),
-                    'before_header': '{0} ({1})'.format(inst_snapshot.instance_name, inst_snapshot.instance_id),
-                    'before': '\n'.join([d['before'] for d in diff])
-                })
+        if module.params['state'] == 'absent' and instances is None:
+            prepared_actions = [
+                'Remove snapshot_id {0}'.format(action.snapshot_id)
+                for action in snapshot_actions
+            ]
+            result['diff'].append({
+                'prepared': '\n'.join(prepared_actions)
+            })
+
+        if instances is not None:
+            updated_snapshots = [
+                InstanceSnapshots(instance['name'],
+                                  instance['id'],
+                                  morpheus_api,
+                                  sort)
+                for instance in instances
+            ]
+
+            for inst_snapshot in updated_snapshots:
+                before = class_to_dict(
+                    next((inst for inst in instance_snapshots if inst.instance_id == inst_snapshot.instance_id), ValueError)
+                )
+                after = class_to_dict(inst_snapshot)
+
+                changed, diff = dict_diff(after, before)
+
+                if changed:
+                    result['diff'].append({
+                        'after_header': '{0} ({1})'.format(inst_snapshot.instance_name, inst_snapshot.instance_id),
+                        'after': '\n'.join([d['after'] for d in diff]),
+                        'before_header': '{0} ({1})'.format(inst_snapshot.instance_name, inst_snapshot.instance_id),
+                        'before': '\n'.join([d['before'] for d in diff])
+                    })
 
     module.exit_json(**result)
 
