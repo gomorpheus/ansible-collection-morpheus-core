@@ -2,6 +2,8 @@
 
 ## v0.x.x
 - Added `instance` module
+- Added `instance_snapshot_info` module
+- Added `instance_snapshot` module
 
 ## v0.4.0
 - Added `appliance_settings` module
