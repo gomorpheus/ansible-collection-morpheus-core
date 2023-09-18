@@ -268,7 +268,10 @@ appliance_settings:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
-from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import (MorpheusApi, dict_keys_to_snake_case, dict_diff)
+try:
+    from module_utils.morpheusapi import MorpheusApi, dict_keys_to_snake_case, dict_diff
+except ModuleNotFoundError:
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import (MorpheusApi, dict_keys_to_snake_case, dict_diff)
 
 
 def run_module():

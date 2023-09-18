@@ -218,14 +218,24 @@ ansible_facts:
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.facts.namespace import PrefixFactNamespace
 from ansible.module_utils.facts import ansible_collector
-from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import dict_keys_to_snake_case
-from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_database import MorpheusDatabaseFactCollector
-from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_elastic import MorpheusElasticFactCollector
-from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_license import MorpheusLicenseFactCollector
-from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_rabbitmq import MorpheusRabbitmqFactCollector
-from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_settings import MorpheusSettingsFactCollector
-from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_system import MorpheusSystemFactCollector
-from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_threads import MorpheusThreadsFactCollector
+try:
+    from module_utils.morpheusapi import dict_keys_to_snake_case
+    from module_utils.facts.appliance_database import MorpheusDatabaseFactCollector
+    from module_utils.facts.appliance_elastic import MorpheusElasticFactCollector
+    from module_utils.facts.appliance_license import MorpheusLicenseFactCollector
+    from module_utils.facts.appliance_rabbitmq import MorpheusRabbitmqFactCollector
+    from module_utils.facts.appliance_settings import MorpheusSettingsFactCollector
+    from module_utils.facts.appliance_system import MorpheusSystemFactCollector
+    from module_utils.facts.appliance_threads import MorpheusThreadsFactCollector
+except ModuleNotFoundError:
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import dict_keys_to_snake_case
+    from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_database import MorpheusDatabaseFactCollector
+    from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_elastic import MorpheusElasticFactCollector
+    from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_license import MorpheusLicenseFactCollector
+    from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_rabbitmq import MorpheusRabbitmqFactCollector
+    from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_settings import MorpheusSettingsFactCollector
+    from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_system import MorpheusSystemFactCollector
+    from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_threads import MorpheusThreadsFactCollector
 
 
 def run_module():

@@ -196,7 +196,10 @@ morpheus_instances:
 import re
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
-from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi, dict_filter, dict_keys_to_snake_case
+try:
+    from module_utils.morpheusapi import MorpheusApi, dict_filter, dict_keys_to_snake_case
+except ModuleNotFoundError:
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi, dict_filter, dict_keys_to_snake_case
 
 
 API_FILTER_KEYS = {

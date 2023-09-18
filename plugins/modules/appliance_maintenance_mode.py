@@ -48,7 +48,10 @@ success:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
-from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi, success_response
+try:
+    from module_utils.morpheusapi import MorpheusApi, success_response
+except ModuleNotFoundError:
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi, success_response
 
 
 def run_module():
