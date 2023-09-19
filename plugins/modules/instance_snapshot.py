@@ -125,13 +125,13 @@ from time import sleep
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:
+    import module_utils.morpheus_funcs as mf
     from module_utils.morpheusapi import MorpheusApi
     from module_utils.morpheus_classes import InstanceSnapshots, SnapshotAction
-    from module_utils.morpheus_funcs import instance_filter, class_to_dict, dict_diff
 except ModuleNotFoundError:
+    import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
     from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
     from ansible_collections.morpheus.core.plugins.module_utils.morpheus_classes import InstanceSnapshots, SnapshotAction
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs import instance_filter, class_to_dict, dict_diff
 
 
 def exec_snapshot_actions(actions: list[SnapshotAction]) -> list[dict]:
@@ -330,7 +330,7 @@ def run_module():
     instances = None
     instance_snapshots = None
     if module.params['id'] is not None or module.params['name'] is not None:
-        instances = instance_filter(morpheus_api, module.params)
+        instances = mf.instance_filter(morpheus_api, module.params)
         sort = module.params['snapshot_age'] == 'latest'
         instance_snapshots = [
             InstanceSnapshots(instance['name'],
@@ -371,7 +371,7 @@ def run_module():
     snapshot_actions = action_func(morpheus_api=morpheus_api)
 
     result['snapshot_results'] = exec_snapshot_actions(snapshot_actions) \
-        if not module.check_mode else [class_to_dict(action) for action in snapshot_actions]
+        if not module.check_mode else [mf.class_to_dict(action) for action in snapshot_actions]
 
     result['changed'] = any(action_result['success'] for action_result in result['snapshot_results']) \
         if not module.check_mode else True
@@ -419,12 +419,12 @@ def run_module():
             ]
 
             for inst_snapshot in updated_snapshots:
-                before = class_to_dict(
+                before = mf.class_to_dict(
                     next((inst for inst in instance_snapshots if inst.instance_id == inst_snapshot.instance_id), ValueError)
                 )
-                after = class_to_dict(inst_snapshot)
+                after = mf.class_to_dict(inst_snapshot)
 
-                changed, diff = dict_diff(after, before)
+                changed, diff = mf.dict_diff(after, before)
 
                 if changed:
                     result['diff'].append({

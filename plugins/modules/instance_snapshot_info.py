@@ -82,13 +82,13 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 
 try:
+    import module_utils.morpheus_funcs as mf
     from module_utils.morpheusapi import MorpheusApi
     from module_utils.morpheus_classes import InstanceSnapshots
-    from module_utils.morpheus_funcs import instance_filter, class_to_dict
 except ModuleNotFoundError:
+    import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
     from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
     from ansible_collections.morpheus.core.plugins.module_utils.morpheus_classes import InstanceSnapshots
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs import instance_filter, class_to_dict
 
 
 def run_module():
@@ -122,10 +122,10 @@ def run_module():
     connection = Connection(module._socket_path)
     morpheus_api = MorpheusApi(connection)
 
-    instances = instance_filter(morpheus_api, module.params)
+    instances = mf.instance_filter(morpheus_api, module.params)
 
     result['instance_snapshots'] = [
-        class_to_dict(InstanceSnapshots(
+        mf.class_to_dict(InstanceSnapshots(
             instance_name=instance['name'],
             instance_id=instance['id'],
             morpheus_api=morpheus_api

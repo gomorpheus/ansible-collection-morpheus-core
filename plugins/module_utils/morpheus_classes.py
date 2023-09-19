@@ -12,11 +12,11 @@ author: James Riach
 
 from datetime import datetime
 try:
-    from morpheusapi import MorpheusApi, dict_keys_to_snake_case
-    from morpheus_funcs import class_to_dict, success_response
+    import morpheus_funcs as mf
+    from morpheusapi import MorpheusApi
 except ModuleNotFoundError:
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi, dict_keys_to_snake_case
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs import class_to_dict, success_response
+    import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
 
 
 class InstanceSnapshots():
@@ -35,7 +35,7 @@ class InstanceSnapshots():
         """Retrieve the Snapshots for the Instance
         """
         self.snapshots = [
-            dict_keys_to_snake_case(snapshot)
+            mf.dict_keys_to_snake_case(snapshot)
             for snapshot in self._morpheus_api.get_instance_snapshots(self.instance_id)
         ]
 
@@ -80,22 +80,22 @@ class SnapshotAction():
             'name': self.snapshot_name,
             'description': self.snapshot_description
         })
-        self.success, self.msg = success_response(response)
+        self.success, self.msg = mf.success_response(response)
 
     def _remove(self):
         response = self._morpheus_api.delete_snapshot(self.snapshot_id)
-        self.success, self.msg = success_response(response)
+        self.success, self.msg = mf.success_response(response)
 
     def _remove_all(self):
         response = self._morpheus_api.delete_all_instance_snapshots(self.instance_id)
-        self.success, self.msg = success_response(response)
+        self.success, self.msg = mf.success_response(response)
 
     def _revert(self):
         response = self._morpheus_api.snapshot_revert(
             self.instance_id,
             self.snapshot_id
         )
-        self.success, self.msg = success_response(response)
+        self.success, self.msg = mf.success_response(response)
 
     def execute(self) -> dict:
         """Perform the required action against the Snapshot
@@ -112,4 +112,4 @@ class SnapshotAction():
 
         action()
 
-        return class_to_dict(self)
+        return mf.class_to_dict(self)

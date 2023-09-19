@@ -197,9 +197,11 @@ import re
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:
-    from module_utils.morpheusapi import MorpheusApi, dict_filter, dict_keys_to_snake_case
+    import module_utils.morpheus_funcs as mf
+    from module_utils.morpheusapi import MorpheusApi
 except ModuleNotFoundError:
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi, dict_filter, dict_keys_to_snake_case
+    import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
 
 
 API_FILTER_KEYS = {
@@ -294,12 +296,12 @@ def run_module():
     if module.params['detail'] in ['minimal', 'summary']:
         filter_keys = API_FILTER_KEYS[module.params['detail']]
 
-        filtered_info = [dict_filter(instance, list(filter_keys)) for instance in response]
+        filtered_info = [mf.dict_filter(instance, list(filter_keys)) for instance in response]
 
-        result['morpheus_instances'] = [dict_keys_to_snake_case(simple_item) for simple_item in filtered_info]
+        result['morpheus_instances'] = [mf.dict_keys_to_snake_case(simple_item) for simple_item in filtered_info]
         module.exit_json(**result)
 
-    result['morpheus_instances'] = [dict_keys_to_snake_case(response_item) for response_item in response]
+    result['morpheus_instances'] = [mf.dict_keys_to_snake_case(response_item) for response_item in response]
 
     module.exit_json(**result)
 

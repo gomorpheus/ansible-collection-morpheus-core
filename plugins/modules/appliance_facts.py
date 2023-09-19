@@ -219,7 +219,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.facts.namespace import PrefixFactNamespace
 from ansible.module_utils.facts import ansible_collector
 try:
-    from module_utils.morpheusapi import dict_keys_to_snake_case
+    import module_utils.morpheus_funcs as mf
     from module_utils.facts.appliance_database import MorpheusDatabaseFactCollector
     from module_utils.facts.appliance_elastic import MorpheusElasticFactCollector
     from module_utils.facts.appliance_license import MorpheusLicenseFactCollector
@@ -228,7 +228,7 @@ try:
     from module_utils.facts.appliance_system import MorpheusSystemFactCollector
     from module_utils.facts.appliance_threads import MorpheusThreadsFactCollector
 except ModuleNotFoundError:
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import dict_keys_to_snake_case
+    import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
     from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_database import MorpheusDatabaseFactCollector
     from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_elastic import MorpheusElasticFactCollector
     from ansible_collections.morpheus.core.plugins.module_utils.facts.appliance_license import MorpheusLicenseFactCollector
@@ -272,7 +272,7 @@ def run_module():
 
     fact_results = collector.collect(module=module)
 
-    module.exit_json(ansible_facts=dict_keys_to_snake_case(fact_results))
+    module.exit_json(ansible_facts=mf.dict_keys_to_snake_case(fact_results))
 
 
 def main():

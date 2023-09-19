@@ -141,13 +141,11 @@ from functools import partial
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:
-    from module_utils.morpheusapi import (
-        MorpheusApi, dict_diff, dict_filter, dict_keys_to_snake_case
-    )
+    import module_utils.morpheus_funcs as mf
+    from module_utils.morpheusapi import MorpheusApi
 except ModuleNotFoundError:
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import (
-        MorpheusApi, dict_diff, dict_filter, dict_keys_to_snake_case
-    )
+    import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
 
 
 INSTANCE_INFO_KEYS = (
@@ -178,12 +176,12 @@ def instance_filter(morpheus_api: MorpheusApi, module_params: dict) -> list:
             return []
 
         if module_params['match_name'] == 'first':
-            return [dict_filter(response[0], INSTANCE_INFO_KEYS)]
+            return [mf.dict_filter(response[0], INSTANCE_INFO_KEYS)]
 
         if module_params['match_name'] == 'last':
-            return [dict_filter(response[-1], INSTANCE_INFO_KEYS)]
+            return [mf.dict_filter(response[-1], INSTANCE_INFO_KEYS)]
 
-    return [dict_filter(instance, INSTANCE_INFO_KEYS) for instance in response]
+    return [mf.dict_filter(instance, INSTANCE_INFO_KEYS) for instance in response]
 
 
 def instance_state(morpheus_api: MorpheusApi, instance_id: int) -> dict:
@@ -193,7 +191,7 @@ def instance_state(morpheus_api: MorpheusApi, instance_id: int) -> dict:
         }
     )
 
-    return dict_filter(response, INSTANCE_INFO_KEYS)
+    return mf.dict_filter(response, INSTANCE_INFO_KEYS)
 
 
 def mock_diff(instance: dict, expected_state: str, state_key: str = 'status') -> dict:
@@ -340,7 +338,7 @@ def run_module():
     if module.check_mode:
         module.exit_json(**result)
 
-    results = [dict_keys_to_snake_case(action_func(instance['id'])) for instance in instances]
+    results = [mf.dict_keys_to_snake_case(action_func(instance['id'])) for instance in instances]
 
     # Check Success Results
     if module.params['state'] not in ['absent', 'locked', 'unlocked']:
@@ -363,7 +361,7 @@ def run_module():
         inst_idx = {v['id']: idx for idx, v in enumerate(instances)}
 
         for after_state in result['instance_state']:
-            changed, diff = dict_diff(after_state, instances[inst_idx[after_state['id']]])
+            changed, diff = mf.dict_diff(after_state, instances[inst_idx[after_state['id']]])
             if changed:
                 for d in diff:
                     d['after'] = '{0} ({1}) {2}'.format(after_state['name'], after_state['id'], d['after'])
