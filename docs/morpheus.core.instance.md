@@ -21,7 +21,7 @@ Provides basic management of Morpheus Instances, such as setting running state, 
 |Attribute|Support|Comments|
 |---|---|---|
 |check_mode|Full|Can run in ```check_mode``` and predict changed status without performing any modifications|
-|diff_mode|Partial|Will return what has changed (or needs changing when run with ```check_mode```)<br/>Not all states support diff mode|
+|diff_mode|Full|Will return what has changed (or needs changing when run with ```check_mode```)|
 
 ## Examples
 
