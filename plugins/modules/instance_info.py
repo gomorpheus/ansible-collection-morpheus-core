@@ -11,19 +11,6 @@ description:
 version_added: 0.4.0
 author: James Riach
 options:
-    id:
-        description:
-            - Specify the id of an instance.
-        type: int
-    name:
-        description:
-            - Filter instances by name.
-        type: string
-    regex_name:
-        description:
-            - Treat the name parameter as a regular expression.
-        default: false
-        type: bool
     detail:
         description:
             - Specify the level of detail returned for matching instances.
@@ -46,10 +33,6 @@ options:
         description:
             - Filter by instance status, e.g. running
         type: string
-    environment:
-        description:
-            - Filter instances by environment.
-        type: string
     deleted:
         description:
             - Include, Exclude or Only show deleted instances or those pending removal.
@@ -59,21 +42,9 @@ options:
             - only
         default: exclude
         type: string
-    labels:
-        description:
-            - Filter instances by matching labels.
-        type: list
-        elements: string
-    match_all_labels:
-        description:
-            - If labels have been specified, filter instances by those that match all specified labels.
-        default: false
-        type: bool
-    tags:
-        description:
-            - Filter instances by matching tags.
-        type: list
-        elements: string
+extends_documentation_fragment:
+    - morpheus.core.instance_filter_base
+    - morpheus.core.instance_filter_extended
 '''
 
 EXAMPLES = r'''

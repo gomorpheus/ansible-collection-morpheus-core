@@ -11,21 +11,6 @@ description:
 version_added: 0.5.0
 author: James Riach
 options:
-    id:
-        description:
-            - The id of the Instance to Manage.
-            - Mutually Exclusive with I(name).
-        type: string
-    name:
-        description:
-            - The name of the Instance to Manage. Required if id is not specified.
-            - Mutually Exclusive with I(id).
-        type: string
-    regex_name:
-        description:
-            - Treat the name parameter as a regular expression.
-        default: false
-        type: bool
     match_name:
         description:
             - Define instance selection method when specifying I(name) should more than one instance match.
@@ -78,6 +63,8 @@ options:
                     - Force removal of instance.
                 default: false
                 type: bool
+extends_documentation_fragment:
+    - morpheus.core.instance_filter_base
 attributes:
     check_mode:
         support: full
