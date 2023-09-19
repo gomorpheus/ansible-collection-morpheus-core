@@ -238,7 +238,9 @@ def run_module():
         results = [mf.dict_keys_to_snake_case(action_func(instance['id'])) for instance in instances]
 
         for response in results:
-            success, _ = mf.success_response(response)
+            success, _ = mf.success_response(response[list(response.keys())[0]]) \
+                if module.params['state'] not in ['absent', 'locked', 'unlocked'] \
+                else mf.success_response(response)
             result['changed'] = success if not result['changed'] else False
             result['failed'] = not success if not result['failed'] else False
     else:
