@@ -82,7 +82,7 @@ attributes:
     check_mode:
         support: full
     diff_mode:
-        support: partial
+        support: full
 '''
 
 EXAMPLES = r'''
@@ -136,8 +136,7 @@ instance_state:
         ]
 '''
 
-import re
-from functools import partial
+from copy import deepcopy
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:
@@ -156,34 +155,6 @@ INSTANCE_INFO_KEYS = (
 )
 
 
-def instance_filter(morpheus_api: MorpheusApi, module_params: dict) -> list:
-    api_params = module_params.copy()
-    if module_params['regex_name']:
-        api_params['name'] = None
-
-    for k in ['regex_name', 'match_name', 'state', 'remove_options']:
-        del api_params[k]
-
-    response = morpheus_api.get_instances(api_params)
-    if not isinstance(response, list):
-        response = [response]
-
-    if module_params['name'] is not None and module_params['regex_name']:
-        response = [inst for inst in response if re.match(module_params['name'], inst['name'])]
-
-    if len(response) > 1:
-        if module_params['match_name'] == 'none':
-            return []
-
-        if module_params['match_name'] == 'first':
-            return [mf.dict_filter(response[0], INSTANCE_INFO_KEYS)]
-
-        if module_params['match_name'] == 'last':
-            return [mf.dict_filter(response[-1], INSTANCE_INFO_KEYS)]
-
-    return [mf.dict_filter(instance, INSTANCE_INFO_KEYS) for instance in response]
-
-
 def instance_state(morpheus_api: MorpheusApi, instance_id: int) -> dict:
     response = morpheus_api.get_instances(
         {
@@ -194,12 +165,23 @@ def instance_state(morpheus_api: MorpheusApi, instance_id: int) -> dict:
     return mf.dict_filter(response, INSTANCE_INFO_KEYS)
 
 
-def mock_diff(instance: dict, expected_state: str, state_key: str = 'status') -> dict:
-    diff = {
-        'after': '{0} ({1}) {2} = {3}\n'.format(instance['name'], instance['id'], state_key, expected_state),
-        'before': '{0} ({1}) {2} = {3}\n'.format(instance['name'], instance['id'], state_key, instance['status'])
-    }
-    return diff
+def parse_check_mode(module_params: dict, instance: dict) -> dict:
+    state_key = 'status' if module_params['state'] not in ['locked', 'unlocked'] else 'locked'
+
+    instance[state_key] = {
+        'absent': 'removing',
+        'backup': instance[state_key],
+        'eject': instance[state_key],
+        'locked': True,
+        'restarted': 'restarting',
+        'running': 'starting',
+        'started': 'starting',
+        'stopped': 'stopping',
+        'suspended': 'suspended',
+        'unlocked': False
+    }.get(module_params['state'])
+
+    return instance
 
 
 def run_module():
@@ -243,7 +225,6 @@ def run_module():
     result = {
         'changed': False,
         'check_mode': module.check_mode,
-        'diff': [],
         'failed': False,
         'instance_state': []
     }
@@ -251,122 +232,61 @@ def run_module():
     connection = Connection(module._socket_path)
     morpheus_api = MorpheusApi(connection)
 
-    instances = instance_filter(morpheus_api, module.params)
+    instances = mf.instance_filter(morpheus_api, module.params, INSTANCE_INFO_KEYS)
 
-    action_func = None
+    action_func = {
+        'absent': morpheus_api.delete_instance,
+        'backup': morpheus_api.backup_instance,
+        'eject': morpheus_api.eject_instance,
+        'locked': morpheus_api.lock_instance,
+        'restarted': morpheus_api.restart_instance,
+        'running': morpheus_api.start_instance,
+        'started': morpheus_api.start_instance,
+        'stopped': morpheus_api.stop_instance,
+        'suspended': morpheus_api.suspend_instance,
+        'unlocked': morpheus_api.unlock_instance
+    }.get(module.params['state'])
 
-    if module.params['state'] == 'absent':
-        action_func = partial(morpheus_api.delete_instance, api_params=module.params['remove_options'])
-        if module.check_mode:
-            result['changed'] = True
-        if module._diff and module.check_mode:
-            result['diff'] = [
-                mock_diff(inst, 'absent')
-                for inst in instances
-            ]
+    if not module.check_mode:
+        results = [mf.dict_keys_to_snake_case(action_func(instance['id'])) for instance in instances]
 
-    elif module.params['state'] == 'restarted':
-        action_func = morpheus_api.restart_instance
-        if module.check_mode:
-            result['changed'] = any(inst['status'] not in ['restarting'] for inst in instances)
-        if module._diff and module.check_mode:
-            result['diff'] = [
-                mock_diff(inst, 'restarting')
-                for inst in instances if inst['status'] not in ['restarting']
-            ]
-
-    elif module.params['state'] == 'stopped':
-        action_func = morpheus_api.stop_instance
-        if module.check_mode:
-            result['changed'] = any(inst['status'] not in ['stopped', 'starting'] for inst in instances)
-        if module._diff and module.check_mode:
-            result['diff'] = [
-                mock_diff(inst, 'stopped')
-                for inst in instances if inst['status'] not in ['stopped', 'stopping']
-            ]
-
-    elif module.params['state'] in ['running', 'started']:
-        action_func = morpheus_api.start_instance
-        if module.check_mode:
-            result['changed'] = any(inst['status'] not in ['running', 'starting'] for inst in instances)
-        if module._diff and module.check_mode:
-            result['diff'] = [
-                mock_diff(inst, 'running')
-                for inst in instances if inst['status'] not in ['running', 'starting']
-            ]
-
-    elif module.params['state'] == 'suspended':
-        action_func = morpheus_api.suspend_instance
-        if module.check_mode:
-            result['changed'] = any(inst['status'] not in ['suspended', 'stopped', 'stopping'] for inst in instances)
-        if module._diff and module.check_mode:
-            result['diff'] = [
-                mock_diff(inst, 'suspended')
-                for inst in instances if inst['status'] not in ['suspended', 'stopped', 'stopping']
-            ]
-
-    elif module.params['state'] == 'locked':
-        action_func = morpheus_api.lock_instance
-        if module.check_mode:
-            result['changed'] = any(inst['locked'] for inst in instances)
-        if module._diff and module.check_mode:
-            result['diff'] = [
-                mock_diff(inst, 'True', 'locked')
-                for inst in instances if not inst['locked']
-            ]
-
-    elif module.params['state'] == 'unlocked':
-        action_func = morpheus_api.unlock_instance
-        if module.check_mode:
-            result['changed'] = not any(inst['locked'] for inst in instances)
-        if module._diff and module.check_mode:
-            result['diff'] = [
-                mock_diff(inst, 'False', 'locked')
-                for inst in instances if inst['locked']
-            ]
-
-    elif module.params['state'] == 'backup':
-        action_func = morpheus_api.backup_instance
-        if module.check_mode:
-            result['changed'] = True
-
-    elif module.params['state'] == 'eject':
-        action_func = morpheus_api.eject_instance
-        if module.check_mode:
-            result['changed'] = True
-
-    if module.check_mode:
-        module.exit_json(**result)
-
-    results = [mf.dict_keys_to_snake_case(action_func(instance['id'])) for instance in instances]
-
-    # Check Success Results
-    if module.params['state'] not in ['absent', 'locked', 'unlocked']:
-        for instance in results:
-            for k in instance.keys():
-                if instance[k]['success']:
-                    result['changed'] = True
-                else:
-                    result['failed'] = True
+        for response in results:
+            success, _ = mf.success_response(response)
+            result['changed'] = success if not result['changed'] else False
+            result['failed'] = not success if not result['failed'] else False
     else:
-        for instance in results:
-            if instance['success']:
-                result['changed'] = True
-            else:
-                result['failed'] = True
+        result['changed'] = True
 
-    result['instance_state'] = [instance_state(morpheus_api, inst['id']) for inst in instances]
+    result['instance_state'] = [
+        instance_state(morpheus_api, inst['id']) for inst in instances
+    ] if not module.check_mode else [
+        parse_check_mode(
+            module_params=module.params,
+            instance=inst
+        ) for inst in deepcopy(instances)
+    ]
 
     if module._diff:
+        result['diff'] = []
+
         inst_idx = {v['id']: idx for idx, v in enumerate(instances)}
 
         for after_state in result['instance_state']:
-            changed, diff = mf.dict_diff(after_state, instances[inst_idx[after_state['id']]])
-            if changed:
-                for d in diff:
-                    d['after'] = '{0} ({1}) {2}'.format(after_state['name'], after_state['id'], d['after'])
-                    d['before'] = '{0} ({1}) {2}'.format(after_state['name'], after_state['id'], d['before'])
-                    result['diff'].append(d)
+            if module.params['state'] in ['backup', 'eject']:
+                result['diff'].append({
+                    'prepared': 'Eject media from {0} ({1})\n'.format(after_state['name'], after_state['id'])
+                    if module.params['state'] == 'eject' else
+                    'Backup {0} ({1})\n'.format(after_state['name'], after_state['id'])
+                })
+            else:
+                changed, diff = mf.dict_diff(after_state, instances[inst_idx[after_state['id']]])
+                if changed:
+                    result['diff'].append({
+                        'after_header': '{0} ({1})'.format(after_state['name'], after_state['id']),
+                        'after': '\n'.join(d['after'] for d in diff),
+                        'before_header': '{0} ({1})'.format(after_state['name'], after_state['id']),
+                        'before': '\n'.join([d['before'] for d in diff])
+                    })
 
     if result['failed']:
         module.fail_json(
