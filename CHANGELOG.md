@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.x.x
+## v0.5.0
 - Added `instance` module
 - Added `instance_snapshot_info` module
 - Added `instance_snapshot` module
