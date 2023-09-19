@@ -279,6 +279,7 @@ Individual Module Documentation can be found included with the module and can be
 |[appliance_settings](docs/morpheus.core.appliance_settings.md)|Configure Morpheus Appliance Settings|
 |[appliance_maintenance_mode](docs/morpheus.core.appliance_maintenance_mode.md)|Set Morpheus Appliance Maintenance Mode|
 |[instance_info](docs/morpheus.core.instance_info.md)|Retrieve information about Morpheus Instances|
+|[instance](docs/morpheus.core.instance.md)|Manage state of Morpheus Instances|
 |[instance_snapshot_info](docs/morpheus.core.instance_snapshot_info.md)|Gather information about Instance Snapshots|
 |[instance_snapshot](docs/morpheus.core.instance_snapshot.md)|Manage Instance Snapshots|
 
