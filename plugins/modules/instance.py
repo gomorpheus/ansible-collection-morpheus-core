@@ -8,7 +8,7 @@ module: instance
 short_description: Basic Management of Morpheus Instances
 description:
     - This module provides basic management of Morpheus Instances, such as setting running state, backup, deletion and lock status.
-version_added: 0.x.x
+version_added: 0.5.0
 author: James Riach
 options:
     id:

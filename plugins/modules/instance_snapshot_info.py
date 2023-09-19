@@ -8,7 +8,7 @@ module: instance_snapshot_info
 short_description: Gather Snapshot information for instances
 description:
     - Gather Snapshot information for instances.
-version_added: 0.x.x
+version_added: 0.5.0
 author: James Riach
 options:
     match_name:

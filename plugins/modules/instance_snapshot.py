@@ -8,7 +8,7 @@ module: instance_snapshot
 short_description: Manage Instance Snapshots
 description:
     - Manage Snapshots of Morpheus Instances.
-version_added: 0.x.x
+version_added: 0.5.0
 author: James Riach
 options:
     match_name:
