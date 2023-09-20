@@ -400,7 +400,7 @@ def run_module():
                 'prepared': '\n'.join(prepared_actions)
             })
 
-        if instances is not None:
+        if instances is not None and module.params['state'] != 'revert':
             updated_snapshots = [
                 InstanceSnapshots(instance['name'],
                                   instance['id'],
