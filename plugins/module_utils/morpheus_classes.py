@@ -6,7 +6,7 @@ name: morph_api_classes
 short_description: Shared Morpheus API Classes
 description:
     - Shared Classes for Morpheus API Modules
-version_added: 0.x.x
+version_added: 0.5.0
 author: James Riach
 '''
 

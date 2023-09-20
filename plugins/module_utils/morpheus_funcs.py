@@ -6,7 +6,7 @@ name: morpheus_funcs
 short_description: Shared Morpheus Module Functions
 description:
     - Shared Functions for Morpheus Ansible Modules
-version_added: 0.x.x
+version_added: 0.5.0
 author: James Riach
 '''
 
