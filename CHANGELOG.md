@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.5.1
+- Added `all_apps` search type for inventory
+
 ## v0.5.0
 - Added `instance` module
 - Added `instance_snapshot_info` module
