@@ -4,7 +4,7 @@
   - [Requirements](#requirements)
   - [Installation](#installation)
     - [Ansible 2.9](#ansible-29)
-    - [Ansible >= 2.10](#ansible--210)
+    - [Ansible \>= 2.10](#ansible--210)
   - [Inventory Plugin Usage](#inventory-plugin-usage)
     - [Inventory Variables](#inventory-variables)
     - [Examples](#examples)
@@ -12,6 +12,7 @@
       - [Name or Label](#name-or-label)
       - [Tag](#tag)
       - [App](#app)
+      - [All Apps](#all-apps)
       - [Cloud](#cloud)
     - [Token Requirement](#token-requirement)
     - [Troubleshooting](#troubleshooting)
@@ -100,7 +101,7 @@ Within Morpheus, the dynamic inventory plugin will query the API and return a se
 |plugin|yes|Use `morpheus_inventory` to activate the plugin|
 |groups|yes||List used for group definition|
 |name|yes|Required except for `cloud` search types|
-|searchtype|yes|Search type for host matching.  Values: `label`, `name`, `app`, `cloud`, `tag`|
+|searchtype|yes|Search type for host matching.  Values: `label`, `name`, `app`, `all_apps`, `cloud`, `tag`|
 |searchstring|yes|Search string - the `app` and `tag` types uses this as a list, otherwise it is a string|
 |morpheus_url|yes|Morpheus URL|
 |morpheus_api_key|yes|Required for Morpheus versions <= 5.0.0|
@@ -197,6 +198,65 @@ morpheus_api_key: <your API key>
 This will create two groups: `ui` and `db`.
 `ui` will contain instances from the `UI` tier of the `2tier` application that was deployed in Morpheus from a blueprint.
 `db` will contain instances from the `Database` tier of the `2tier` application.
+
+#### All Apps
+
+The `all_apps` search type will create a groups for each app and child groups for each app tier.
+
+**Example**
+
+```yaml
+plugin: morpheus.core.morpheus_inventory
+groups:
+  - searchtype: all_apps
+```
+
+If you have 2 apps named `AppA` and `AppB` with two tiers each named `Database` and `Web`, You will get the following inventory:
+
+```json
+{
+  "all": {
+    "children": [
+      "AppA",
+      "AppB"
+    ]
+  },
+  "AppA": {
+    "children": [
+      "AppA_Database",
+      "AppA_Web"
+    ]
+  },
+  "AppA_Database": {
+    "hosts": [
+      "host1",
+      "host2"
+    ]
+  },
+  "AppA_Web": {
+    "hosts": [
+      "host3",
+      "host4"
+    ]
+  },
+  "AppB": {
+    "children": [
+      "AppB_Database",
+      "AppB_Web"
+    ]
+  }
+  ..... and so on.
+}
+```
+
+If you construct a playbook and workflow in Morpheus to take advantage of this format, you can dynamically target Apps and App Tiers.  An example playbook:
+
+```
+- hosts: "{{ morpheus['customOptions']['morph_appname'] }}_{{ morpheus['customOptions']['morph_app_tier'] }}"
+  gather_facts: false
+  tasks:
+    - ping:
+```
 
 #### Cloud
 
