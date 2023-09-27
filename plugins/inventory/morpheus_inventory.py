@@ -92,7 +92,7 @@ class InventoryModule(BaseInventoryPlugin):
 
         if searchtype in ["label", "name", "tag"]:
             path = "/instances?max=-1"
-        elif searchtype == "app":
+        elif searchtype == "app" or searchtype == "all_apps":
             path = "/apps?max=-1"
         elif searchtype == "cloud":
             cloudid = None
@@ -184,7 +184,7 @@ class InventoryModule(BaseInventoryPlugin):
 
         return resultdict['server']
 
-    def _add_morpheus_container(self, group, containerid, container, platform_query=False):
+    def _add_morpheus_container(self, group, containerid, container, platform_query=False, app_tier=None):
         server = self._get_server_details(container['server']['id'])
         platform = server['serverOs']['category']
         if platform_query:
@@ -194,6 +194,14 @@ class InventoryModule(BaseInventoryPlugin):
                 group = platform
             self.inventory.add_group(group)
             self.print_verbose_message("Matched %s with platform %s, adding to group %s" % (container['externalHostname'], group, group))
+        if app_tier:
+            self.print_verbose_message(container)
+            self.print_verbose_message(app_tier)
+            tiergroup = "%s_%s" % (group, app_tier)
+            self.inventory.add_group(group)
+            self.inventory.add_group(tiergroup)
+            self.inventory.add_child(group, tiergroup)
+            group=tiergroup
         container_hostname = container['externalHostname']
         self.inventory.add_host(
             host=container_hostname,
@@ -214,7 +222,7 @@ class InventoryModule(BaseInventoryPlugin):
                                         'ansible_host',
                                         container['ip'])
 
-    def _add_morpheus_instance(self, group, instance):
+    def _add_morpheus_instance(self, group, instance, app_tier=None):
         platform_query = False
         if group == "platform_query":
             platform_query = True
@@ -228,9 +236,9 @@ class InventoryModule(BaseInventoryPlugin):
         else:
             containerdata = self._get_containers_from_morpheus(instance['id'])
             containerid = containerdata['containers'][0]['id']
-            self._add_morpheus_container(group, containerid, containerdata['containers'][0], platform_query)
+            self._add_morpheus_container(group, containerid, containerdata['containers'][0], platform_query, app_tier=app_tier)
 
-    def _filter_morpheus_output(self, rawresponse, group, searchtype, searchstring):
+    def _filter_morpheus_output(self, rawresponse, group, searchtype, searchstring=None):
         self.print_verbose_message("Found a total of %s instances" % rawresponse['meta']['total'])
         if self.morpheus_env:
             try:
@@ -266,6 +274,13 @@ class InventoryModule(BaseInventoryPlugin):
                             for instance in apptier['appInstances']:
                                 self.print_verbose_message("Matched %s in app %s and tier %s, adding to group %s" % (instance['instance']['name'], app['name'], apptier['tier']['name'], group))
                                 self._add_morpheus_instance(group, instance['instance'])
+        elif searchtype == "all_apps":
+            for app in rawresponse['apps']:
+                if app['appStatus'] in ['running', 'completed']:
+                    for apptier in app['appTiers']:
+                        for instance in apptier['appInstances']:
+                            self.print_verbose_message("Matched %s in app %s and tier %s, adding to group" % (instance['instance']['name'], app['name'], apptier['tier']['name']))
+                            self._add_morpheus_instance(app['name'], instance['instance'], app_tier=apptier['tier']['name'])
         elif searchtype == "cloud":
             for instance in rawresponse['instances']:
                 self._add_morpheus_instance_cloud_bytag(instance)
@@ -357,6 +372,10 @@ class InventoryModule(BaseInventoryPlugin):
                 self.print_verbose_message("Processing cloud %s" % group['searchstring'])
                 rawoutput = self._get_data_from_morpheus(searchtype=group['searchtype'], searchstring=group['searchstring'])
                 self._filter_morpheus_output(rawoutput, None, group['searchtype'], group['searchstring'])
+            elif group['searchtype'] == 'all_apps':
+                self.print_verbose_message("Processing all apps")
+                rawoutput = self._get_data_from_morpheus(searchtype=group['searchtype'])
+                self._filter_morpheus_output(rawoutput, None, group['searchtype'])
             else:
                 self.print_verbose_message("Processing group %s" % group['name'])
                 self.inventory.add_group(group['name'])
