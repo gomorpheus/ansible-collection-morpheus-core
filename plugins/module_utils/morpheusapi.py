@@ -23,6 +23,7 @@ INSTANCES_PATH = '/api/instances'
 LICENSE_PATH = '/api/license'
 MAINTENANCE_MODE_PATH = '{}/maintenance'.format(APPLIANCE_SETTINGS_PATH)
 SNAPSHOTS_PATH = '/api/snapshots'
+VIRTUAL_IMAGES_PATH = '/api/virtual-images'
 
 
 class MorpheusApi():
@@ -123,6 +124,21 @@ class MorpheusApi():
 
         response = self.connection.send_request(path=path)
         return self._return_reponse_key(response, 'instances')
+
+    def get_virtual_images(self, api_params: dict):
+        params = mf.dict_keys_to_camel_case(api_params)
+        params['max'] = -1
+
+        if params['virtualImageId'] is not None:
+            path = '{0}/{1}'.format(VIRTUAL_IMAGES_PATH, params['virtualImageId'])
+            response = self.connection.send_request(path=path)
+            return self._return_reponse_key(response, 'virtualImage')
+
+        url_params = self._url_params(params)
+        path = self._build_url(VIRTUAL_IMAGES_PATH, url_params)
+
+        response = self.connection.send_request(path=path)
+        return self._return_reponse_key(response, 'virtualImages')
 
     def backup_instance(self, instance_id: int):
         path = '{0}/{1}/backup'.format(INSTANCES_PATH, instance_id)
