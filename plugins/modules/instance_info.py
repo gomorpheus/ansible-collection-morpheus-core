@@ -11,19 +11,6 @@ description:
 version_added: 0.4.0
 author: James Riach
 options:
-    id:
-        description:
-            - Specify the id of an instance.
-        type: int
-    name:
-        description:
-            - Filter instances by name.
-        type: string
-    regex_name:
-        description:
-            - Treat the name parameter as a regular expression.
-        default: false
-        type: bool
     detail:
         description:
             - Specify the level of detail returned for matching instances.
@@ -46,10 +33,6 @@ options:
         description:
             - Filter by instance status, e.g. running
         type: string
-    environment:
-        description:
-            - Filter instances by environment.
-        type: string
     deleted:
         description:
             - Include, Exclude or Only show deleted instances or those pending removal.
@@ -59,21 +42,9 @@ options:
             - only
         default: exclude
         type: string
-    labels:
-        description:
-            - Filter instances by matching labels.
-        type: list
-        elements: string
-    match_all_labels:
-        description:
-            - If labels have been specified, filter instances by those that match all specified labels.
-        default: false
-        type: bool
-    tags:
-        description:
-            - Filter instances by matching tags.
-        type: list
-        elements: string
+extends_documentation_fragment:
+    - morpheus.core.instance_filter_base
+    - morpheus.core.instance_filter_extended
 '''
 
 EXAMPLES = r'''
@@ -196,7 +167,12 @@ morpheus_instances:
 import re
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
-from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi, dict_filter, dict_keys_to_snake_case
+try:
+    import module_utils.morpheus_funcs as mf
+    from module_utils.morpheusapi import MorpheusApi
+except ModuleNotFoundError:
+    import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
 
 
 API_FILTER_KEYS = {
@@ -291,12 +267,12 @@ def run_module():
     if module.params['detail'] in ['minimal', 'summary']:
         filter_keys = API_FILTER_KEYS[module.params['detail']]
 
-        filtered_info = [dict_filter(instance, list(filter_keys)) for instance in response]
+        filtered_info = [mf.dict_filter(instance, list(filter_keys)) for instance in response]
 
-        result['morpheus_instances'] = [dict_keys_to_snake_case(simple_item) for simple_item in filtered_info]
+        result['morpheus_instances'] = [mf.dict_keys_to_snake_case(simple_item) for simple_item in filtered_info]
         module.exit_json(**result)
 
-    result['morpheus_instances'] = [dict_keys_to_snake_case(response_item) for response_item in response]
+    result['morpheus_instances'] = [mf.dict_keys_to_snake_case(response_item) for response_item in response]
 
     module.exit_json(**result)
 

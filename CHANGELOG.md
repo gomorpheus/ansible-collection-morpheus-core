@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.5.0
+- Added `instance` module
+- Added `instance_snapshot_info` module
+- Added `instance_snapshot` module
+
 ## v0.4.0
 - Added `appliance_settings` module
 - Added `appliance_maintenance_mode` module

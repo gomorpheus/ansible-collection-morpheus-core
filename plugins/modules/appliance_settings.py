@@ -268,7 +268,12 @@ appliance_settings:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
-from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import (MorpheusApi, dict_keys_to_snake_case, dict_diff)
+try:
+    import module_utils.morpheus_funcs as mf
+    from module_utils.morpheusapi import MorpheusApi
+except ModuleNotFoundError:
+    import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
 
 
 def run_module():
@@ -335,7 +340,7 @@ def run_module():
     morpheus_api = MorpheusApi(connection)
 
     original_settings = morpheus_api.get_appliance_settings()
-    current_settings = dict_keys_to_snake_case(original_settings)
+    current_settings = mf.dict_keys_to_snake_case(original_settings)
 
     # Check if a param was used that we can't verify a change for
     unverifiable = False
@@ -377,13 +382,13 @@ def run_module():
 
     updated_settings = morpheus_api.get_appliance_settings()
 
-    changed, diff = dict_diff(updated_settings, original_settings)
+    changed, diff = mf.dict_diff(updated_settings, original_settings)
     result['changed'] = True if changed or unverifiable else False
     if module._diff:
         result['diff'] = diff
 
     if result['success']:
-        result['appliance_settings'] = dict_keys_to_snake_case(updated_settings)
+        result['appliance_settings'] = mf.dict_keys_to_snake_case(updated_settings)
 
     if not result['success']:
         module.fail_json('API Request Failed', **result)

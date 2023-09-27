@@ -48,7 +48,12 @@ success:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
-from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi, success_response
+try:
+    import module_utils.morpheus_funcs as mf
+    from module_utils.morpheusapi import MorpheusApi
+except ModuleNotFoundError:
+    import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
 
 
 def run_module():
@@ -98,7 +103,7 @@ def run_module():
 
     response = morpheus_api.set_appliance_maintenance_mode(desired_state)
 
-    result['success'] = success_response(response)
+    result['success'] = mf.success_response(response)
 
     if not result['success']:
         module.fail_json('API Request Failed', **result)
