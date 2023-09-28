@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.x.x
+- Added `virtual_image_info` module
+
 ## v0.5.0
 - Added `instance` module
 - Added `instance_snapshot_info` module
