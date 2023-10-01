@@ -67,6 +67,19 @@ class MorpheusApi():
 
         return args
 
+    def create_virtual_image(self, api_params: dict):
+        payload = mf.dict_keys_to_camel_case(
+            {k: v for k, v in api_params.items() if v is not None}
+        )
+        body = {'virtualImage': payload}
+
+        response = self.connection.send_request(
+            data=body,
+            path=VIRTUAL_IMAGES_PATH,
+            method='POST'
+        )
+        return self._return_reponse_key(response, 'virtualImage')
+
     def get_appliance_settings(self):
         response = self.connection.send_request(path=APPLIANCE_SETTINGS_PATH)
         return self._return_reponse_key(response, 'applianceSettings')
@@ -163,6 +176,13 @@ class MorpheusApi():
         response = self.connection.send_request(path=path, method='DELETE')
         return self._return_reponse_key(response, '')
 
+    def delete_virtual_image(self, virtual_image_id: int):
+        path = '{0}/{1}'.format(VIRTUAL_IMAGES_PATH, virtual_image_id)
+
+        response = self.connection.send_request(path=path, method='DELETE')
+
+        return self._return_reponse_key(response, '')
+
     def eject_instance(self, instance_id: int):
         path = '{0}/{1}/eject'.format(INSTANCES_PATH, instance_id)
         response = self.connection.send_request(path=path, method='PUT')
@@ -212,6 +232,21 @@ class MorpheusApi():
         path = '{0}/{1}/suspend'.format(INSTANCES_PATH, instance_id)
         response = self.connection.send_request(path=path, method='PUT')
         return self._return_reponse_key(response, 'results')
+
+    def update_virtual_image(self, api_params: dict):
+        path = '{0}/{1}'.format(VIRTUAL_IMAGES_PATH, api_params.pop('virtual_image_id'))
+
+        payload = mf.dict_keys_to_camel_case(
+            {k: v for k, v in api_params.items() if v is not None}
+        )
+        body = {'virtualImage': payload}
+
+        response = self.connection.send_request(
+            data=body,
+            path=path,
+            method='PUT'
+        )
+        return self._return_reponse_key(response, 'virtualImage')
 
     def unlock_instance(self, instance_id: int):
         path = '{0}/{1}/unlock'.format(INSTANCES_PATH, instance_id)
