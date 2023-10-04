@@ -10,6 +10,8 @@ version_added: 0.3.0
 author: James Riach
 '''
 
+import binascii
+import base64
 import urllib.parse
 try:
     import morpheus_funcs as mf
@@ -183,6 +185,16 @@ class MorpheusApi():
 
         return self._return_reponse_key(response, '')
 
+    def delete_virtual_image_file(self, api_params: dict):
+        path = '{0}/{1}/files'.format(VIRTUAL_IMAGES_PATH, api_params['virtual_image_id'])
+
+        url_params = self._url_params({'filename': api_params['filename']})
+        path = self._build_url(path, url_params)
+
+        response = self.connection.send_request(path=path, method='DELETE')
+
+        return self._return_reponse_key(response, '')
+
     def eject_instance(self, instance_id: int):
         path = '{0}/{1}/eject'.format(INSTANCES_PATH, instance_id)
         response = self.connection.send_request(path=path, method='PUT')
@@ -247,6 +259,52 @@ class MorpheusApi():
             method='PUT'
         )
         return self._return_reponse_key(response, 'virtualImage')
+
+    def upload_virtual_image_file(self, api_params: dict):
+        path = '{0}/{1}/upload'.format(VIRTUAL_IMAGES_PATH, api_params.pop('virtual_image_id'))
+
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/octet-stream'
+        }
+
+        orig_headers = self.connection.headers
+        self.connection.headers = headers
+
+        payload = mf.dict_keys_to_camel_case(
+            api_params
+        )
+
+        response = {}
+
+        if payload['url'] is not None:
+            del payload['file']
+            url_params = self._url_params(api_params)
+            path = self._build_url(path, url_params)
+            response = self.connection.send_request(
+                path=path,
+                method='POST'
+            )
+        elif payload['file'] is not None:
+            del payload['url']
+            with open(payload['file'], 'rb') as vi_file:
+                file_name = vi_file.name
+                b64_file = base64.b64encode(vi_file.read())
+                b64_ascii = binascii.a2b_base64(b64_file)
+
+            body = 'data:application/octet-stream;name={0};base64,{1}'.format(file_name, b64_ascii)
+
+            url_params = self._url_params(payload)
+            path = self._build_url(path, url_params)
+
+            response = self.connection.send_request(
+                path=path,
+                data=body,
+                method='POST'
+            )
+
+        self.connection.headers = orig_headers
+        return self._return_reponse_key(response, '')
 
     def unlock_instance(self, instance_id: int):
         path = '{0}/{1}/unlock'.format(INSTANCES_PATH, instance_id)

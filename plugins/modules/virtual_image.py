@@ -14,6 +14,7 @@ options:
     state:
         description:
             - Create, update or remove a Virtual Image.
+            - If I(state=absent) and I(filename) is specified then remove the specified file.
         default: present
         choices:
             - absent
@@ -26,6 +27,18 @@ options:
     name:
         description:
             - Set the Name of the Virtual Image
+        type: string
+    filename:
+        description:
+            - Name of uploaded file.
+        type: string
+    file_path:
+        description:
+            - Path to local file to upload.
+        type: string
+    file_url:
+        description:
+            - URL of file to upload.
         type: string
     labels:
         description:
@@ -155,6 +168,7 @@ EXAMPLES = r'''
 RETURN = r'''
 '''
 
+from functools import partial
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 
@@ -171,6 +185,9 @@ def run_module():
         'state': {'type': 'str', 'choices': ['absent', 'present'], 'default': 'present'},
         'virtual_image_id': {'type': 'int'},
         'name': {'type': 'str'},
+        'filename': {'type': 'str'},
+        'file_path': {'type': 'str'},
+        'file_url': {'type': 'str'},
         'labels': {'type': 'list', 'elements': 'str'},
         'image_type': {'type': 'str'},
         'storage_provider_id': {'type': 'int'},
@@ -210,7 +227,7 @@ def run_module():
 
     result = {
         'changed': False,
-        'virtual_image': None
+        'virtual_image': {}
     }
 
     module = AnsibleModule(
@@ -231,6 +248,13 @@ def run_module():
         api_params['config'].update(api_params.pop('azure_config'))
     del api_params['state']
 
+    file_params = {
+        'virtual_image_id': api_params['virtual_image_id'] if api_params['virtual_image_id'] is not None else 0,
+        'filename': api_params.pop('filename'),
+        'file': api_params.pop('file_path'),
+        'url': api_params.pop('file_url')
+    }
+
     virtual_image = []
 
     if module.params['virtual_image_id'] is not None:
@@ -240,7 +264,10 @@ def run_module():
         virtual_image = morpheus_api.get_virtual_images({'virtual_image_id': None, 'name': api_params['name']})
 
     if module.params['state'] == 'absent' and len(virtual_image) > 0:
-        response = morpheus_api.delete_virtual_image(virtual_image[0]['id'])
+        action = partial(morpheus_api.delete_virtual_image_file, file_params) \
+                if module.params['filename'] is not None \
+                else partial(morpheus_api.delete_virtual_image, virtual_image[0]['id'])
+        response = action()
         success, msg = mf.success_response(response)
         result['changed'] = success
         result['msg'] = msg
@@ -254,6 +281,22 @@ def run_module():
         response = action(api_params)
         result['virtual_image'] = mf.dict_keys_to_snake_case(response)
         result['changed'] = result['virtual_image'] is not None
+
+        if file_params['filename'] is not None:
+            # if file_params['file'] is not None:
+            #     with open(file_params['file'], 'rb') as vi_file:
+            #         file_name = vi_file.name
+            #         b64_file = base64.b64encode(vi_file.read()).decode('ascii')
+
+            #         body = 'data:application/octet-stream;name={0};base64,{1}'.format(file_name, b64_file)
+            #         result['file_name'] = file_name
+            #         result['b64_content'] = b64_file
+            #         result['body'] = body
+            #     module.exit_json(**result)
+            file_params['virtual_image_id'] = result['virtual_image']['id']
+            upload_response = morpheus_api.upload_virtual_image_file(file_params)
+            result['upload_status'] = mf.success_response(upload_response)[0]
+
         module.exit_json(**result)
 
     module.exit_json(**result)
