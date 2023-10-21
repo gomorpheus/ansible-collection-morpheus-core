@@ -175,6 +175,15 @@ except ModuleNotFoundError:
 
 
 def create_update_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
+    """Create or Update a Virtual Image
+
+    Args:
+        module (AnsibleModule): Instance of AnsibleModule
+        morpheus_api (MorpheusApi): Instance of MorpheusApi
+
+    Returns:
+        dict: Returns a result dictionary
+    """
     vi_response = {}
     upload_response = False
     diffs = []
@@ -249,6 +258,15 @@ def create_update_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
 
 
 def get_vi(module_params: dict, morpheus_api: MorpheusApi) -> list:
+    """Retrieve Virtual Images
+
+    Args:
+        module_params (dict): Ansible Module Parameters
+        morpheus_api (MorpheusApi): Instance of Morpheus Api
+
+    Returns:
+        list: List of Virtual Images
+    """
     virtual_image = []
 
     api_params, _ = module_to_api_params(module_params)
@@ -269,6 +287,15 @@ def get_vi(module_params: dict, morpheus_api: MorpheusApi) -> list:
 
 
 def module_to_api_params(module_params: dict) -> tuple:
+    """Convert Ansible Module Parameters to Morpheus API Parameters
+
+    Args:
+        module_params (dict): Ansible Module Parameters
+
+    Returns:
+        tuple: General API Params for interacting with Virtual Images,
+        and API Parameters for Virtual Image files
+    """
     api_params = module_params.copy()
 
     api_params['ssh_username'] = api_params.pop('username')
@@ -289,21 +316,36 @@ def module_to_api_params(module_params: dict) -> tuple:
     return api_params, file_params
 
 
-def parse_check_mode(state: str, virtual_images: list, api_params: dict = None, file_params: dict = None):
+def parse_check_mode(
+        state: str, virtual_images: list,
+        api_params: dict = None, file_params: dict = None
+) -> dict:
+    """Parse the module parameters in check_mode
+
+    Args:
+        state (str): The requested state
+        virtual_images (list): List of Virtual Images
+        api_params (dict, optional): Virtual Image API Parameters. Defaults to None.
+        file_params (dict, optional): Virtual Image File API Parameters. Defaults to None.
+
+    Returns:
+        dict: Result Dictionary
+    """
     images = deepcopy(virtual_images)
+    result = {}
 
     if state == 'absent':
         try:
             _ = images[0]['id']
         except (IndexError, KeyError):
-            return {
+            result = {
                 'success': False,
                 'msg': 'Virtual Image not found'
             }
 
-        return {'success': True}
+        result = {'success': True}
 
-    if api_params is not None:
+    if api_params is not None and len(result) == 0:
         try:
             api_params['id'] = api_params.pop('virtual_image_id')
         except KeyError:
@@ -338,9 +380,9 @@ def parse_check_mode(state: str, virtual_images: list, api_params: dict = None, 
         except KeyError:
             virtual_image['id'] = -1
 
-        return virtual_image
+        result = virtual_image
 
-    if file_params is not None:
+    if file_params is not None and len(result) == 0:
         try:
             _ = images[0]['id']
         except (IndexError, KeyError):
@@ -349,12 +391,23 @@ def parse_check_mode(state: str, virtual_images: list, api_params: dict = None, 
                 'msg': 'Virtual Image not found'
             }
 
-        return {
+        result = {
             'success': True,
         }
 
+    return result
+
 
 def remove_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
+    """Remove a Virtual Image or Virtual Image File
+
+    Args:
+        module (AnsibleModule): Instance of AnsibleModule
+        morpheus_api (MorpheusApi): Instance of MorpheusAPI
+
+    Returns:
+        dict: Result Dictionary
+    """
     virtual_image = get_vi(module.params, morpheus_api)
 
     if len(virtual_image) > 1:
