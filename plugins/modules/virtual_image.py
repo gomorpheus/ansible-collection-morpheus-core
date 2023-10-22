@@ -153,12 +153,140 @@ options:
                 description:
                     - The Tag value.
                 type: string
+attributes:
+    check_mode:
+        support: full
+    diff_mode:
+        support: full
 '''
 
 EXAMPLES = r'''
+- name: Create Virtual Image and upload File
+  morpheus.core.virtual_image:
+    state: present
+    name: My VMware Image
+    image_type: vmware
+    is_cloud_init: true
+    install_agent: true
+    username: root
+    password: Password123
+    os_type: redhat 8 64bit
+    visibility: public
+    accounts:
+        - 1
+    vm_tools_installed: true
+    filename: rhel8x64.ova
+    file_url: https://my.domain.tld/rhel8x64.ova
+
+- name: Remove Virtual Image by Name
+  morpheus.core.virtual_image:
+    state: absent
+    name: Win2016
+
+- name: Remove Virtual Image by Id
+  morpheus.core.virtual_image:
+    state: absent
+    virtual_image_id: 700
+
+- name: Remove Virtual Image File
+  morpheus.core.virtual_image:
+    virtual_image_id: 750
+    filename: windows_template.ova
+    state: absent
 '''
 
 RETURN = r'''
+virtual_image:
+    description:
+        - Information about the Virtual Image.
+    returned: always
+    sample:
+        "virtual_image": {
+            "accounts": [
+                {
+                    "id": 1,
+                    "name": "TenantA"
+                }
+            ],
+            "config": {
+                "disk_ids": []
+            },
+            "console_keymap": null,
+            "date_created": "2023-10-06T23:15:39Z",
+            "description": null,
+            "external_id": null,
+            "fips_enabled": false,
+            "guest_console_password": null,
+            "guest_console_password_hash": null,
+            "guest_console_port": null,
+            "guest_console_type": null,
+            "guest_console_username": null,
+            "id": 700,
+            "image_type": "vmware",
+            "install_agent": true,
+            "is_auto_join_domain": false,
+            "is_cloud_init": false,
+            "is_force_customization": false,
+            "is_sysprep": true,
+            "labels": [],
+            "last_updated": "2023-10-08T21:15:26Z",
+            "linked_clone": false,
+            "locations": [],
+            "min_disk": null,
+            "min_disk_gb": null,
+            "min_ram": null,
+            "min_ram_gb": null,
+            "name": "Windows 2022 Template",
+            "network_interfaces": [],
+            "os_type": {
+                "bit_count": 64,
+                "category": "windows",
+                "code": "windows.server.2022",
+                "description": null,
+                "id": 27,
+                "name": "windows server 2022",
+                "os_family": "windows",
+                "os_version": "2022",
+                "platform": "windows",
+                "vendor": "microsoft"
+            },
+            "owner_id": 1,
+            "raw_size": null,
+            "raw_size_gb": null,
+            "ssh_key": null,
+            "ssh_password": "************",
+            "ssh_password_hash": "936a185caaa266bb9cbe981e9e05cb78cd732b0b3280eb944412bb6f8f8f07af",
+            "ssh_username": "Administrator",
+            "status": "Active",
+            "storage_controllers": [],
+            "storage_provider": null,
+            "system_image": false,
+            "tags": [
+                {
+                    "id": 150,
+                    "name": "Bleh",
+                    "value": "Blah"
+                },
+                {
+                    "id": 149,
+                    "name": "Foo",
+                    "value": "Bar"
+                }
+            ],
+            "tenant": {
+                "id": 1,
+                "name": "TenantA"
+            },
+            "trial_version": false,
+            "uefi": false,
+            "user_data": null,
+            "user_defined": false,
+            "user_uploaded": true,
+            "virtio_supported": false,
+            "visibility": "public",
+            "vm_tools_installed": true,
+            "volumes": []
+        }
 '''
 
 from copy import deepcopy
@@ -367,9 +495,7 @@ def parse_check_mode(
         virtual_image = {}
         try:
             virtual_image = images[0]
-            for k, v in api_params.items():
-                if v is not None:
-                    virtual_image[k] = v
+            virtual_image.update({k: v for k, v in api_params.items() if v is not None})
         except IndexError:
             virtual_image = api_params
         except KeyError:
@@ -437,7 +563,8 @@ def remove_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
 
     result = {
         'changed': success,
-        'msg': msg
+        'msg': msg,
+        'virtual_image': virtual_image[0]
     }
 
     if module._diff:
