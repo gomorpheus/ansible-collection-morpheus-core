@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.x.x
+- Added `virtual_image_info` module
+- Added `virtual_image` module
+
 ## v0.5.1
 - Added `all_apps` search type for inventory
 

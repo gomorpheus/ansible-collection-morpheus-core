@@ -342,6 +342,8 @@ Individual Module Documentation can be found included with the module and can be
 |[instance](docs/morpheus.core.instance.md)|Manage state of Morpheus Instances|
 |[instance_snapshot_info](docs/morpheus.core.instance_snapshot_info.md)|Gather information about Instance Snapshots|
 |[instance_snapshot](docs/morpheus.core.instance_snapshot.md)|Manage Instance Snapshots|
+|[virtual_image_info](docs/morpheus.core.virtual_image_info.md)|Gather information about Virtual Images|
+|[virtual_image](docs/morpheus.core.virtual_image.md)|Create, Update and Remove Virtual Images and Virtual Image Files|
 
 ## Support Expectations
 
