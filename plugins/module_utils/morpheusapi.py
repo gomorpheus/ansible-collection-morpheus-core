@@ -22,6 +22,7 @@ except ModuleNotFoundError:
 APPLIANCE_SETTINGS_PATH = '/api/appliance-settings'
 HEALTH_PATH = '/api/health'
 INSTANCES_PATH = '/api/instances'
+KEY_PAIR_PATH = '/api/key-pairs'
 LICENSE_PATH = '/api/license'
 MAINTENANCE_MODE_PATH = '{}/maintenance'.format(APPLIANCE_SETTINGS_PATH)
 SNAPSHOTS_PATH = '/api/snapshots'
@@ -53,6 +54,13 @@ class MorpheusApi():
             url_parts[4] = urllib.parse.urlencode(params)
         return urllib.parse.urlunparse(url_parts)
 
+    def _payload_from_params(self, params: dict):
+        payload = mf.dict_keys_to_camel_case(
+            {k: v for k, v in params.items() if v is not None}
+        )
+
+        return payload
+
     def _url_params(self, params: dict):
         args = []
 
@@ -68,6 +76,22 @@ class MorpheusApi():
             args.append((k, v))
 
         return args
+
+    def create_key_pair(self, api_params: dict):
+        payload = self._payload_from_params(api_params)
+        body = {'keyPair': payload}
+
+        path = KEY_PAIR_PATH
+
+        if len(body['keyPair']) == 1 and bool(api_params['name']):
+            path = '{0}/generate'.format(KEY_PAIR_PATH)
+
+        response = self.connection.send_request(
+            data=body,
+            path=path,
+            method='POST'
+        )
+        return self._return_reponse_key(response, '')
 
     def create_virtual_image(self, api_params: dict):
         payload = mf.dict_keys_to_camel_case(
@@ -172,6 +196,11 @@ class MorpheusApi():
         path = self._build_url(path, url_params)
         response = self.connection.send_request(path=path, method='DELETE')
         return self._return_reponse_key(response, 'results')
+
+    def delete_key_pair(self, key_pair_id: int):
+        path = '{0}/{1}'.format(KEY_PAIR_PATH, key_pair_id)
+        response = self.connection.send_request(path=path, method='DELETE')
+        return self._return_reponse_key(response, '')
 
     def delete_snapshot(self, snapshot_id: int):
         path = '{0}/{1}'.format(SNAPSHOTS_PATH, snapshot_id)
