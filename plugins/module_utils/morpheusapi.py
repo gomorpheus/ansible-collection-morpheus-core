@@ -164,6 +164,21 @@ class MorpheusApi():
         response = self.connection.send_request(path=path)
         return self._return_reponse_key(response, 'instances')
 
+    def get_key_pairs(self, api_params: dict):
+        params = mf.dict_keys_to_camel_case(api_params)
+        params['max'] = -1
+
+        if params['id'] is not None:
+            path = '{0}/{1}'.format(KEY_PAIR_PATH, params['id'])
+            response = self.connection.send_request(path=path)
+            return self._return_reponse_key(response, 'keyPair')
+
+        url_params = self._url_params(params)
+        path = self._build_url(KEY_PAIR_PATH, url_params)
+
+        response = self.connection.send_request(path=path)
+        return self._return_reponse_key(response, 'keyPairs')
+
     def get_virtual_images(self, api_params: dict):
         params = mf.dict_keys_to_camel_case(api_params)
         params['max'] = -1
