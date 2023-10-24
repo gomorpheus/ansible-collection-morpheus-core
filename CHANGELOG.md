@@ -3,6 +3,8 @@
 ## v0.x.x
 - Added `virtual_image_info` module
 - Added `virtual_image` module
+- Added `key_pair_info` module
+- Added `key_pair` module
 
 ## v0.5.1
 - Added `all_apps` search type for inventory

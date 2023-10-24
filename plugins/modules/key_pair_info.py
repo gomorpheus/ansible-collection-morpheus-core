@@ -49,6 +49,7 @@ RETURN = r'''
 key_pairs:
     description:
         - List of Key Pairs.
+    returned: always
     sample:
         "key_pairs": [
             {
