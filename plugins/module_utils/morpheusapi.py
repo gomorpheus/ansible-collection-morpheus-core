@@ -26,6 +26,7 @@ KEY_PAIR_PATH = '/api/key-pairs'
 LICENSE_PATH = '/api/license'
 MAINTENANCE_MODE_PATH = '{}/maintenance'.format(APPLIANCE_SETTINGS_PATH)
 SNAPSHOTS_PATH = '/api/snapshots'
+SSL_CERTIFICATES_PATH = '/api/certificates'
 VIRTUAL_IMAGES_PATH = '/api/virtual-images'
 
 
@@ -166,7 +167,6 @@ class MorpheusApi():
 
     def get_key_pairs(self, api_params: dict):
         params = mf.dict_keys_to_camel_case(api_params)
-        params['max'] = -1
 
         if params['id'] is not None:
             path = '{0}/{1}'.format(KEY_PAIR_PATH, params['id'])
@@ -178,6 +178,20 @@ class MorpheusApi():
 
         response = self.connection.send_request(path=path)
         return self._return_reponse_key(response, 'keyPairs')
+
+    def get_ssl_certificates(self, api_params: dict):
+        params = mf.dict_keys_to_camel_case(api_params)
+
+        if params['id'] is not None:
+            path = '{0}/{1}'.format(SSL_CERTIFICATES_PATH, params['id'])
+            response = self.connection.send_request(path=path)
+            return self._return_reponse_key(response, 'certificate')
+
+        url_params = self._url_params(params)
+        path = self._build_url(SSL_CERTIFICATES_PATH, url_params)
+
+        response = self.connection.send_request(path=path)
+        return self._return_reponse_key(response, 'certificates')
 
     def get_virtual_images(self, api_params: dict):
         params = mf.dict_keys_to_camel_case(api_params)
