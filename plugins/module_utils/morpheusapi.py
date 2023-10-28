@@ -94,6 +94,17 @@ class MorpheusApi():
         )
         return self._return_reponse_key(response, '')
 
+    def create_ssl_certificate(self, api_params: dict):
+        payload = self._payload_from_params(api_params)
+        body = {'certificate': payload}
+
+        response = self.connection.send_request(
+            data=body,
+            path=SSL_CERTIFICATES_PATH,
+            method='POST'
+        )
+        return self._return_reponse_key(response, 'certificate')
+
     def create_virtual_image(self, api_params: dict):
         payload = mf.dict_keys_to_camel_case(
             {k: v for k, v in api_params.items() if v is not None}
@@ -236,6 +247,11 @@ class MorpheusApi():
         response = self.connection.send_request(path=path, method='DELETE')
         return self._return_reponse_key(response, '')
 
+    def delete_ssl_certificate(self, cert_id: int):
+        path = '{0}/{1}'.format(SSL_CERTIFICATES_PATH, cert_id)
+        response = self.connection.send_request(path=path, method='DELETE')
+        return self._return_reponse_key(response, '')
+
     def delete_virtual_image(self, virtual_image_id: int):
         path = '{0}/{1}'.format(VIRTUAL_IMAGES_PATH, virtual_image_id)
 
@@ -302,6 +318,19 @@ class MorpheusApi():
         path = '{0}/{1}/suspend'.format(INSTANCES_PATH, instance_id)
         response = self.connection.send_request(path=path, method='PUT')
         return self._return_reponse_key(response, 'results')
+
+    def update_ssl_certificate(self, api_params: dict):
+        path = '{0}/{1}'.format(SSL_CERTIFICATES_PATH, api_params.pop('id'))
+
+        payload = self._payload_from_params(api_params)
+        body = {'certificate': payload}
+
+        response = self.connection.send_request(
+            data=body,
+            path=path,
+            method='PUT'
+        )
+        return self._return_reponse_key(response, 'certificate')
 
     def update_virtual_image(self, api_params: dict):
         path = '{0}/{1}'.format(VIRTUAL_IMAGES_PATH, api_params.pop('virtual_image_id'))
