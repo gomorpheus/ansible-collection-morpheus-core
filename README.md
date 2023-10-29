@@ -344,6 +344,8 @@ Individual Module Documentation can be found included with the module and can be
 |[instance_snapshot](docs/morpheus.core.instance_snapshot.md)|Manage Instance Snapshots|
 |[key_pair_info](docs/morpheus.core.key_pair_info.md)|Gather information about Key Pairs|
 |[key_pair](docs/morpheus.core.key_pair.md)|Create, Generate and Remove Key Pairs|
+|[ssl_certificate_info](docs/morpheus.core.ssl_certificate_info.md)|Gather information about SSL Certificates|
+|[ssl_certificate](docs/morpheus.core.ssl_certificate_info.md)|Create, Update and Remove SSL Certificates|
 |[virtual_image_info](docs/morpheus.core.virtual_image_info.md)|Gather information about Virtual Images|
 |[virtual_image](docs/morpheus.core.virtual_image.md)|Create, Update and Remove Virtual Images and Virtual Image Files|
 
