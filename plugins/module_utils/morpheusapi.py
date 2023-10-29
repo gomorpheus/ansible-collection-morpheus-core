@@ -106,9 +106,7 @@ class MorpheusApi():
         return self._return_reponse_key(response, 'certificate')
 
     def create_virtual_image(self, api_params: dict):
-        payload = mf.dict_keys_to_camel_case(
-            {k: v for k, v in api_params.items() if v is not None}
-        )
+        payload = self._payload_from_params(api_params)
         body = {'virtualImage': payload}
 
         response = self.connection.send_request(
@@ -123,9 +121,7 @@ class MorpheusApi():
         return self._return_reponse_key(response, 'applianceSettings')
 
     def set_appliance_settings(self, api_params: dict):
-        payload = mf.dict_keys_to_camel_case(
-            {k: v for k, v in api_params.items() if v is not None}
-        )
+        payload = self._payload_from_params(api_params)
         body = {'applianceSettings': payload}
 
         response = self.connection.send_request(
@@ -286,9 +282,7 @@ class MorpheusApi():
 
     def snapshot_instance(self, api_params: dict):
         path = '{0}/{1}/snapshot'.format(INSTANCES_PATH, api_params.pop('id'))
-        payload = mf.dict_keys_to_camel_case(
-            {k: v for k, v in api_params.items() if v is not None}
-        )
+        payload = self._payload_from_params(api_params)
         body = {'snapshot': payload}
 
         response = self.connection.send_request(
@@ -335,9 +329,7 @@ class MorpheusApi():
     def update_virtual_image(self, api_params: dict):
         path = '{0}/{1}'.format(VIRTUAL_IMAGES_PATH, api_params.pop('virtual_image_id'))
 
-        payload = mf.dict_keys_to_camel_case(
-            {k: v for k, v in api_params.items() if v is not None}
-        )
+        payload = self._payload_from_params(api_params)
         body = {'virtualImage': payload}
 
         response = self.connection.send_request(
