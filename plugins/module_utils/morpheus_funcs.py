@@ -51,9 +51,9 @@ def dict_diff(dict_after: dict, dict_before: dict, ignore_keys: set = None) -> t
         }
 
         val_b = None
-        try:
+        if k in dict_before:
             val_b = dict_before[k]
-        except KeyError:
+        else:
             diff_list.append(diff)
             continue
 
@@ -124,9 +124,9 @@ def dict_compare_equality(dict_a: dict, dict_b: dict, ignore_keys: set = None) -
             continue
 
         val_b = None
-        try:
+        if k in dict_b:
             val_b = dict_b[k]
-        except KeyError:
+        else:
             return False
 
         if type(val_a) is not type(val_b):
@@ -364,18 +364,10 @@ def success_response(response: dict) -> tuple:
     Returns:
         tuple: (bool, msg)
     """
-    success = False
-    msg = ''
+    success = response['success'] if 'success' in response else False
+    msg = response['msg'] if 'msg' in response else ''
 
-    try:
-        success = response['success']
-    except KeyError:
-        success = False
-
-    try:
-        msg = response['msg']
-    except KeyError:
-        if not success:
-            msg = 'Unknown Failure'
+    if not success and msg == '':
+        msg = 'Unknown Failure'
 
     return success, msg

@@ -290,6 +290,7 @@ virtual_image:
 '''
 
 from copy import deepcopy
+from hashlib import sha256
 from functools import partial
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
@@ -323,6 +324,12 @@ def create_update_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
             msg='Number of matching Virtual Images exceeded 1, got {0}'.format(len(virtual_image))
         )
 
+    if module.params['password'] is not None and 'ssh_password_hash' in virtual_image:
+        pass_hash = sha256(module.params['password'].encode()).hexdigest()
+
+        if pass_hash.decode() == virtual_image['ssh_password_hash']:
+            module.params['password'] = None
+
     api_params, file_params = module_to_api_params(module.params)
 
     try:
@@ -343,7 +350,7 @@ def create_update_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
     try:
         vi_id = vi_response['id']
         if module._diff:
-            vi_changed, diff = mf.dict_diff(vi_response, virtual_image[0], {'last_updated'})
+            vi_changed, diff = mf.dict_diff(vi_response, virtual_image[0], {'last_updated', 'ssh_password'})
             diffs.append({
                 'after_header': '{0} ({1})'.format(vi_response['name'], vi_response['id']),
                 'after': '\n'.join([d['after'] for d in diff]),
@@ -351,7 +358,7 @@ def create_update_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
                 'before': '\n'.join([d['before'] for d in diff])
             })
         else:
-            vi_changed = not mf.dict_compare_equality(virtual_image[0], vi_response, {'last_updated'})
+            vi_changed = not mf.dict_compare_equality(virtual_image[0], vi_response, {'last_updated', 'ssh_password'})
     except KeyError:
         vi_id = None
         vi_changed = False
@@ -474,36 +481,23 @@ def parse_check_mode(
         result = {'success': True}
 
     if api_params is not None and len(result) == 0:
-        try:
+        if 'virtual_image_id' in api_params:
             api_params['id'] = api_params.pop('virtual_image_id')
-        except KeyError:
-            pass
 
-        try:
+        if 'accounts' in api_params:
             api_params['accounts'] = [{'id': aid} for aid in api_params['accounts']]
-        except KeyError:
-            pass
 
-        try:
-            api_params['config'].update(api_params.pop('azure_config'))
-        except (AttributeError, KeyError):
+        if 'azure_config' in api_params:
             try:
+                api_params['config'].update(api_params.pop('azure_config'))
+            except AttributeError:
                 api_params['config'] = api_params.pop('azure_config')
-            except KeyError:
-                pass
 
-        virtual_image = {}
-        try:
-            virtual_image = images[0]
-            virtual_image.update({k: v for k, v in api_params.items() if v is not None})
-        except IndexError:
-            virtual_image = api_params
-        except KeyError:
-            pass
+        virtual_image = images[0] if len(images) > 0 else {}
 
-        try:
-            _ = virtual_image['id']
-        except KeyError:
+        virtual_image.update({k: v for k, v in api_params.items() if v is not None})
+
+        if 'id' not in virtual_image:
             virtual_image['id'] = -1
 
         result = virtual_image
