@@ -22,9 +22,11 @@ except ModuleNotFoundError:
 APPLIANCE_SETTINGS_PATH = '/api/appliance-settings'
 HEALTH_PATH = '/api/health'
 INSTANCES_PATH = '/api/instances'
+KEY_PAIR_PATH = '/api/key-pairs'
 LICENSE_PATH = '/api/license'
 MAINTENANCE_MODE_PATH = '{}/maintenance'.format(APPLIANCE_SETTINGS_PATH)
 SNAPSHOTS_PATH = '/api/snapshots'
+SSL_CERTIFICATES_PATH = '/api/certificates'
 VIRTUAL_IMAGES_PATH = '/api/virtual-images'
 
 
@@ -53,6 +55,13 @@ class MorpheusApi():
             url_parts[4] = urllib.parse.urlencode(params)
         return urllib.parse.urlunparse(url_parts)
 
+    def _payload_from_params(self, params: dict):
+        payload = mf.dict_keys_to_camel_case(
+            {k: v for k, v in params.items() if v is not None}
+        )
+
+        return payload
+
     def _url_params(self, params: dict):
         args = []
 
@@ -68,6 +77,33 @@ class MorpheusApi():
             args.append((k, v))
 
         return args
+
+    def create_key_pair(self, api_params: dict):
+        payload = self._payload_from_params(api_params)
+        body = {'keyPair': payload}
+
+        path = KEY_PAIR_PATH
+
+        if len(body['keyPair']) == 1 and bool(api_params['name']):
+            path = '{0}/generate'.format(KEY_PAIR_PATH)
+
+        response = self.connection.send_request(
+            data=body,
+            path=path,
+            method='POST'
+        )
+        return self._return_reponse_key(response, '')
+
+    def create_ssl_certificate(self, api_params: dict):
+        payload = self._payload_from_params(api_params)
+        body = {'certificate': payload}
+
+        response = self.connection.send_request(
+            data=body,
+            path=SSL_CERTIFICATES_PATH,
+            method='POST'
+        )
+        return self._return_reponse_key(response, 'certificate')
 
     def create_virtual_image(self, api_params: dict):
         payload = mf.dict_keys_to_camel_case(
@@ -140,6 +176,34 @@ class MorpheusApi():
         response = self.connection.send_request(path=path)
         return self._return_reponse_key(response, 'instances')
 
+    def get_key_pairs(self, api_params: dict):
+        params = mf.dict_keys_to_camel_case(api_params)
+
+        if params['id'] is not None:
+            path = '{0}/{1}'.format(KEY_PAIR_PATH, params['id'])
+            response = self.connection.send_request(path=path)
+            return self._return_reponse_key(response, 'keyPair')
+
+        url_params = self._url_params(params)
+        path = self._build_url(KEY_PAIR_PATH, url_params)
+
+        response = self.connection.send_request(path=path)
+        return self._return_reponse_key(response, 'keyPairs')
+
+    def get_ssl_certificates(self, api_params: dict):
+        params = mf.dict_keys_to_camel_case(api_params)
+
+        if params['id'] is not None:
+            path = '{0}/{1}'.format(SSL_CERTIFICATES_PATH, params['id'])
+            response = self.connection.send_request(path=path)
+            return self._return_reponse_key(response, 'certificate')
+
+        url_params = self._url_params(params)
+        path = self._build_url(SSL_CERTIFICATES_PATH, url_params)
+
+        response = self.connection.send_request(path=path)
+        return self._return_reponse_key(response, 'certificates')
+
     def get_virtual_images(self, api_params: dict):
         params = mf.dict_keys_to_camel_case(api_params)
         params['max'] = -1
@@ -173,8 +237,18 @@ class MorpheusApi():
         response = self.connection.send_request(path=path, method='DELETE')
         return self._return_reponse_key(response, 'results')
 
+    def delete_key_pair(self, key_pair_id: int):
+        path = '{0}/{1}'.format(KEY_PAIR_PATH, key_pair_id)
+        response = self.connection.send_request(path=path, method='DELETE')
+        return self._return_reponse_key(response, '')
+
     def delete_snapshot(self, snapshot_id: int):
         path = '{0}/{1}'.format(SNAPSHOTS_PATH, snapshot_id)
+        response = self.connection.send_request(path=path, method='DELETE')
+        return self._return_reponse_key(response, '')
+
+    def delete_ssl_certificate(self, cert_id: int):
+        path = '{0}/{1}'.format(SSL_CERTIFICATES_PATH, cert_id)
         response = self.connection.send_request(path=path, method='DELETE')
         return self._return_reponse_key(response, '')
 
@@ -244,6 +318,19 @@ class MorpheusApi():
         path = '{0}/{1}/suspend'.format(INSTANCES_PATH, instance_id)
         response = self.connection.send_request(path=path, method='PUT')
         return self._return_reponse_key(response, 'results')
+
+    def update_ssl_certificate(self, api_params: dict):
+        path = '{0}/{1}'.format(SSL_CERTIFICATES_PATH, api_params.pop('id'))
+
+        payload = self._payload_from_params(api_params)
+        body = {'certificate': payload}
+
+        response = self.connection.send_request(
+            data=body,
+            path=path,
+            method='PUT'
+        )
+        return self._return_reponse_key(response, 'certificate')
 
     def update_virtual_image(self, api_params: dict):
         path = '{0}/{1}'.format(VIRTUAL_IMAGES_PATH, api_params.pop('virtual_image_id'))
