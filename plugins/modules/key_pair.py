@@ -125,10 +125,8 @@ def create_key_pair(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
     response = mf.dict_keys_to_snake_case(response)
     key_pair = response['key_pair']
 
-    try:
+    if 'private_key' in key_pair:
         key_pair['private_key_lines'] = list(key_pair['private_key'].split('\n'))
-    except KeyError:
-        pass
 
     try:
         changed = key_pair['id'] is not None
