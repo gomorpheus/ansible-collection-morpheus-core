@@ -34,6 +34,19 @@ class MorpheusApi():
     def __init__(self, connection) -> None:
         self.connection = connection
 
+    def _build_url(self, path: str, params: list[tuple] = None):
+        url_parts = list(urllib.parse.urlparse(path))
+        if params is not None:
+            url_parts[4] = urllib.parse.urlencode(params)
+        return urllib.parse.urlunparse(url_parts)
+
+    def _payload_from_params(self, params: dict):
+        payload = mf.dict_keys_to_camel_case(
+            {k: v for k, v in params.items() if v is not None}
+        )
+
+        return payload
+
     def _return_reponse_key(self, response: dict, key: str):
         if key is None or key == '':
             try:
@@ -48,19 +61,6 @@ class MorpheusApi():
                 return response['contents']
             except KeyError:
                 return response
-
-    def _build_url(self, path: str, params: list[tuple] = None):
-        url_parts = list(urllib.parse.urlparse(path))
-        if params is not None:
-            url_parts[4] = urllib.parse.urlencode(params)
-        return urllib.parse.urlunparse(url_parts)
-
-    def _payload_from_params(self, params: dict):
-        payload = mf.dict_keys_to_camel_case(
-            {k: v for k, v in params.items() if v is not None}
-        )
-
-        return payload
 
     def _url_params(self, params: dict):
         args = []
@@ -77,6 +77,11 @@ class MorpheusApi():
             args.append((k, v))
 
         return args
+
+    def backup_instance(self, instance_id: int):
+        path = '{0}/{1}/backup'.format(INSTANCES_PATH, instance_id)
+        response = self.connection.send_request(path=path, method='PUT')
+        return self._return_reponse_key(response, 'results')
 
     def create_key_pair(self, api_params: dict):
         payload = self._payload_from_params(api_params)
@@ -115,110 +120,6 @@ class MorpheusApi():
             method='POST'
         )
         return self._return_reponse_key(response, 'virtualImage')
-
-    def get_appliance_settings(self):
-        response = self.connection.send_request(path=APPLIANCE_SETTINGS_PATH)
-        return self._return_reponse_key(response, 'applianceSettings')
-
-    def set_appliance_settings(self, api_params: dict):
-        payload = self._payload_from_params(api_params)
-        body = {'applianceSettings': payload}
-
-        response = self.connection.send_request(
-            data=body,
-            path=APPLIANCE_SETTINGS_PATH,
-            method='PUT'
-        )
-        return self._return_reponse_key(response, '')
-
-    def get_appliance_license(self):
-        response = self.connection.send_request(path=LICENSE_PATH)
-        return self._return_reponse_key(response, 'license')
-
-    def get_appliance_health(self):
-        response = self.connection.send_request(path=HEALTH_PATH)
-        return self._return_reponse_key(response, 'health')
-
-    def get_instance_snapshots(self, instance_id: int):
-        path = '{0}/{1}/snapshots'.format(INSTANCES_PATH, instance_id)
-        response = self.connection.send_request(path=path)
-        return self._return_reponse_key(response, 'snapshots')
-
-    def set_appliance_maintenance_mode(self, enabled: bool):
-        params = self._url_params({'enabled': enabled})
-        path = self._build_url(MAINTENANCE_MODE_PATH, params)
-        response = self.connection.send_request(path=path, method='POST')
-        return self._return_reponse_key(response, '')
-
-    def get_instances(self, api_params: dict):
-        if api_params['id'] is not None:
-            path = '{0}/{1}'.format(INSTANCES_PATH, api_params['id'])
-            try:
-                detail = str(api_params['details']).lower()
-            except KeyError:
-                detail = 'false'
-            params = self._url_params({
-                'details': detail
-            })
-            path = self._build_url(path, params)
-            response = self.connection.send_request(path=path)
-            return self._return_reponse_key(response, 'instance')
-
-        params = mf.dict_keys_to_camel_case(api_params)
-        url_params = self._url_params(params)
-
-        path = self._build_url(INSTANCES_PATH, url_params)
-
-        response = self.connection.send_request(path=path)
-        return self._return_reponse_key(response, 'instances')
-
-    def get_key_pairs(self, api_params: dict):
-        params = mf.dict_keys_to_camel_case(api_params)
-
-        if params['id'] is not None:
-            path = '{0}/{1}'.format(KEY_PAIR_PATH, params['id'])
-            response = self.connection.send_request(path=path)
-            return self._return_reponse_key(response, 'keyPair')
-
-        url_params = self._url_params(params)
-        path = self._build_url(KEY_PAIR_PATH, url_params)
-
-        response = self.connection.send_request(path=path)
-        return self._return_reponse_key(response, 'keyPairs')
-
-    def get_ssl_certificates(self, api_params: dict):
-        params = mf.dict_keys_to_camel_case(api_params)
-
-        if params['id'] is not None:
-            path = '{0}/{1}'.format(SSL_CERTIFICATES_PATH, params['id'])
-            response = self.connection.send_request(path=path)
-            return self._return_reponse_key(response, 'certificate')
-
-        url_params = self._url_params(params)
-        path = self._build_url(SSL_CERTIFICATES_PATH, url_params)
-
-        response = self.connection.send_request(path=path)
-        return self._return_reponse_key(response, 'certificates')
-
-    def get_virtual_images(self, api_params: dict):
-        params = mf.dict_keys_to_camel_case(api_params)
-        params['max'] = -1
-
-        if params['virtualImageId'] is not None:
-            path = '{0}/{1}'.format(VIRTUAL_IMAGES_PATH, params['virtualImageId'])
-            response = self.connection.send_request(path=path)
-            return self._return_reponse_key(response, 'virtualImage')
-
-        url_params = self._url_params(params)
-        path = self._build_url(VIRTUAL_IMAGES_PATH, url_params)
-
-        response = self.connection.send_request(path=path)
-        return self._return_reponse_key(response, 'virtualImages')
-
-    def backup_instance(self, instance_id: int):
-        path = '{0}/{1}/backup'.format(INSTANCES_PATH, instance_id)
-        response = self.connection.send_request(path=path, method='PUT')
-        return self._return_reponse_key(response, 'results')
 
     def delete_all_instance_snapshots(self, instance_id: int):
         path = '{0}/{1}/delete-all-snapshots'.format(INSTANCES_PATH, instance_id)
@@ -270,6 +171,89 @@ class MorpheusApi():
         response = self.connection.send_request(path=path, method='PUT')
         return self._return_reponse_key(response, 'results')
 
+    def get_appliance_health(self):
+        response = self.connection.send_request(path=HEALTH_PATH)
+        return self._return_reponse_key(response, 'health')
+
+    def get_appliance_license(self):
+        response = self.connection.send_request(path=LICENSE_PATH)
+        return self._return_reponse_key(response, 'license')
+
+    def get_appliance_settings(self):
+        response = self.connection.send_request(path=APPLIANCE_SETTINGS_PATH)
+        return self._return_reponse_key(response, 'applianceSettings')
+
+    def get_instances(self, api_params: dict):
+        if api_params['id'] is not None:
+            path = '{0}/{1}'.format(INSTANCES_PATH, api_params['id'])
+            try:
+                detail = str(api_params['details']).lower()
+            except KeyError:
+                detail = 'false'
+            params = self._url_params({
+                'details': detail
+            })
+            path = self._build_url(path, params)
+            response = self.connection.send_request(path=path)
+            return self._return_reponse_key(response, 'instance')
+
+        params = mf.dict_keys_to_camel_case(api_params)
+        params['max'] = -1
+        url_params = self._url_params(params)
+
+        path = self._build_url(INSTANCES_PATH, url_params)
+
+        response = self.connection.send_request(path=path)
+        return self._return_reponse_key(response, 'instances')
+
+    def get_instance_snapshots(self, instance_id: int):
+        path = '{0}/{1}/snapshots'.format(INSTANCES_PATH, instance_id)
+        response = self.connection.send_request(path=path)
+        return self._return_reponse_key(response, 'snapshots')
+
+    def get_key_pairs(self, api_params: dict):
+        params = mf.dict_keys_to_camel_case(api_params)
+
+        if params['id'] is not None:
+            path = '{0}/{1}'.format(KEY_PAIR_PATH, params['id'])
+            response = self.connection.send_request(path=path)
+            return self._return_reponse_key(response, 'keyPair')
+
+        url_params = self._url_params(params)
+        path = self._build_url(KEY_PAIR_PATH, url_params)
+
+        response = self.connection.send_request(path=path)
+        return self._return_reponse_key(response, 'keyPairs')
+
+    def get_ssl_certificates(self, api_params: dict):
+        params = mf.dict_keys_to_camel_case(api_params)
+
+        if params['id'] is not None:
+            path = '{0}/{1}'.format(SSL_CERTIFICATES_PATH, params['id'])
+            response = self.connection.send_request(path=path)
+            return self._return_reponse_key(response, 'certificate')
+
+        url_params = self._url_params(params)
+        path = self._build_url(SSL_CERTIFICATES_PATH, url_params)
+
+        response = self.connection.send_request(path=path)
+        return self._return_reponse_key(response, 'certificates')
+
+    def get_virtual_images(self, api_params: dict):
+        params = mf.dict_keys_to_camel_case(api_params)
+        params['max'] = -1
+
+        if params['virtualImageId'] is not None:
+            path = '{0}/{1}'.format(VIRTUAL_IMAGES_PATH, params['virtualImageId'])
+            response = self.connection.send_request(path=path)
+            return self._return_reponse_key(response, 'virtualImage')
+
+        url_params = self._url_params(params)
+        path = self._build_url(VIRTUAL_IMAGES_PATH, url_params)
+
+        response = self.connection.send_request(path=path)
+        return self._return_reponse_key(response, 'virtualImages')
+
     def lock_instance(self, instance_id: int):
         path = '{0}/{1}/lock'.format(INSTANCES_PATH, instance_id)
         response = self.connection.send_request(path=path, method='PUT')
@@ -279,6 +263,23 @@ class MorpheusApi():
         path = '{0}/{1}/restart'.format(INSTANCES_PATH, instance_id)
         response = self.connection.send_request(path=path, method='PUT')
         return self._return_reponse_key(response, 'results')
+
+    def set_appliance_maintenance_mode(self, enabled: bool):
+        params = self._url_params({'enabled': enabled})
+        path = self._build_url(MAINTENANCE_MODE_PATH, params)
+        response = self.connection.send_request(path=path, method='POST')
+        return self._return_reponse_key(response, '')
+
+    def set_appliance_settings(self, api_params: dict):
+        payload = self._payload_from_params(api_params)
+        body = {'applianceSettings': payload}
+
+        response = self.connection.send_request(
+            data=body,
+            path=APPLIANCE_SETTINGS_PATH,
+            method='PUT'
+        )
+        return self._return_reponse_key(response, '')
 
     def snapshot_instance(self, api_params: dict):
         path = '{0}/{1}/snapshot'.format(INSTANCES_PATH, api_params.pop('id'))
