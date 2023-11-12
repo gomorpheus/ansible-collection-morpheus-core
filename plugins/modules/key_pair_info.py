@@ -8,7 +8,7 @@ module: key_pair_info
 short_description: Gather Key Pair Information
 description:
     - Gathers Information of Key Pairs.
-version_added: 0.x.x
+version_added: 0.6.0
 author: James Riach
 options:
     id:

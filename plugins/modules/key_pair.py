@@ -9,7 +9,7 @@ short_description: Create and Remove Key Pairs
 description:
     - Create and Remove Key Pairs.
     - Keys can be user provided or generated.
-version_added: 0.x.x
+version_added: 0.6.0
 author: James Riach
 options:
     state:

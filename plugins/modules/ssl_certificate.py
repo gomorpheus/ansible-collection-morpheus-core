@@ -8,7 +8,7 @@ module: ssl_certificate
 short_description: Manage SSL Certificates
 description:
     - Create, Update or Delete SSL Certificates.
-version_added: 0.x.x
+version_added: 0.6.0
 author: James Riach
 options:
     state:

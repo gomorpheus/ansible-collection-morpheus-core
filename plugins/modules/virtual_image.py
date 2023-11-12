@@ -8,7 +8,7 @@ module: virtual_image
 short_description: Manage Morpheus Virtual Images
 description:
     - Manage Morpheus Virtual Images.
-version_added: 0.x.x
+version_added: 0.6.0
 author: James Riach
 options:
     state:

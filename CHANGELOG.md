@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.x.x
+## v0.6.0
 - Added `virtual_image_info` module
 - Added `virtual_image` module
 - Added `key_pair_info` module

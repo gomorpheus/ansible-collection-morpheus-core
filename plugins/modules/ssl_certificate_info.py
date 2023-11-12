@@ -8,7 +8,7 @@ module: ssl_certificate_info
 short_description: Gather information about SSL Certificates
 description:
     - Gathers information about SSL Certificates.
-version_added: 0.x.x
+version_added: 0.6.0
 author: James Riach
 options:
     id:

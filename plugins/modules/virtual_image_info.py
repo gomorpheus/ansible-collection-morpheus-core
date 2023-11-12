@@ -8,7 +8,7 @@ module: virtual_image_info
 short_description: Gather Virtual Image information
 description:
     - Gathers information about Virtual Images.
-version_added: 0.x.x
+version_added: 0.6.0
 author: James Riach
 options:
     virtual_image_id:
