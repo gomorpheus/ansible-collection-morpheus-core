@@ -32,10 +32,6 @@ options:
         description:
             - Name of uploaded file.
         type: string
-    file_path:
-        description:
-            - Path to local file to upload.
-        type: string
     file_url:
         description:
             - URL of file to upload.
@@ -377,7 +373,7 @@ def create_update_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
         upload_action = {
             'False': partial(morpheus_api.upload_virtual_image_file, api_params=file_params),
             'True': partial(parse_check_mode, state=module.params['state'], file_params=file_params, virtual_images=virtual_image)
-        }.get(module.check_mode)
+        }.get(str(module.check_mode))
         exec_upload_action = upload_action()
         upload_response = mf.success_response(exec_upload_action)[0]
 
@@ -444,7 +440,6 @@ def module_to_api_params(module_params: dict) -> tuple:
     file_params = {
         'virtual_image_id': api_params['virtual_image_id'] if api_params['virtual_image_id'] is not None else 0,
         'filename': api_params.pop('filename'),
-        'file': api_params.pop('file_path'),
         'url': api_params.pop('file_url')
     }
 
@@ -549,7 +544,7 @@ def remove_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
         0: partial(morpheus_api.delete_virtual_image, virtual_image[0]['id']),
         1: partial(morpheus_api.delete_virtual_image_file, file_params),
         2: partial(parse_check_mode, state=module.params['state'], virtual_images=virtual_image)
-    }.get(int(module.params['filename'] is None) if not module.check_mode else 2)
+    }.get(int(module.params['filename'] is not None) if not module.check_mode else 2)
 
     response = action()
 
@@ -578,7 +573,6 @@ def run_module():
         'virtual_image_id': {'type': 'int'},
         'name': {'type': 'str'},
         'filename': {'type': 'str'},
-        'file_path': {'type': 'str'},
         'file_url': {'type': 'str'},
         'labels': {'type': 'list', 'elements': 'str'},
         'image_type': {'type': 'str'},

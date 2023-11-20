@@ -9,7 +9,6 @@ Create, Update and Delete Virtual Images and Virtual Image Files
 |virtual_image_id||The id of the Virtual Image|
 |name||The name of the Virtual Image|
 |filename||The name of a Virtual Image File|
-|file_path||Path to a local file to upload.<br/> Note, that files should be small (a few MB), otherwise it is likely the module will OOM and crash attempting to base64 encode the file.|
 |file_url||URL Link to a File that Morpheus can download|
 |labels||A list of labels to apply|
 |image_type||Set the Image Type code, e.g. `vmware`|
