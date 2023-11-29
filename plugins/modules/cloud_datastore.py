@@ -164,10 +164,15 @@ def run_module():
     morpheus_api = MorpheusApi(connection)
 
     api_params = module.params.copy()
-    api_params['active'] = True if api_params['state'] == 'active' else False
+    if api_params['state'] is not None:
+        api_params['active'] = api_params['state'] == 'active'
     del api_params['state']
 
+    before_state = morpheus_api.get_cloud_datastores(api_params)
+
     response = morpheus_api.set_cloud_datastore(api_params)
+
+    result['changed'] = not mf.dict_compare_equality(before_state, response)
 
     result['datastore'] = mf.dict_keys_to_snake_case(response)
 

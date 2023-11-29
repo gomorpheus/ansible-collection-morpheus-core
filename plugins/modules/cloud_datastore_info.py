@@ -30,6 +30,10 @@ options:
         description:
             - Filter by whether the Datastore is active or not.
         type: bool
+    online:
+        description:
+            - Filter by whether the Datastore is online or not.
+        type: bool
     visibility:
         description:
             - Filter by visibility of the Datastore.
@@ -80,6 +84,7 @@ def run_module():
         'detail': {'type': 'str', 'choices': ['full', 'summary'], 'default': 'summary'},
         'zone_id': {'type': 'int', 'required': True, 'aliases': ['cloud_id']},
         'active': {'type': 'bool'},
+        'online': {'type': 'bool'},
         'visibility': {'type': 'str', 'choices': ['private', 'public']}
     }
 
@@ -122,6 +127,9 @@ def run_module():
 
     if module.params['active'] is not None:
         response = [response_item for response_item in response if bool(response_item['active']) is module.params['active']]
+
+    if module.params['online'] is not None:
+        response = [response_item for response_item in response if bool(response_item['online']) is module.params['online']]
 
     if module.params['detail'] in API_FILTER_KEYS:
         response = [mf.dict_filter(response_item, API_FILTER_KEYS[module.params['detail']]) for response_item in response]
