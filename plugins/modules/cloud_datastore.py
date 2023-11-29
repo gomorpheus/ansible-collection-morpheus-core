@@ -168,7 +168,7 @@ def run_module():
         api_params['active'] = api_params['state'] == 'active'
     del api_params['state']
 
-    before_state = morpheus_api.get_cloud_datastores(api_params)
+    before_state = morpheus_api.get_cloud_datastores(api_params.copy())
 
     response = morpheus_api.set_cloud_datastore(api_params)
 
