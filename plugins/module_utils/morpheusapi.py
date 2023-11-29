@@ -10,8 +10,6 @@ version_added: 0.3.0
 author: James Riach
 '''
 
-import binascii
-import base64
 import urllib.parse
 try:
     import morpheus_funcs as mf
@@ -20,6 +18,9 @@ except ModuleNotFoundError:
 
 
 APPLIANCE_SETTINGS_PATH = '/api/appliance-settings'
+CLOUDS = '/api/zones'
+CLOUD_DATASTORES = '/api/zones/{0}/data-stores'
+CLOUD_TYPES = '/api/zone-types'
 HEALTH_PATH = '/api/health'
 INSTANCES_PATH = '/api/instances'
 KEY_PAIR_PATH = '/api/key-pairs'
@@ -39,6 +40,24 @@ class MorpheusApi():
         if params is not None:
             url_parts[4] = urllib.parse.urlencode(params)
         return urllib.parse.urlunparse(url_parts)
+
+    def _get_object(self, api_path: str, api_params: dict, max_param: bool = False):
+        params = mf.dict_keys_to_camel_case(api_params)
+        if max_param:
+            params['max'] = -1
+        url_params = self._url_params(params)
+        path = self._build_url(api_path, url_params)
+
+        return self.connection.send_request(path=path)
+
+    def _get_object_by_id(self, api_path: str, obj_id: int, url_params: dict = None):
+        path = '{0}/{1}'.format(api_path, obj_id)
+
+        if url_params is not None:
+            url_params = self._url_params(url_params)
+            path = self._build_url(path, url_params)
+
+        return self.connection.send_request(path=path)
 
     def _payload_from_params(self, params: dict):
         payload = mf.dict_keys_to_camel_case(
@@ -183,6 +202,32 @@ class MorpheusApi():
         response = self.connection.send_request(path=APPLIANCE_SETTINGS_PATH)
         return self._return_reponse_key(response, 'applianceSettings')
 
+    def get_clouds(self, api_params: dict):
+        if api_params['id'] is not None:
+            response = self._get_object_by_id(CLOUDS, api_params['id'])
+            return self._return_reponse_key(response, 'zone')
+
+        response = self._get_object(CLOUDS, api_params, True)
+        return self._return_reponse_key(response, 'zones')
+
+    def get_cloud_datastores(self, api_params: dict):
+        zone_id = api_params.pop('zone_id')
+
+        if api_params['id'] is not None:
+            response = self._get_object_by_id(CLOUD_DATASTORES.format(zone_id), api_params['id'])
+            return self._return_reponse_key(response, 'datastore')
+
+        response = self._get_object(CLOUD_DATASTORES.format(zone_id), api_params, True)
+        return self._return_reponse_key(response, 'datastores')
+
+    def get_cloud_types(self, api_params: dict):
+        if api_params['id'] is not None:
+            response = self._get_object_by_id(CLOUD_TYPES, api_params['id'])
+            return self._return_reponse_key(response, 'zoneType')
+
+        response = self._get_object(CLOUD_TYPES, api_params, True)
+        return self._return_reponse_key(response, 'zoneTypes')
+
     def get_instances(self, api_params: dict):
         if api_params['id'] is not None:
             path = '{0}/{1}'.format(INSTANCES_PATH, api_params['id'])
@@ -280,6 +325,19 @@ class MorpheusApi():
             method='PUT'
         )
         return self._return_reponse_key(response, '')
+
+    def set_cloud_datastore(self, api_params: dict):
+        path = '{0}/{1}'.format(CLOUD_DATASTORES.format(api_params.pop('zone_id')), api_params.pop('id'))
+        payload = self._payload_from_params(api_params)
+        body = {'datastore': payload}
+
+        response = self.connection.send_request(
+            data=body,
+            path=path,
+            method='PUT'
+        )
+
+        return self._return_reponse_key(response, 'datastore')
 
     def snapshot_instance(self, api_params: dict):
         path = '{0}/{1}/snapshot'.format(INSTANCES_PATH, api_params.pop('id'))
