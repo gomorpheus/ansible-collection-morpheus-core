@@ -46,9 +46,43 @@ extends_documentation_fragment:
 '''
 
 EXAMPLES = r'''
+- name: Retrieve all Datastores for specified Cloud
+  morpheus.core.cloud_datastore_info:
+    zone_id: 15
+
+- name: Retrieve all offline Datastores
+  morpheus.core.cloud_datastore_info:
+    zone_id: 15
+    online: false
+
+- name: Retrieve all Online, but inactive Datastores
+  morpheus.core.cloud_datastore_info:
+    zone_id: 15
+    online: true
+    active: false
 '''
 
 RETURN = r'''
+datastores:
+    description:
+        - A List of Datastores.
+    returned: always
+    sample:
+        "datastores": [
+            {
+                "active": true,
+                "free_space": 52737672740864,
+                "id": 200,
+                "name": "vmware-ds001",
+                "online": true,
+                "type": "cluster",
+                "visibility": "public",
+                "zone": {
+                    "id": 5,
+                    "name": "vmware cloud"
+                }
+            }
+        ]
 '''
 
 import re

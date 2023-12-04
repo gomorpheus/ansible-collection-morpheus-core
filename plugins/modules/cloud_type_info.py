@@ -28,9 +28,40 @@ extends_documentation_fragment:
 '''
 
 EXAMPLES = r'''
+- name: Return all Cloud Types
+  morpheus.core.cloud_type_info:
+
+- name: Return Cloud Type by Type Code
+  morpheus.core.cloud_type_info:
+    code: vmware
+
+- name: Return Full Info about Cloud Types
+  morpheus.core.cloud_type_info:
+    detail: full
 '''
 
 RETURN = r'''
+cloud_types:
+    description:
+        - List of Cloud Type Info.
+    returned: always
+    sample:
+        "cloud_types": [
+            {
+                "cloud": "private",
+                "code": "fusion",
+                "enabled": true,
+                "id": 38,
+                "name": "VMware Fusion"
+            },
+            {
+                "cloud": "private",
+                "code": "vmware",
+                "enabled": true,
+                "id": 28,
+                "name": "VMware vCenter"
+            }
+        ]
 '''
 
 import re

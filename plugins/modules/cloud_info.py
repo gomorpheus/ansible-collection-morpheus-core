@@ -28,9 +28,55 @@ extends_documentation_fragment:
 '''
 
 EXAMPLES = r'''
+- name: Return all Clouds
+  morpheus.core.cloud_info:
+
+- name: Return all VMware Clouds
+  morpheus.core.cloud_info:
+    type: vmware
+
+- name: Return Cloud matching Name
+  morpheus.core.cloud_info:
+    name: ProdCloud
+
+- name: Return all Clouds matching Regex Name
+  morpheus.core.cloud_info:
+    name: ^Dev.*$
+    regex_name: true
+
+- name: Return Clouds with Full Detailed Info
+  morpheus.core.cloud_info:
+    detail: full
 '''
 
 RETURN = r'''
+clouds:
+    description:
+        - List of Clouds with Info.
+    returned: always
+    sample:
+        "clouds": [
+            {
+                "agent_mode": "cloudInit",
+                "code": "linuxCloud",
+                "enabled": true,
+                "id": 20,
+                "location": "UKSouth",
+                "name": "Linux Cloud South",
+                "server_count": 3,
+                "stats": {
+                    "server_counts": {
+                        "all": 3,
+                        "baremetal": 0,
+                        "container_host": 0,
+                        "host": 3,
+                        "hypervisor": 3,
+                        "unmanaged": 0,
+                        "vm": 0
+                    }
+                }
+            }
+        ]
 '''
 
 import re
