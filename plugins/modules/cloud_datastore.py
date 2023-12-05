@@ -214,6 +214,15 @@ def parse_check_mode(current_state: dict, api_params: dict) -> dict:
 
 
 def parse_resource_permissions(permissions: dict, params: dict) -> dict:
+    """Parse existing resource permissions with any changes specified in params
+
+    Args:
+        permissions (dict): Existing permissions
+        params (dict): Module Parameters specifying changes
+
+    Returns:
+        dict: API Formatted Dictionary
+    """
     resource_sites = [site['id'] for site in permissions['sites']]
     resource_plans = [plan['id'] for plan in permissions['plans']]
 
@@ -244,6 +253,15 @@ def parse_resource_permissions(permissions: dict, params: dict) -> dict:
 
 
 def parse_tenant_permissions(tenants: list, params: dict) -> dict:
+    """Parse existing Tenant Permisions with any changes specified in params.
+
+    Args:
+        tenants (list): List of existing Tenant permissions
+        params (dict): Module Parameters specifying chaanges
+
+    Returns:
+        dict: API Formatted Dictionary
+    """
     tenant_access = [t['id'] for t in tenants]
     tenant_store = [t['id'] for t in tenants if t['defaultStore']]
     tenant_target = [t['id'] for t in tenants if t['defaultTarget']]
