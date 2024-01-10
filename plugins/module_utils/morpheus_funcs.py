@@ -25,34 +25,41 @@ def class_to_dict(input_class: object) -> dict:
     }
 
 
-def dict_diff(dict_after: dict, dict_before: dict) -> tuple:
+def dict_diff(dict_after: dict, dict_before: dict, ignore_keys: set = None) -> tuple:
     """Compare two dictionaries for differences
 
     Args:
         dict_after (dict): First Dictionary to Compare
         dict_before (dict): Second Dictionary to Compare
+        ignore_keys (set): Set of Dictionary Keys to ignore comparison
 
     Returns:
         tuple: A tuple, (True, [diffrences]) if there are differences, otherwise (False, [])
     """
     diff_list = []
 
+    if ignore_keys is None:
+        ignore_keys = set()
+
     for k, val_a in dict_after.items():
+        if k in ignore_keys:
+            continue
+
         diff = {
             'after': '{0} = {1}\n'.format(k, val_a),
             'before': 'Unknown\n'
         }
 
         val_b = None
-        try:
+        if k in dict_before:
             val_b = dict_before[k]
-        except KeyError:
+        else:
             diff_list.append(diff)
             continue
 
         diff['before'] = '{0} = {1}\n'.format(k, val_b)
 
-        if type(val_a) != type(val_b):
+        if type(val_a) is not type(val_b):
             diff_list.append(diff)
             continue
 
@@ -95,27 +102,34 @@ def dict_diff(dict_after: dict, dict_before: dict) -> tuple:
     return False, diff_list
 
 
-def dict_compare_equality(dict_a: dict, dict_b: dict) -> bool:
+def dict_compare_equality(dict_a: dict, dict_b: dict, ignore_keys: set = None) -> bool:
     """Compare two dictionaries for equality
 
     Args:
         dict_a (dict): First Dictionary to Compare
         dict_b (dict): Second Dictionary to Compare
+        ignore_keys (set): Set of Dictionary Keys to ignore comparison
 
     Returns:
         bool: True if both Dictionaries are the same, otherwise False
     """
+    if ignore_keys is None:
+        ignore_keys = set()
+
     if len(dict_a) != len(dict_b):
         return False
 
     for k, val_a in dict_a.items():
+        if k in ignore_keys:
+            continue
+
         val_b = None
-        try:
+        if k in dict_b:
             val_b = dict_b[k]
-        except KeyError:
+        else:
             return False
 
-        if type(val_a) != type(val_b):
+        if type(val_a) is not type(val_b):
             return False
 
         if isinstance(val_a, dict) and isinstance(val_b, dict):
@@ -350,18 +364,10 @@ def success_response(response: dict) -> tuple:
     Returns:
         tuple: (bool, msg)
     """
-    success = False
-    msg = ''
+    success = response['success'] if 'success' in response else False
+    msg = response['msg'] if 'msg' in response else ''
 
-    try:
-        success = response['success']
-    except KeyError:
-        success = False
-
-    try:
-        msg = response['msg']
-    except KeyError:
-        if not success:
-            msg = 'Unknown Failure'
+    if not success and msg == '':
+        msg = 'Unknown Failure'
 
     return success, msg

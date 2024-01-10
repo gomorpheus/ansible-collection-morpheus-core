@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.6.0
+- Added `virtual_image_info` module
+- Added `virtual_image` module
+- Added `key_pair_info` module
+- Added `key_pair` module
+- Added `ssl_certificate_info` module
+- Added `ssl_certificate` module
+
 ## v0.5.1
 - Added `all_apps` search type for inventory
 
