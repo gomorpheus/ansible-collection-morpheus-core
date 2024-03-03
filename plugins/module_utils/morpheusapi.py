@@ -102,6 +102,17 @@ class MorpheusApi():
         response = self.connection.send_request(path=path, method='PUT')
         return self._return_reponse_key(response, 'results')
 
+    def create_cloud(self, api_params: dict):
+        payload = self._payload_from_params(api_params)
+        body = {'zone': payload}
+
+        response = self.connection.send_request(
+            data=body,
+            path=CLOUDS,
+            method='POST'
+        )
+        return self._return_reponse_key(response, 'zone')
+
     def create_key_pair(self, api_params: dict):
         payload = self._payload_from_params(api_params)
         body = {'keyPair': payload}
@@ -142,6 +153,14 @@ class MorpheusApi():
 
     def delete_all_instance_snapshots(self, instance_id: int):
         path = '{0}/{1}/delete-all-snapshots'.format(INSTANCES_PATH, instance_id)
+        response = self.connection.send_request(path=path, method='DELETE')
+        return self._return_reponse_key(response, '')
+
+    def delete_cloud(self, cloud_id: int, api_params: dict):
+        path = '{0}/{1}'.format(CLOUDS, cloud_id)
+        params = mf.dict_keys_to_camel_case(api_params)
+        url_params = self._url_params(params)
+        path = self._build_url(path, url_params)
         response = self.connection.send_request(path=path, method='DELETE')
         return self._return_reponse_key(response, '')
 
@@ -371,6 +390,19 @@ class MorpheusApi():
         path = '{0}/{1}/suspend'.format(INSTANCES_PATH, instance_id)
         response = self.connection.send_request(path=path, method='PUT')
         return self._return_reponse_key(response, 'results')
+
+    def update_cloud(self, api_params: dict):
+        path = '{0}/{1}'.format(CLOUDS, api_params.pop('id'))
+
+        payload = self._payload_from_params(api_params)
+        body = {'zone': payload}
+
+        response = self.connection.send_request(
+            data=body,
+            path=path,
+            method='PUT'
+        )
+        return self._return_reponse_key(response, 'zone')
 
     def update_ssl_certificate(self, api_params: dict):
         path = '{0}/{1}'.format(SSL_CERTIFICATES_PATH, api_params.pop('id'))

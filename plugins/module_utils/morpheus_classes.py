@@ -2,7 +2,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = r'''
-name: morph_api_classes
+name: morpheus_classes
 short_description: Shared Morpheus API Classes
 description:
     - Shared Classes for Morpheus API Modules
