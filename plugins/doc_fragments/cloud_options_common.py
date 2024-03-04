@@ -79,7 +79,10 @@ options:
     costing_mode:
         description:
             - Enable costing on the Cloud.
-        type: bool
+        choices:
+            - off
+            - costing
+        type: string
         aliases:
             - costing
     datacenter_name:
@@ -89,9 +92,12 @@ options:
     guidence_mode:
         description:
             - Enable/Disable Cloud Guidance
-        type: bool
+        choices:
+            - off
+            - manual
+        type: string
         aliases:
-            - costing
+            - guidance
     scale_priority:
         description:
             - Set Scale Priority.
