@@ -4,103 +4,98 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = r'''
-module: vcenter_cloud
-short_description: Manage a VMware VCenter Cloud
+module: azure_cloud
+short_description: Manage an Azure Cloud
 description:
-    - Manage VMware VCenter Clouds.
+    - Manage Azure Clouds.
 version_added: 0.x.x
 author: James Riach
 options:
-    api_url:
+    subscriber_id:
         description:
-            - The VCenter API URL.
+            - Azure Subscription ID.
         type: string
-    api_version:
+        aliases:
+            - subscription_id
+    azure_tenant_id:
         description:
-            - The VCenter API Version.
+            - Azure Tenant ID.
+        type: string
+    client_id:
+        description:
+            - Azure Client ID.
+        type: string
+    client_secret:
+        description:
+            - Azure Client Secret.
+        type: string
+    resource_group:
+        description:
+            - Azure Resource Group name.
+            - Leaving this blank for a new integration scopes the integration to all Resource Groups.
+            - Specify V(all) if wanting to change an existing integration to scope to all Resource Groups.
+        type: string
+    cloud_type:
+        description:
+            - Azure Cloud type.
         choices:
-            - 7.0
-            - 6.7
-            - 6.5
-            - 6.0
+            - global
+            - usgov
+            - german
+            - china
         type: string
-    datacenter:
+    region_code:
         description:
-            - VCenter Datacenter name.
+            - Scoped region of the Cloud integration.
+            - Leaving this blank for a new integration scopes the integration to all regions.
+            - Specify V(all) if wanting to change an existing integrations scope to all regions.
         type: string
-    cluster:
+        aliases:
+            - region
+    account_type:
         description:
-            - VCenter Cluster name.
-        type: string
-    resource_pool:
-        description:
-            - VCenter Resource Pool name.
+            - The Azure Account Type.
+        choices:
+            - csp
+            - ea
+            - standard
         type: string
     rpc_mode:
         description:
             - Cloud workload interaction method.
-            - V(guestexec) = VMWare Tools
+            - V(guestexec) = Azure Run Command
             - V(rpc) = SSH/WinRM
         choices:
             - guestexec
             - rpc
         type: string
-    disk_storage_type:
-        description:
-            - The default Virtual Machine Disk type.
-        choices:
-            - thin
-            - thick
-            - thick_eager
-        type: string
-    enable_disk_type_selection:
-        description:
-            - Enable user to select Virtual Machine Disk type.
-        type: bool
-    enable_storage_type_selection:
-        description:
-            - Enable user to select the Storage type.
-        type: bool
-    enable_network_type_selection:
-        description:
-            - Enable user to select the Network Interface type.
-        type: bool
-    enable_vnc:
-        description:
-            - Enable Hyper-Visor Console.
-        type: bool
-        aliases:
-            - enable_console
-    hide_host_selection:
-        description:
-            - Hide Cloud Host selection.
-        type: bool
     import_existing:
         description:
             - Inventory Cloud and Import existing Virtual Machines.
         type: bool
-    console_keymap:
+    azure_costing_mode:
         description:
-            - Guest console keyboard layout.
+            - Azure Costing Mode.
+            - V(standard) = Pay As You Go
+            - V(csp) = CSP
+            - V(azure_plan) = CSP (Microsoft Customer Agreement)
         choices:
-            - us
-            - uk
-            - de
-            - de-ch
-            - es
-            - fi
-            - fr
-            - fr-be
-            - fr-ch
-            - is
-            - it
-            - jp
-            - nl-be
-            - no
-            - pt
+            - azure_plan
+            - csp
+            - standard
         type: string
-        aliases:
-            - keyboard_layout
+    csp_tenant_id:
+        description:
+            - The CSP Tenant ID.
+        type: string
+    csp_client_id:
+        description:
+            - The CSP Client ID.
+        type: string
+    csp_client_secret:
+        description:
+            - The CSP Client Secret.
+        type: string
 extends_documentation_fragment:
     - action_common_attributes
     - morpheus.core.cloud_options_common
@@ -112,50 +107,37 @@ attributes:
 '''
 
 EXAMPLES = r'''
-- name: Create new VCenter Cloud
-  morpheus.core.vcenter_cloud:
+- name: Create Azure Cloud
+  morpheus.core.azure_cloud:
     state: present
-    name: VCenter Cloud
-    description: A VCenter Cloud
-    code: 'vccloud'
-    location: 'south'
+    name: Azure Cloud
+    description: Azure Cloud
+    code: AZCloud
+    location: UKSouth
     visibility: private
-    group_id: 50
+    group_id: 78
     account_id: 1
-    enabled: true
-    agent_mode: cloudinit
+    enabled: false
     auto_recover_power_state: false
-    import_existing: false
-    costing_mode: off
-    guidance_mode: off
+    costing: off
+    guidance: off
     security_mode: off
-    credential_id: 3
-    api_url: 'https://vcenter.domain.tld/sdk'
-    api_version: '7.0'
-    datacenter: 'VCCloud'
-    cluster: 'Cluster01'
-    resource_pool: 'All'
+    timezone: Europe/London
+    subscription_id: 2638d5ed-0ed1-4a0c-a57f-688a4850aede
+    azure_tenant_id: 5308e59d-e8c7-4f62-8a5c-da82262cb7b7
+    client_id: 8b25e5fb-03ff-4275-abfb-0ea1fcb392a2
+    client_secret: 5ecr3t
+    cloud_type: global
+    import_existing: false
+    azure_costing_mode: standard
     rpc_mode: guestexec
-    disk_storage_type: thin
-    enable_disk_type_selection: true
-    enable_storage_type_selection: false
-    enable_network_type_selection: true
-    enable_vnc: true
-    hide_host_selection: true
-    console_keymap: uk
-    timezone: "Europe/London"
-
-- name: Remove VCenter Cloud
-  morpheus.core.vcenter_cloud:
-    state: absent
-    id: 56
-    force_remove: true
+    agent_mode: guestexec
 '''
 
 RETURN = r'''
 cloud:
     description:
-        - Information related to the specified cloud.
+        - Information related to specified cloud.
     returned: always
     sample:
         "cloud": {
@@ -164,29 +146,29 @@ cloud:
                 "name": "MasterTenant"
             },
             "account_id": 1,
-            "agent_mode": "cloudinit",
+            "agent_mode": "guestexec",
             "api_proxy": null,
             "auto_recover_power_state": false,
-            "code": "vccloud",
+            "code": "AZCloud",
             "config": {
-                "api_url": "https://vcenter.domain.tld/sdk",
-                "api_version": "7.0",
+                "account_type": null,
                 "appliance_url": null,
-                "cluster": "Cluster01",
+                "azure_costing_mode": "standard",
+                "client_id": "8b25e5fb-03ff-4275-abfb-0ea1fcb392a2",
+                "client_secret": "************",
+                "cloud_type": "global",
                 "config_cmdb_discovery": false,
-                "datacenter": "VCCloud",
+                "csp_client_id": null,
+                "csp_client_secret": null,
+                "csp_tenant_id": null,
                 "datacenter_name": null,
-                "disk_storage_type": "thin",
-                "enable_disk_type_selection": true,
-                "enable_network_type_selection": true,
-                "enable_storage_type_selection": false,
-                "enable_vnc": true,
-                "hide_host_selection": true,
                 "import_existing": false,
-                "resource_pool": "All",
-                "rpc_mode": "guestexec"
+                "resource_group": null,
+                "rpc_mode": "guestexec",
+                "subscriber_id": "2638d5ed-0ed1-4a0c-a57f-688a4850aede",
+                "tenant_id": "5308e59d-e8c7-4f62-8a5c-da82262cb7b7"
             },
-            "console_keymap": "uk",
+            "console_keymap": null,
             "container_mode": "docker",
             "cost_last_sync": null,
             "cost_last_sync_duration": null,
@@ -195,9 +177,7 @@ cloud:
             "cost_status_message": null,
             "costing_mode": "off",
             "credential": {
-                "id": 3,
-                "name": "VCenter Creds",
-                "type": "username-password"
+                "type": "local"
             },
             "dark_image_path": null,
             "date_created": "2024-01-01T00:00:01Z",
@@ -207,19 +187,19 @@ cloud:
             "groups": [
                 {
                     "account_id": 1,
-                    "id": 50,
-                    "name": "VCGroup"
+                    "id": 78,
+                    "name": "Azure Clouds"
                 }
             ],
-            "guidance_mode": "manual",
-            "id": 56,
+            "guidance_mode": "off",
+            "id": 57,
             "image_path": null,
             "inventory_level": "off",
             "last_sync": null,
             "last_sync_duration": null,
             "last_updated": "2024-01-01T00:00:01Z",
-            "location": "south",
-            "name": "VCenter Cloud",
+            "location": "UKSouth",
+            "name": "Azure Cloud",
             "network_domain": null,
             "network_server": null,
             "next_run_date": null,
@@ -254,11 +234,11 @@ cloud:
             "user_data_windows": null,
             "visibility": "private",
             "zone_type": {
-                "code": "vmware",
-                "id": 28,
-                "name": "VMware vCenter"
+                "code": "azure",
+                "id": 9,
+                "name": "Azure (Public)"
             },
-            "zone_type_id": 28
+            "zone_type_id": 9
         }
 '''
 
@@ -275,48 +255,28 @@ except ModuleNotFoundError:
     from ansible_collections.morpheus.core.plugins.module_utils.morpheus_const import CLOUD_OPTIONS_COMMON, CLOUD_OPTIONS_COMMON_CONFIG
 
 
-VCENTER_CLOUD_OPTIONS = {
-    'api_url': {'type': 'str'},
-    'api_version': {'type': 'str', 'choices': ['7.0', '6.7', '6.5', '6.0']},
-    'datacenter': {'type': 'str'},
-    'cluster': {'type': 'str'},
-    'resource_pool': {'type': 'str'},
+AZURE_CLOUD_OPTIONS = {
+    'subscriber_id': {'type': 'str', 'aliases': ['subscription_id']},
+    'azure_tenant_id': {'type': 'str'},
+    'client_id': {'type': 'str'},
+    'client_secret': {'type': 'str', 'no_log': True},
+    'resource_group': {'type': 'str'},
+    'cloud_type': {'type': 'str', 'choices': ['global', 'usgov', 'german', 'china']},
+    'region_code': {'type': 'str', 'aliases': ['region']},
+    'account_type': {'type': 'str', 'choices': ['csp', 'ea', 'standard']},
     'rpc_mode': {'type': 'str', 'choices': ['guestexec', 'rpc']},
-    'disk_storage_type': {'type': 'str', 'choices': ['thin', 'thick', 'thick_eager']},
-    'enable_disk_type_selection': {'type': 'bool'},
-    'enable_storage_type_selection': {'type': 'bool'},
-    'enable_network_type_selection': {'type': 'bool'},
-    'enable_vnc': {'type': 'bool', 'aliases': ['enable_console']},
-    'hide_host_selection': {'type': 'bool'},
     'import_existing': {'type': 'bool'},
-    'console_keymap': {
-        'type': 'str',
-        'choices': [
-            'us',
-            'uk',
-            'de',
-            'de-ch',
-            'es',
-            'fi',
-            'fr',
-            'fr-be',
-            'fr-ch',
-            'is',
-            'it',
-            'jp',
-            'nl-be',
-            'no',
-            'pt'
-        ],
-        'aliases': ['keyboard_layout']
-    }
+    'azure_costing_mode': {'type': 'str', 'choices': ['azure_plan', 'csp', 'standard']},
+    'csp_tenant_id': {'type': 'str'},
+    'csp_client_id': {'type': 'str'},
+    'csp_client_secret': {'type': 'str', 'no_log': True}
 }
 
-MOCK_VCENTER_CLOUD = {
+MOCK_AZURE_CLOUD = {
     'id': 'Known After Create',
     'uuid': 'Known After Create',
     'name': '',
-    'code': 'vmware',
+    'code': 'azure',
     'labels': [],
     'location': None,
     'owner': {
@@ -332,8 +292,8 @@ MOCK_VCENTER_CLOUD = {
     'enabled': True,
     'zoneType': {
         'id': 0,
-        'code': 'vmware',
-        'name': 'VMware vCenter'
+        'code': 'azure',
+        'name': 'Azure'
     }
 }
 
@@ -353,29 +313,35 @@ def module_to_api_params(module_params: dict) -> dict:
     del api_params['remove_resources']
     del api_params['force_remove']
 
-    api_params['zone_type'] = {'code': 'vmware'}
+    api_params['zone_type'] = {'code': 'azure'}
+    tenant_id = api_params.pop('azure_tenant_id')
 
-    api_params['config'] = {**CLOUD_OPTIONS_COMMON_CONFIG.copy(), **VCENTER_CLOUD_OPTIONS.copy()}
+    api_params['config'] = {**CLOUD_OPTIONS_COMMON_CONFIG.copy(), **AZURE_CLOUD_OPTIONS.copy()}
+    del api_params['config']['username']
+    del api_params['config']['password']
+    del api_params['config']['azure_tenant_id']
     for k in api_params['config']:
         api_params['config'][k] = api_params[k]
         del api_params[k]
+    api_params['config']['tenant_id'] = tenant_id
 
     api_params['credential'] = {
-        'type': 'username-password' if api_params['credential_id'] is not None else 'local'
+        'type': 'local'
     }
 
-    if api_params['credential_id'] is not None:
-        api_params['credential']['id'] = api_params.pop('credential_id')
-        del api_params['config']['username']
-        del api_params['config']['password']
-
-    api_params['console_keymap'] = api_params['config'].pop('console_keymap')
+    api_params['region_code'] = api_params['config'].pop('region_code')
 
     return api_params
 
 
 def run_module():
-    argument_spec = {**CLOUD_OPTIONS_COMMON, **CLOUD_OPTIONS_COMMON_CONFIG, **VCENTER_CLOUD_OPTIONS}
+    cloud_options = CLOUD_OPTIONS_COMMON.copy()
+    cloud_config_options = CLOUD_OPTIONS_COMMON_CONFIG.copy()
+    del cloud_options['credential_id']
+    del cloud_config_options['username']
+    del cloud_config_options['password']
+
+    argument_spec = {**cloud_options, **cloud_config_options, **AZURE_CLOUD_OPTIONS}
 
     mutually_exclusive = [
         ('id', 'name'),
@@ -411,9 +377,9 @@ def run_module():
             msg='Number of matching Clouds exceeded 1, got {0}'.format(len(existing_cloud))
         )
 
-    if len(existing_cloud) == 1 and existing_cloud[0]['zone_type']['code'] != 'vmware':
+    if len(existing_cloud) == 1 and existing_cloud[0]['zone_type']['code'] != 'azure':
         module.fail_json(
-            msg='Specified Cloud is not VSphere'
+            msg='Specified Cloud is not Azure'
         )
 
     if len(existing_cloud) == 0 and (module.params['state'] == 'absent' or module.params['id'] is not None):
@@ -426,7 +392,7 @@ def run_module():
         'present': partial(
             cloud.create_update_cloud,
             existing_cloud=existing_cloud[0] if len(existing_cloud) > 0 else {},
-            mock_cloud=MOCK_VCENTER_CLOUD
+            mock_cloud=MOCK_AZURE_CLOUD
             )
     }.get(module.params['state'])
 

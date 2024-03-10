@@ -116,6 +116,8 @@ options:
                         description:
                             - Id of the Plan to allow access.
                         type: int
+extends_documentation_fragment:
+    - action_common_attributes
 attributes:
     check_mode:
         support: full

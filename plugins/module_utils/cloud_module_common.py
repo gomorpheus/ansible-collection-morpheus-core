@@ -7,11 +7,9 @@ from typing import Callable
 try:
     import morpheus_funcs as mf
     from morpheusapi import MorpheusApi
-    from morpheus_const import CLOUD_OPTIONS_COMMON, CLOUD_OPTIONS_COMMON_CONFIG
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
     from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheus_const import CLOUD_OPTIONS_COMMON, CLOUD_OPTIONS_COMMON_CONFIG
 
 
 def create_update_cloud(
@@ -54,7 +52,7 @@ def create_update_cloud(
     action_result = action()
     action_result = mf.dict_keys_to_snake_case(action_result)
 
-    changed, diff = mf.dict_diff(action_result, existing_cloud)
+    changed, diff = mf.dict_diff(action_result, existing_cloud, ignore_keys={'last_updated'})
 
     result = {
         'changed': changed and 'id' in action_result,
@@ -129,16 +127,16 @@ def parse_check_mode(
     if state == 'absent':
         return {'success': True, 'msg': ''}
 
-    if 'id' not in existing_cloud:
-        existing_cloud = mock_cloud
+    updated_cloud = existing_cloud.copy()
 
-    api_params = mf.dict_keys_to_camel_case(api_params)
+    if 'id' not in existing_cloud:
+        updated_cloud = mock_cloud
 
     for k, v in api_params.items():
         if k in existing_cloud:
-            existing_cloud[k] = v
+            updated_cloud[k] = v
 
-    return existing_cloud
+    return updated_cloud
 
 
 def remove_cloud(
