@@ -132,6 +132,12 @@ EXAMPLES = r'''
     azure_costing_mode: standard
     rpc_mode: guestexec
     agent_mode: guestexec
+
+- name: Refresh Cloud
+  morpheus.core.azure_cloud:
+    state: refresh
+    name: Azure Cloud
+    refresh_mode: hourly
 '''
 
 RETURN = r'''
@@ -243,16 +249,10 @@ cloud:
 '''
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.connection import Connection
-from functools import partial
 try:
     import module_utils.cloud_module_common as cloud
-    from module_utils.morpheusapi import MorpheusApi
-    from module_utils.morpheus_const import CLOUD_OPTIONS_COMMON, CLOUD_OPTIONS_COMMON_CONFIG
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.cloud_module_common as cloud
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheus_const import CLOUD_OPTIONS_COMMON, CLOUD_OPTIONS_COMMON_CONFIG
 
 
 AZURE_CLOUD_OPTIONS = {
@@ -316,9 +316,7 @@ def module_to_api_params(module_params: dict) -> dict:
     api_params['zone_type'] = {'code': 'azure'}
     tenant_id = api_params.pop('azure_tenant_id')
 
-    api_params['config'] = {**CLOUD_OPTIONS_COMMON_CONFIG.copy(), **AZURE_CLOUD_OPTIONS.copy()}
-    del api_params['config']['username']
-    del api_params['config']['password']
+    api_params['config'] = {**cloud.CLOUD_OPTIONS_COMMON_CONFIG.copy(), **AZURE_CLOUD_OPTIONS.copy()}
     del api_params['config']['azure_tenant_id']
     for k in api_params['config']:
         api_params['config'][k] = api_params[k]
@@ -335,18 +333,10 @@ def module_to_api_params(module_params: dict) -> dict:
 
 
 def run_module():
-    cloud_options = CLOUD_OPTIONS_COMMON.copy()
-    cloud_config_options = CLOUD_OPTIONS_COMMON_CONFIG.copy()
-    del cloud_options['credential_id']
-    del cloud_config_options['username']
-    del cloud_config_options['password']
-
-    argument_spec = {**cloud_options, **cloud_config_options, **AZURE_CLOUD_OPTIONS}
+    argument_spec = {**cloud.CLOUD_OPTIONS_COMMON, **cloud.CLOUD_OPTIONS_COMMON_CONFIG, **AZURE_CLOUD_OPTIONS}
 
     mutually_exclusive = [
-        ('id', 'name'),
-        ('credential_id', 'username'),
-        ('credential_id', 'password')
+        ('id', 'name')
     ]
 
     required_if = [
@@ -355,11 +345,6 @@ def run_module():
         ('name', None, ('id'))
     ]
 
-    result = {
-        'changed': False,
-        'cloud': {}
-    }
-
     module = AnsibleModule(
         argument_spec=argument_spec,
         mutually_exclusive=mutually_exclusive,
@@ -367,44 +352,12 @@ def run_module():
         supports_check_mode=True
     )
 
-    connection = Connection(module._socket_path)
-    morpheus_api = MorpheusApi(connection)
-
-    existing_cloud = cloud.get_cloud(module.params, morpheus_api)
-
-    if len(existing_cloud) > 1:
-        module.fail_json(
-            msg='Number of matching Clouds exceeded 1, got {0}'.format(len(existing_cloud))
-        )
-
-    if len(existing_cloud) == 1 and existing_cloud[0]['zone_type']['code'] != 'azure':
-        module.fail_json(
-            msg='Specified Cloud is not Azure'
-        )
-
-    if len(existing_cloud) == 0 and (module.params['state'] == 'absent' or module.params['id'] is not None):
-        module.fail_json(
-            msg='Specified Cloud not found'
-        )
-
-    action = {
-        'absent': cloud.remove_cloud,
-        'present': partial(
-            cloud.create_update_cloud,
-            existing_cloud=existing_cloud[0] if len(existing_cloud) > 0 else {},
-            mock_cloud=MOCK_AZURE_CLOUD
-            )
-    }.get(module.params['state'])
-
-    action_result = action(
+    cloud.run_cloud_module(
         module=module,
-        morpheus_api=morpheus_api,
-        param_convertor=module_to_api_params
+        cloud_type='azure',
+        mock_cloud=MOCK_AZURE_CLOUD,
+        param_to_api_func=module_to_api_params
     )
-
-    result.update(action_result)
-
-    module.exit_json(**result)
 
 
 def main():

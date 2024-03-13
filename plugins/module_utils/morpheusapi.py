@@ -323,6 +323,18 @@ class MorpheusApi():
         response = self.connection.send_request(path=path, method='PUT')
         return self._return_reponse_key(response, '')
 
+    def refresh_cloud(self, api_params: dict):
+        path = '{0}/{1}/refresh'.format(CLOUDS, api_params.pop('id'))
+        body = self._payload_from_params(api_params)
+
+        response = self.connection.send_request(
+            data=body,
+            path=path,
+            method='POST'
+        )
+
+        return self._return_reponse_key(response, '')
+
     def restart_instance(self, instance_id: int):
         path = '{0}/{1}/restart'.format(INSTANCES_PATH, instance_id)
         response = self.connection.send_request(path=path, method='PUT')

@@ -150,6 +150,12 @@ EXAMPLES = r'''
     state: absent
     id: 56
     force_remove: true
+
+- name: Refresh and Rebuild Cloud Costing
+  morpheus.core.vcenter_cloud:
+    state: refresh
+    name: VCenter Cloud
+    refresh_mode: costing_rebuild
 '''
 
 RETURN = r'''
@@ -263,16 +269,11 @@ cloud:
 '''
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.connection import Connection
-from functools import partial
 try:
     import module_utils.cloud_module_common as cloud
-    from module_utils.morpheusapi import MorpheusApi
-    from module_utils.morpheus_const import CLOUD_OPTIONS_COMMON, CLOUD_OPTIONS_COMMON_CONFIG
+    from module_utils.morpheus_const import KEYMAP_OPTIONS
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.cloud_module_common as cloud
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheus_const import CLOUD_OPTIONS_COMMON, CLOUD_OPTIONS_COMMON_CONFIG
 
 
 VCENTER_CLOUD_OPTIONS = {
@@ -289,27 +290,7 @@ VCENTER_CLOUD_OPTIONS = {
     'enable_vnc': {'type': 'bool', 'aliases': ['enable_console']},
     'hide_host_selection': {'type': 'bool'},
     'import_existing': {'type': 'bool'},
-    'console_keymap': {
-        'type': 'str',
-        'choices': [
-            'us',
-            'uk',
-            'de',
-            'de-ch',
-            'es',
-            'fi',
-            'fr',
-            'fr-be',
-            'fr-ch',
-            'is',
-            'it',
-            'jp',
-            'nl-be',
-            'no',
-            'pt'
-        ],
-        'aliases': ['keyboard_layout']
-    }
+    'console_keymap': {'type': 'str', 'choices': KEYMAP_OPTIONS,  'aliases': ['keyboard_layout']}
 }
 
 MOCK_VCENTER_CLOUD = {
@@ -355,7 +336,7 @@ def module_to_api_params(module_params: dict) -> dict:
 
     api_params['zone_type'] = {'code': 'vmware'}
 
-    api_params['config'] = {**CLOUD_OPTIONS_COMMON_CONFIG.copy(), **VCENTER_CLOUD_OPTIONS.copy()}
+    api_params['config'] = {**cloud.CLOUD_OPTIONS_COMMON_CONFIG_CREDS.copy(), **VCENTER_CLOUD_OPTIONS.copy()}
     for k in api_params['config']:
         api_params['config'][k] = api_params[k]
         del api_params[k]
@@ -375,7 +356,7 @@ def module_to_api_params(module_params: dict) -> dict:
 
 
 def run_module():
-    argument_spec = {**CLOUD_OPTIONS_COMMON, **CLOUD_OPTIONS_COMMON_CONFIG, **VCENTER_CLOUD_OPTIONS}
+    argument_spec = {**cloud.CLOUD_OPTIONS_COMMON_CREDS, **cloud.CLOUD_OPTIONS_COMMON_CONFIG_CREDS, **VCENTER_CLOUD_OPTIONS}
 
     mutually_exclusive = [
         ('id', 'name'),
@@ -385,14 +366,10 @@ def run_module():
 
     required_if = [
         ('state', 'absent', ('id', 'name'), True),
+        ('state', 'refresh', ('id', 'name'), True),
         ('id', None, ('name')),
         ('name', None, ('id'))
     ]
-
-    result = {
-        'changed': False,
-        'cloud': {}
-    }
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -401,44 +378,12 @@ def run_module():
         supports_check_mode=True
     )
 
-    connection = Connection(module._socket_path)
-    morpheus_api = MorpheusApi(connection)
-
-    existing_cloud = cloud.get_cloud(module.params, morpheus_api)
-
-    if len(existing_cloud) > 1:
-        module.fail_json(
-            msg='Number of matching Clouds exceeded 1, got {0}'.format(len(existing_cloud))
-        )
-
-    if len(existing_cloud) == 1 and existing_cloud[0]['zone_type']['code'] != 'vmware':
-        module.fail_json(
-            msg='Specified Cloud is not VSphere'
-        )
-
-    if len(existing_cloud) == 0 and (module.params['state'] == 'absent' or module.params['id'] is not None):
-        module.fail_json(
-            msg='Specified Cloud not found'
-        )
-
-    action = {
-        'absent': cloud.remove_cloud,
-        'present': partial(
-            cloud.create_update_cloud,
-            existing_cloud=existing_cloud[0] if len(existing_cloud) > 0 else {},
-            mock_cloud=MOCK_VCENTER_CLOUD
-            )
-    }.get(module.params['state'])
-
-    action_result = action(
+    cloud.run_cloud_module(
         module=module,
-        morpheus_api=morpheus_api,
-        param_convertor=module_to_api_params
+        cloud_type='vmware',
+        mock_cloud=MOCK_VCENTER_CLOUD,
+        param_to_api_func=module_to_api_params
     )
-
-    result.update(action_result)
-
-    module.exit_json(**result)
 
 
 def main():
