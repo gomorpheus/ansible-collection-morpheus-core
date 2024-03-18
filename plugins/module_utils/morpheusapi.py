@@ -10,6 +10,7 @@ version_added: 0.3.0
 author: James Riach
 '''
 
+import base64
 import urllib.parse
 try:
     import morpheus_funcs as mf
@@ -415,6 +416,34 @@ class MorpheusApi():
             method='PUT'
         )
         return self._return_reponse_key(response, 'zone')
+
+    def update_cloud_logo(self, api_params: dict):
+        path = '{0}/{1}/update-logo'.format(CLOUDS, api_params['id'])
+
+        file_data = []
+
+        if api_params['logo'] is not None:
+            file_data.append(
+                {
+                    'name': 'logo',
+                    'file_path': api_params['logo']
+                }
+            )
+
+        if api_params['dark_logo'] is not None:
+            file_data.append(
+                {
+                    'name': 'darkLogo',
+                    'file_path': api_params['dark_logo']
+                }
+            )
+
+        response = self.connection.multipart_upload(
+            uri_path=path,
+            file_data=file_data
+        )
+
+        return self._return_reponse_key(response, '')
 
     def update_ssl_certificate(self, api_params: dict):
         path = '{0}/{1}'.format(SSL_CERTIFICATES_PATH, api_params.pop('id'))

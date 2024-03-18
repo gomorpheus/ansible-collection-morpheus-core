@@ -101,6 +101,18 @@ options:
         type: string
         aliases:
             - keyboard_layout
+    credential_id:
+        description:
+            - Specify id of existing credentials to use.
+        type: int
+    username:
+        description:
+            - Specify a username to access the cloud.
+        type: str
+    password:
+        description:
+            - Specify a password to access the cloud.
+        type: str
 extends_documentation_fragment:
     - action_common_attributes
     - morpheus.core.cloud_options_common

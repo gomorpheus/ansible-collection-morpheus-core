@@ -31,6 +31,8 @@ CLOUD_OPTIONS_COMMON = {
     'scale_priority': {'type': 'int'},
     'security_mode': {'type': 'str', 'choices': ['internal', 'off']},
     'timezone': {'type': 'str'},
+    'logo': {'type': 'str'},
+    'dark_logo': {'type': 'str'},
     'remove_resources': {'type': 'bool', 'default': 'false'},
     'force_remove': {'type': 'bool', 'default': 'false'},
     'refresh_mode': {'type': 'str', 'choices': ['costing', 'costing_rebuild', 'daily', 'hourly'], 'default': 'hourly'},
@@ -80,6 +82,9 @@ def create_update_cloud(
     """
     api_params = param_convertor(module.params)
 
+    logo = api_params.pop('logo')
+    dark_logo = api_params.pop('dark_logo')
+
     if api_params['agent_mode'] == 'cloudinit':
         api_params['agent_mode'] = 'cloudInit'
 
@@ -105,9 +110,19 @@ def create_update_cloud(
 
     result = {
         'changed': changed and 'id' in action_result,
-        'action': 'id' in existing_cloud,
         'cloud': action_result
     }
+
+    if logo is not None or dark_logo is not None:
+        logo_update_response = morpheus_api.update_cloud_logo({
+            'id': action_result['id'],
+            'logo': logo,
+            'dark_logo': dark_logo
+        })
+        result['logo_update'] = logo_update_response
+        success, msg = mf.success_response(logo_update_response)
+        result['changed'] = success
+        result['failed'] = not success
 
     if module._diff:
         diffs = []

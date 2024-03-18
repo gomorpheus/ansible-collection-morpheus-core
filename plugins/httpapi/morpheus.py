@@ -8,6 +8,8 @@ from ansible.plugins.httpapi import HttpApiBase
 from ansible.module_utils.connection import ConnectionError
 import json
 import re
+from urllib3 import encode_multipart_formdata
+from urllib3.fields import RequestField
 
 DOCUMENTATION = r'''
 ---
@@ -112,7 +114,10 @@ class HttpApi(HttpApiBase):
         method = kwargs.pop('method', 'GET')
         headers = kwargs.pop('headers', self.headers)
 
-        if headers['Content-Type'] != 'application/x-www-form-urlencoded':
+        if 'Authorization' not in headers and self.access_token is not None:
+            headers['Authorization'] = 'Bearer {0}'.format(self.access_token)
+
+        if headers['Content-Type'].split(';')[0] not in ['application/x-www-form-urlencoded', 'application/octet-stream', 'multipart/form-data']:
             data = json.dumps(data) if data is not None else None
 
         try:
@@ -127,6 +132,47 @@ class HttpApi(HttpApiBase):
 
         response_value = self._get_response_value(response_data)
         return dict(code=response.getcode(), contents=self._response_to_json(response_value))
+
+    def multipart_upload(self, uri_path: str, file_data: list[dict]) -> dict:
+        """Takes a list of files for multipart/form-data file uploads.
+
+        Args:
+            uri_path (str): Send request to this path.
+            file_data (list[dict]): List of dictionaries containing files to upload.
+             The dictionary should be in the format of {'name': 'name for the body param', 'file_path': 'path/to/file'}
+
+        Returns:
+            dict: Dictionary containing response code and any returned data.
+        """
+        request_fields = []
+        for item in file_data:
+            with open(item['file_path'], 'rb') as file_item:
+                rf = RequestField(
+                        name=item['name'],
+                        data=file_item.read(),
+                        filename=file_item.name.split('/')[-1]
+                    )
+                rf.make_multipart()
+                request_fields.append(rf)
+
+        body, content_type = encode_multipart_formdata(request_fields)
+        headers = self.headers.copy()
+        headers['Content-Type'] = content_type
+        headers['Content-Length'] = len(body)
+
+        try:
+            response, response_data = self.connection.send(uri_path, body, method='POST', headers=headers)
+        except HTTPError as exc:
+            try:
+                exc_data = self._response_to_json(exc.read())
+            except ConnectionError:
+                exc_data = exc.read()
+
+            return dict(code=exc.code, contents=exc_data, path=uri_path)
+
+        response_value = self._get_response_value(response_data)
+        contents = self._response_to_json(response_value)
+        return dict(code=response.getcode(), contents=contents)
 
     def _get_response_value(self, response_data):
         return to_text(response_data.getvalue())

@@ -11,6 +11,7 @@ options:
         choices:
             - present
             - absent
+            - refresh
         default: present
     id:
         description:
@@ -113,18 +114,14 @@ options:
         description:
             - The Time Zone of the Cloud.
         type: string
-    credential_id:
+    logo:
         description:
-            - Specify id of existing credentials to use.
-        type: int
-    username:
+            - Path to an image file to use as the Cloud logo.
+        type: string
+    dark_logo:
         description:
-            - Specify a username to access the cloud.
-        type: str
-    password:
-        description:
-            - Specify a password to access the cloud.
-        type: str
+            - Path to an image file to use as the Cloud logo when in dark mode.
+        type: string
     remove_resources:
         description:
             - Relevant when O(state=absent), remove associated resources when removing the cloud.
@@ -136,4 +133,23 @@ options:
             - Force removal if Cloud is still in a group.
         type: bool
         default: false
+    refresh_mode:
+        description:
+            - The type of refresh to perform.
+            - V(costing) Pull costing data.
+            - V(costing_rebuild) Purge existing costing data and rebuild by calling the Cloud API.
+            - V(daily) Perform a daily Cloud Sync.
+            - V(hourly) Perform hourly Cloud Sync.
+        type: string
+        choices:
+            - costing
+            - costing_rebuild
+            - daily
+            - hourly
+        default: hourly
+    refresh_period:
+        description:
+            - The invoice billing period to refresh.
+            - The value should be in the format of YYYYMM.
+        type: int
 '''
