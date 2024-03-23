@@ -82,10 +82,12 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 
 try:
+    import module_utils.info_module_common as info_module
     import module_utils.morpheus_funcs as mf
     from module_utils.morpheusapi import MorpheusApi
     from module_utils.morpheus_classes import InstanceSnapshots
 except ModuleNotFoundError:
+    import ansible_collections.morpheus.core.plugins.module_utils.info_module_common as info_module
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
     from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
     from ansible_collections.morpheus.core.plugins.module_utils.morpheus_classes import InstanceSnapshots
@@ -93,20 +95,15 @@ except ModuleNotFoundError:
 
 def run_module():
     argument_spec = {
-        'id': {'type': 'int'},
-        'name': {'type': 'str'},
-        'regex_name': {'type': 'bool', 'default': 'false'},
-        'match_name': {'type': 'str', 'choices': ['none', 'first', 'last', 'all'], 'default': 'all'},
-        'environment': {'type': 'str'},
-        'labels': {'type': 'list', 'elements': 'str'},
-        'match_all_labels': {'type': 'bool', 'default': 'false'},
-        'tags': {'type': 'str'}
+        **info_module.COMMON_ARG_SPEC,
+        **{
+            'match_name': {'type': 'str', 'choices': ['none', 'first', 'last', 'all'], 'default': 'all'},
+            'environment': {'type': 'str'},
+            'labels': {'type': 'list', 'elements': 'str'},
+            'match_all_labels': {'type': 'bool', 'default': 'false'},
+            'tags': {'type': 'str'}
+        }
     }
-
-    mutually_exclusive = [
-        ('id', 'name'),
-        ('id', 'regex_name')
-    ]
 
     result = {
         'changed': False,
@@ -115,7 +112,7 @@ def run_module():
 
     module = AnsibleModule(
         argument_spec=argument_spec,
-        mutually_exclusive=mutually_exclusive,
+        mutually_exclusive=info_module.COMMON_MUTUALLY_EXCLUSIVE,
         supports_check_mode=True
     )
 

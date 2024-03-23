@@ -79,13 +79,14 @@ clouds:
         ]
 '''
 
-import re
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:
+    import module_utils.info_module_common as info_module
     import module_utils.morpheus_funcs as mf
     from module_utils.morpheusapi import MorpheusApi
 except ModuleNotFoundError:
+    import ansible_collections.morpheus.core.plugins.module_utils.info_module_common as info_module
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
     from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
 
@@ -109,16 +110,14 @@ API_FILTER_KEYS = {
 
 def run_module():
     argument_spec = {
-        'id': {'type': 'int'},
-        'name': {'type': 'str'},
-        'regex_name': {'type': 'bool', 'default': 'false'},
-        'detail': {'type': 'str', 'choices': ['full', 'summary'], 'default': 'summary'},
-        'type': {'type': 'str'}
+        **info_module.COMMON_ARG_SPEC,
+        **{
+            'detail': {'type': 'str', 'choices': ['full', 'summary'], 'default': 'summary'},
+            'type': {'type': 'str'}
+        }
     }
 
-    mutually_exclusive = [
-        ('id', 'name'),
-        ('id', 'regex_name'),
+    mutually_exclusive = info_module.COMMON_MUTUALLY_EXCLUSIVE + [
         ('id', 'type')
     ]
 
@@ -136,23 +135,11 @@ def run_module():
     connection = Connection(module._socket_path)
     morpheus_api = MorpheusApi(connection)
 
-    api_params = module.params.copy()
-    for param in ['detail', 'regex_name']:
-        del api_params[param]
-
-    if module.params['regex_name']:
-        api_params['name'] = None
+    api_params = info_module.param_filter(module)
 
     response = morpheus_api.get_clouds(api_params)
 
-    if not isinstance(response, list):
-        response = [response]
-
-    if module.params['name'] is not None and module.params['regex_name']:
-        response = [response_item for response_item in response if re.match(module.params['name'], response_item['name'])]
-
-    if module.params['detail'] in API_FILTER_KEYS:
-        response = [mf.dict_filter(response_item, API_FILTER_KEYS[module.params['detail']]) for response_item in response]
+    response = info_module.response_filter(module, response, API_FILTER_KEYS)
 
     result['clouds'] = [mf.dict_keys_to_snake_case(response_item) for response_item in response]
 

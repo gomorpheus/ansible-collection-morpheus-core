@@ -10,7 +10,6 @@ version_added: 0.3.0
 author: James Riach
 '''
 
-import base64
 import urllib.parse
 try:
     import morpheus_funcs as mf
@@ -22,8 +21,10 @@ APPLIANCE_SETTINGS_PATH = '/api/appliance-settings'
 CLOUDS = '/api/zones'
 CLOUD_DATASTORES = '/api/zones/{0}/data-stores'
 CLOUD_TYPES = '/api/zone-types'
+GROUPS_PATH = '/api/groups'
 HEALTH_PATH = '/api/health'
 INSTANCES_PATH = '/api/instances'
+INTEGRATIONS_PATH = '/api/integrations'
 KEY_PAIR_PATH = '/api/key-pairs'
 LICENSE_PATH = '/api/license'
 MAINTENANCE_MODE_PATH = '{}/maintenance'.format(APPLIANCE_SETTINGS_PATH)
@@ -248,6 +249,14 @@ class MorpheusApi():
         response = self._get_object(CLOUD_TYPES, api_params, True)
         return self._return_reponse_key(response, 'zoneTypes')
 
+    def get_groups(self, api_params: dict):
+        if api_params['id'] is not None:
+            response = self._get_object_by_id(GROUPS_PATH, api_params['id'])
+            return self._return_reponse_key(response, 'group')
+
+        response = self._get_object(GROUPS_PATH, api_params, True)
+        return self._return_reponse_key(response, 'groups')
+
     def get_instances(self, api_params: dict):
         if api_params['id'] is not None:
             path = '{0}/{1}'.format(INSTANCES_PATH, api_params['id'])
@@ -275,6 +284,16 @@ class MorpheusApi():
         path = '{0}/{1}/snapshots'.format(INSTANCES_PATH, instance_id)
         response = self.connection.send_request(path=path)
         return self._return_reponse_key(response, 'snapshots')
+
+    def get_integrations(self, api_params: dict):
+        if api_params['id'] is not None:
+            response = self._get_object_by_id(INTEGRATIONS_PATH, api_params['id'])
+            return self._return_reponse_key(response, 'integration')
+
+        # max = -1 doesnt' seem to work on this endpoint
+        api_params['max'] = 10000
+        response = self._get_object(INTEGRATIONS_PATH, api_params)
+        return self._return_reponse_key(response, 'integrations')
 
     def get_key_pairs(self, api_params: dict):
         params = mf.dict_keys_to_camel_case(api_params)
