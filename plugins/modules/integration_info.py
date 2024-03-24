@@ -24,9 +24,42 @@ extends_documentation_fragment:
 '''
 
 EXAMPLES = r'''
+- name: Get Info for a Specific Integration by id
+  morpheus.core.integration_info:
+    id: 3
+
+- name: Get Integrations Matching Regex Pattern
+  morpheus.core.integration_info:
+    name: ^.*ansible.*$
+    regex_name: true
+
+- name: Get Full Info for all Integrations
+  morpheus.core.integration_info:
+    detail: full
 '''
 
 RETURN = r'''
+integrations:
+    description:
+        - List of integrations.
+    returned: always
+    sample:
+        "integrations": [
+            {
+                "enabled": true,
+                "id": 3,
+                "name": "Bitbucket",
+                "status": "ok",
+                "type": "git"
+            },
+            {
+                "enabled": true,
+                "id": 4,
+                "name": "Morpheus-Ansible",
+                "status": "ok",
+                "type": "ansible"
+            }
+        ]
 '''
 
 from ansible.module_utils.basic import AnsibleModule

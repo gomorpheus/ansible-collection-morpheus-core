@@ -24,9 +24,57 @@ extends_documentation_fragment:
 '''
 
 EXAMPLES = r'''
+- name: Get Info for a Specific Group by id
+  morpheus.core.group_info:
+    id: 5
+
+- name: Get Groups Matching Regex Pattern
+  morpheus.core.group_info:
+    name: ^linux.*$
+    regex_name: true
+
+- name: Get Full Info for all Groups
+  morpheus.core.group_info:
+    detail: full
 '''
 
 RETURN = r'''
+groups:
+    description:
+        - List of groups information.
+    returned: always
+    sample:
+        "groups": [
+            {
+                "account_id": 1,
+                "active": true,
+                "code": "linuxClouds",
+                "config": {
+                    "config_cmdb_discovery": false,
+                    "service_registry_id": ""
+                },
+                "date_created": "2024-01-01T00:00:01Z",
+                "id": 5,
+                "last_updated": "2024-01-01T00:00:01Z",
+                "location": null,
+                "name": "Linux Cloud Group",
+                "server_count": 9,
+                "stats": {
+                    "instance_counts": {
+                        "all": 2
+                    },
+                    "server_counts": {
+                        "all": 9,
+                        "baremetal": 0,
+                        "container_host": 0,
+                        "host": 9,
+                        "hypervisor": 9,
+                        "unmanaged": 0,
+                        "vm": 3
+                    }
+                }
+            }
+        ]
 '''
 
 from ansible.module_utils.basic import AnsibleModule
