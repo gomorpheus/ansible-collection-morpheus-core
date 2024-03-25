@@ -30,6 +30,7 @@ LICENSE_PATH = '/api/license'
 MAINTENANCE_MODE_PATH = '{}/maintenance'.format(APPLIANCE_SETTINGS_PATH)
 SNAPSHOTS_PATH = '/api/snapshots'
 SSL_CERTIFICATES_PATH = '/api/certificates'
+TENANTS_PATH = '/api/accounts'
 VIRTUAL_IMAGES_PATH = '/api/virtual-images'
 
 
@@ -322,6 +323,14 @@ class MorpheusApi():
 
         response = self.connection.send_request(path=path)
         return self._return_reponse_key(response, 'certificates')
+
+    def get_tenants(self, api_params: dict):
+        if api_params['id'] is not None:
+            response = self._get_object_by_id(TENANTS_PATH, api_params['id'])
+            return self._return_reponse_key(response, 'account')
+
+        response = self._get_object(TENANTS_PATH, api_params, True)
+        return self._return_reponse_key(response, 'accounts')
 
     def get_virtual_images(self, api_params: dict):
         params = mf.dict_keys_to_camel_case(api_params)
