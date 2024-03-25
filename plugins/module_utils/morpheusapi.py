@@ -28,6 +28,7 @@ INTEGRATIONS_PATH = '/api/integrations'
 KEY_PAIR_PATH = '/api/key-pairs'
 LICENSE_PATH = '/api/license'
 MAINTENANCE_MODE_PATH = '{}/maintenance'.format(APPLIANCE_SETTINGS_PATH)
+ROLES_PATH = '/api/roles'
 SNAPSHOTS_PATH = '/api/snapshots'
 SSL_CERTIFICATES_PATH = '/api/certificates'
 TENANTS_PATH = '/api/accounts'
@@ -309,6 +310,14 @@ class MorpheusApi():
 
         response = self.connection.send_request(path=path)
         return self._return_reponse_key(response, 'keyPairs')
+
+    def get_roles(self, api_params: dict):
+        if api_params['id'] is not None:
+            response = self._get_object_by_id(ROLES_PATH, api_params['id'])
+            return self._return_reponse_key(response, 'role')
+
+        response = self._get_object(ROLES_PATH, api_params, True)
+        return self._return_reponse_key(response, 'roles')
 
     def get_ssl_certificates(self, api_params: dict):
         params = mf.dict_keys_to_camel_case(api_params)
