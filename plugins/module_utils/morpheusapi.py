@@ -117,6 +117,17 @@ class MorpheusApi():
         )
         return self._return_reponse_key(response, 'zone')
 
+    def create_group(self, api_params: dict):
+        payload = self._payload_from_params(api_params)
+        body = {'group': payload}
+
+        response = self.connection.send_request(
+            data=body,
+            path=GROUPS_PATH,
+            method='POST'
+        )
+        return self._return_reponse_key(response, 'group')
+
     def create_key_pair(self, api_params: dict):
         payload = self._payload_from_params(api_params)
         body = {'keyPair': payload}
@@ -165,6 +176,11 @@ class MorpheusApi():
         params = mf.dict_keys_to_camel_case(api_params)
         url_params = self._url_params(params)
         path = self._build_url(path, url_params)
+        response = self.connection.send_request(path=path, method='DELETE')
+        return self._return_reponse_key(response, '')
+
+    def delete_group(self, group_id: int):
+        path = '{0}/{1}'.format(GROUPS_PATH, group_id)
         response = self.connection.send_request(path=path, method='DELETE')
         return self._return_reponse_key(response, '')
 
@@ -480,6 +496,32 @@ class MorpheusApi():
             file_data=file_data
         )
 
+        return self._return_reponse_key(response, '')
+
+    def update_group(self, api_params: dict):
+        path = '{0}/{1}'.format(GROUPS_PATH, api_params.pop('id'))
+
+        payload = self._payload_from_params(api_params)
+        body = {'group': payload}
+
+        response = self.connection.send_request(
+            data=body,
+            path=path,
+            method='PUT'
+        )
+        return self._return_reponse_key(response, 'group')
+
+    def update_group_zones(self, api_params: dict):
+        path = '{0}/{1}/update-zones'.format(GROUPS_PATH, api_params.pop('id'))
+
+        payload = self._payload_from_params(api_params)
+        body = {'group': payload}
+
+        response = self.connection.send_request(
+            data=body,
+            path=path,
+            method='PUT'
+        )
         return self._return_reponse_key(response, '')
 
     def update_ssl_certificate(self, api_params: dict):
