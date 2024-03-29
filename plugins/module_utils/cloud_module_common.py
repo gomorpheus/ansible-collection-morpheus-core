@@ -7,10 +7,10 @@ from functools import partial
 from typing import Callable
 try:
     import morpheus_funcs as mf
-    from morpheusapi import MorpheusApi
+    from morpheusapi import ApiPath, MorpheusApi
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import ApiPath, MorpheusApi
 
 
 CLOUD_OPTIONS_COMMON = {
@@ -158,9 +158,9 @@ def get_cloud(module_params: dict, morpheus_api: MorpheusApi) -> list:
     Returns:
         list: List of Clouds/Zones
     """
-    existing_cloud = morpheus_api.get_clouds({'id': module_params['id']}) \
+    existing_cloud = morpheus_api.common_get(ApiPath.CLOUDS, {'id': module_params['id']}) \
         if module_params['id'] is not None \
-        else morpheus_api.get_clouds({'id': None, 'name': module_params['name']})
+        else morpheus_api.common_get(ApiPath.CLOUDS, {'id': None, 'name': module_params['name']})
 
     if not isinstance(existing_cloud, list):
         existing_cloud = [existing_cloud]

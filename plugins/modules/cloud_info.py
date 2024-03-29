@@ -84,11 +84,11 @@ from ansible.module_utils.connection import Connection
 try:
     import module_utils.info_module_common as info_module
     import module_utils.morpheus_funcs as mf
-    from module_utils.morpheusapi import MorpheusApi
+    from module_utils.morpheusapi import ApiPath, MorpheusApi
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.info_module_common as info_module
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import ApiPath, MorpheusApi
 
 
 API_FILTER_KEYS = {
@@ -137,7 +137,7 @@ def run_module():
 
     api_params = info_module.param_filter(module)
 
-    response = morpheus_api.get_clouds(api_params)
+    response = morpheus_api.common_get(ApiPath.CLOUDS, api_params)
 
     response = info_module.response_filter(module, response, API_FILTER_KEYS)
 

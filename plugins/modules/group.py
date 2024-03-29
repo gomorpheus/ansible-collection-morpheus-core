@@ -83,6 +83,13 @@ options:
                     - The Id of the Cloud/Zone.
                 type: int
                 required: true
+extends_documentation_fragment:
+    - action_common_attributes
+attributes:
+    check_mode:
+        support: full
+    diff_mode:
+        support: full
 '''
 
 EXAMPLES = r'''
@@ -161,10 +168,10 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:
     import module_utils.morpheus_funcs as mf
-    from module_utils.morpheusapi import MorpheusApi
+    from module_utils.morpheusapi import ApiPath, MorpheusApi
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import ApiPath, MorpheusApi
 
 
 MOCK_GROUP = {
@@ -237,7 +244,7 @@ def create_update_group(module: AnsibleModule, morpheus_api: MorpheusApi, existi
             success, _ = mf.success_response(zone_update)
 
             if success:
-                updated_group = morpheus_api.get_groups({'id': action_result['id'] if 'id' in action_result else existing_group['id']})
+                updated_group = morpheus_api.common_get(ApiPath.GROUPS_PATH, {'id': action_result['id'] if 'id' in action_result else existing_group['id']})
                 updated_group = mf.dict_keys_to_snake_case(updated_group)
                 result['group'] = updated_group
                 changed, diff = mf.dict_diff(updated_group, existing_group, {'last_updated', 'server_count', 'stats'})
@@ -277,10 +284,13 @@ def create_update_group(module: AnsibleModule, morpheus_api: MorpheusApi, existi
 
 
 def get_existing_group(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
-    existing_group = morpheus_api.get_groups({
-        'id': module.params['id'],
-        'name': module.params['name']
-    })
+    existing_group = morpheus_api.common_get(
+        ApiPath.GROUPS_PATH,
+        {
+            'id': module.params['id'],
+            'name': module.params['name']
+        }
+    )
 
     if isinstance(existing_group, list):
         if len(existing_group) > 1:
