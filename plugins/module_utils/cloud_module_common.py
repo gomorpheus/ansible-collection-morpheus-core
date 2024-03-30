@@ -269,9 +269,10 @@ def remove_cloud(
             msg='Cloud not found'
         )
 
-    response = morpheus_api.delete_cloud(
-        existing_cloud['id'],
-        {
+    response = morpheus_api.common_delete(
+        path=ApiPath.CLOUDS,
+        item_id=existing_cloud['id'],
+        api_params={
             'remove_resources': module.params['remove_resources'],
             'force': module.params['force_remove']
         }

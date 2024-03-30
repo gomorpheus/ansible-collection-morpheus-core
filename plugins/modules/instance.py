@@ -124,14 +124,15 @@ instance_state:
 '''
 
 from copy import deepcopy
+from functools import partial
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:
     import module_utils.morpheus_funcs as mf
-    from module_utils.morpheusapi import MorpheusApi
+    from module_utils.morpheusapi import ApiPath, MorpheusApi
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import ApiPath, MorpheusApi
 
 
 INSTANCE_INFO_KEYS = (
@@ -150,6 +151,15 @@ def instance_state(morpheus_api: MorpheusApi, instance_id: int) -> dict:
     )
 
     return mf.dict_filter(response, INSTANCE_INFO_KEYS)
+
+
+def module_to_api_params(params: dict) -> dict:
+    api_params = {}
+
+    for k, v in params['remove_options'].items():
+        api_params[k] = v
+
+    return api_params
 
 
 def parse_check_mode(module_params: dict, instance: dict) -> dict:
@@ -222,20 +232,20 @@ def run_module():
     instances = mf.instance_filter(morpheus_api, module.params, INSTANCE_INFO_KEYS)
 
     action_func = {
-        'absent': morpheus_api.delete_instance,
-        'backup': morpheus_api.backup_instance,
-        'eject': morpheus_api.eject_instance,
-        'locked': morpheus_api.lock_instance,
-        'restarted': morpheus_api.restart_instance,
-        'running': morpheus_api.start_instance,
-        'started': morpheus_api.start_instance,
-        'stopped': morpheus_api.stop_instance,
-        'suspended': morpheus_api.suspend_instance,
-        'unlocked': morpheus_api.unlock_instance
+        'absent': partial(morpheus_api.common_delete, path=ApiPath.INSTANCES_PATH, api_params=module_to_api_params(module.params)),
+        'backup': partial(morpheus_api.instance_action, action='backup'),
+        'eject': partial(morpheus_api.instance_action, action='eject'),
+        'locked': partial(morpheus_api.instance_action, action='lock'),
+        'restarted': partial(morpheus_api.instance_action, action='restart'),
+        'running': partial(morpheus_api.instance_action, action='start'),
+        'started': partial(morpheus_api.instance_action, action='start'),
+        'stopped': partial(morpheus_api.instance_action, action='stop'),
+        'suspended': partial(morpheus_api.instance_action, action='suspend'),
+        'unlocked': partial(morpheus_api.instance_action, action='unlock')
     }.get(module.params['state'])
 
     if not module.check_mode:
-        results = [mf.dict_keys_to_snake_case(action_func(instance['id'])) for instance in instances]
+        results = [mf.dict_keys_to_snake_case(action_func(item_id=instance['id'])) for instance in instances]
 
         for response in results:
             success, _ = mf.success_response(response[list(response.keys())[0]]) \

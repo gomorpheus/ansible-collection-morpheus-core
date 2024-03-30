@@ -343,7 +343,7 @@ def remove_group(module: AnsibleModule, morpheus_api: MorpheusApi, existing_grou
         )
 
     action = {
-        'False': partial(morpheus_api.delete_group, group_id=existing_group['id']),
+        'False': partial(morpheus_api.common_delete, path=ApiPath.GROUPS_PATH, item_id=existing_group['id']),
         'True': partial(parse_check_mode, state='absent', api_params={}, existing_group=existing_group)
     }.get(str(module.check_mode))
 

@@ -236,7 +236,7 @@ def remove_cert(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
             msg='No matching certificate found'
         )
 
-    response = morpheus_api.delete_ssl_certificate(cert['id']) if not module.check_mode \
+    response = morpheus_api.common_delete(ApiPath.SSL_CERTIFICATES_PATH, cert['id']) if not module.check_mode \
         else parse_check_mode(state=module.params['state'])
 
     success, msg = mf.success_response(response)

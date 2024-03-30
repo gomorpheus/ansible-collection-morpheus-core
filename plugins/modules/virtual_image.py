@@ -293,10 +293,10 @@ from ansible.module_utils.connection import Connection
 
 try:
     import module_utils.morpheus_funcs as mf
-    from module_utils.morpheusapi import MorpheusApi
+    from module_utils.morpheusapi import ApiPath, MorpheusApi
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import ApiPath, MorpheusApi
 
 
 def create_update_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
@@ -541,7 +541,7 @@ def remove_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
     file_params['virtual_image_id'] = virtual_image[0]['id']
 
     action = {
-        0: partial(morpheus_api.delete_virtual_image, virtual_image[0]['id']),
+        0: partial(morpheus_api.common_delete, path=ApiPath.VIRTUAL_IMAGES_PATH, item_id=virtual_image[0]['id']),
         1: partial(morpheus_api.delete_virtual_image_file, file_params),
         2: partial(parse_check_mode, state=module.params['state'], virtual_images=virtual_image)
     }.get(int(module.params['filename'] is not None) if not module.check_mode else 2)

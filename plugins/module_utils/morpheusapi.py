@@ -50,7 +50,11 @@ class ApiPath(Enum):
     INSTANCES_PATH = {
         'path': '/api/instances',
         'dict': 'instance',
-        'list': 'instances'
+        'list': 'instances',
+        'action_paths': {
+            'backup': '/backup',
+            'eject': '/eject'
+        }
     }
     INTEGRATIONS_PATH = {
         'path': '/api/integrations',
@@ -162,11 +166,6 @@ class MorpheusApi():
 
         return args
 
-    def backup_instance(self, instance_id: int):
-        path = '{0}/{1}/backup'.format(ApiPath.INSTANCES_PATH.value['path'], instance_id)
-        response = self.connection.send_request(path=path, method='PUT')
-        return self._return_reponse_key(response, 'results')
-
     def create_cloud(self, api_params: dict):
         payload = self._payload_from_params(api_params)
         body = {'zone': payload}
@@ -227,6 +226,20 @@ class MorpheusApi():
         )
         return self._return_reponse_key(response, 'virtualImage')
 
+    def common_delete(self, path: ApiPath, item_id: int, api_params: dict = None):
+        path = '{0}/{1}'.format(path.value['path'], item_id)
+
+        if api_params is not None:
+            params = mf.dict_keys_to_camel_case(api_params)
+            url_params = self._url_params(params)
+            path = self._build_url(path, url_params)
+
+        response = self.connection.send_request(
+            path=path,
+            method='DELETE'
+        )
+        return self._return_reponse_key(response, '')
+
     def common_get(self, path: ApiPath, api_params: dict):
         if api_params['id'] is not None:
             response = self._get_object_by_id(path.value['path'], api_params['id'])
@@ -240,49 +253,6 @@ class MorpheusApi():
         response = self.connection.send_request(path=path, method='DELETE')
         return self._return_reponse_key(response, '')
 
-    def delete_cloud(self, cloud_id: int, api_params: dict):
-        path = '{0}/{1}'.format(ApiPath.CLOUDS.value['path'], cloud_id)
-        params = mf.dict_keys_to_camel_case(api_params)
-        url_params = self._url_params(params)
-        path = self._build_url(path, url_params)
-        response = self.connection.send_request(path=path, method='DELETE')
-        return self._return_reponse_key(response, '')
-
-    def delete_group(self, group_id: int):
-        path = '{0}/{1}'.format(ApiPath.GROUPS_PATH.value['path'], group_id)
-        response = self.connection.send_request(path=path, method='DELETE')
-        return self._return_reponse_key(response, '')
-
-    def delete_instance(self, instance_id: int, api_params: dict):
-        path = '{0}/{1}'.format(ApiPath.INSTANCES_PATH.value['path'], instance_id)
-        params = mf.dict_keys_to_camel_case(api_params)
-        url_params = self._url_params(params)
-        path = self._build_url(path, url_params)
-        response = self.connection.send_request(path=path, method='DELETE')
-        return self._return_reponse_key(response, 'results')
-
-    def delete_key_pair(self, key_pair_id: int):
-        path = '{0}/{1}'.format(ApiPath.KEY_PAIR_PATH.value['path'], key_pair_id)
-        response = self.connection.send_request(path=path, method='DELETE')
-        return self._return_reponse_key(response, '')
-
-    def delete_snapshot(self, snapshot_id: int):
-        path = '{0}/{1}'.format(ApiPath.SNAPSHOTS_PATH.value['path'], snapshot_id)
-        response = self.connection.send_request(path=path, method='DELETE')
-        return self._return_reponse_key(response, '')
-
-    def delete_ssl_certificate(self, cert_id: int):
-        path = '{0}/{1}'.format(ApiPath.SSL_CERTIFICATES_PATH.value['path'], cert_id)
-        response = self.connection.send_request(path=path, method='DELETE')
-        return self._return_reponse_key(response, '')
-
-    def delete_virtual_image(self, virtual_image_id: int):
-        path = '{0}/{1}'.format(ApiPath.VIRTUAL_IMAGES_PATH.value['path'], virtual_image_id)
-
-        response = self.connection.send_request(path=path, method='DELETE')
-
-        return self._return_reponse_key(response, '')
-
     def delete_virtual_image_file(self, api_params: dict):
         path = '{0}/{1}/files'.format(ApiPath.VIRTUAL_IMAGES_PATH.value['path'], api_params['virtual_image_id'])
 
@@ -292,11 +262,6 @@ class MorpheusApi():
         response = self.connection.send_request(path=path, method='DELETE')
 
         return self._return_reponse_key(response, '')
-
-    def eject_instance(self, instance_id: int):
-        path = '{0}/{1}/eject'.format(ApiPath.INSTANCES_PATH.value['path'], instance_id)
-        response = self.connection.send_request(path=path, method='PUT')
-        return self._return_reponse_key(response, 'results')
 
     def get_appliance_health(self):
         response = self.connection.send_request(path=ApiPath.HEALTH_PATH.value['path'])
@@ -373,10 +338,10 @@ class MorpheusApi():
         response = self.connection.send_request(path=path)
         return self._return_reponse_key(response, 'virtualImages')
 
-    def lock_instance(self, instance_id: int):
-        path = '{0}/{1}/lock'.format(ApiPath.INSTANCES_PATH.value['path'], instance_id)
+    def instance_action(self, action: str, item_id: int):
+        path = '{0}/{1}/{2}'.format(ApiPath.INSTANCES_PATH.value['path'], item_id, action)
         response = self.connection.send_request(path=path, method='PUT')
-        return self._return_reponse_key(response, '')
+        return self._return_reponse_key(response, '' if action in ['lock', 'unlock'] else 'results')
 
     def refresh_cloud(self, api_params: dict):
         path = '{0}/{1}/refresh'.format(ApiPath.CLOUDS.value['path'], api_params.pop('id'))
@@ -389,11 +354,6 @@ class MorpheusApi():
         )
 
         return self._return_reponse_key(response, '')
-
-    def restart_instance(self, instance_id: int):
-        path = '{0}/{1}/restart'.format(ApiPath.INSTANCES_PATH.value['path'], instance_id)
-        response = self.connection.send_request(path=path, method='PUT')
-        return self._return_reponse_key(response, 'results')
 
     def set_appliance_maintenance_mode(self, enabled: bool):
         params = self._url_params({'enabled': enabled})
@@ -442,21 +402,6 @@ class MorpheusApi():
         path = '{0}/{1}/revert-snapshot/{2}'.format(ApiPath.INSTANCES_PATH.value['path'], instance_id, snapshot_id)
         response = self.connection.send_request(path=path, method='PUT')
         return self._return_reponse_key(response, '')
-
-    def start_instance(self, instance_id: int):
-        path = '{0}/{1}/start'.format(ApiPath.INSTANCES_PATH.value['path'], instance_id)
-        response = self.connection.send_request(path=path, method='PUT')
-        return self._return_reponse_key(response, 'results')
-
-    def stop_instance(self, instance_id: int):
-        path = '{0}/{1}/stop'.format(ApiPath.INSTANCES_PATH.value['path'], instance_id)
-        response = self.connection.send_request(path=path, method='PUT')
-        return self._return_reponse_key(response, 'results')
-
-    def suspend_instance(self, instance_id: int):
-        path = '{0}/{1}/suspend'.format(ApiPath.INSTANCES_PATH.value['path'], instance_id)
-        response = self.connection.send_request(path=path, method='PUT')
-        return self._return_reponse_key(response, 'results')
 
     def update_cloud(self, api_params: dict):
         path = '{0}/{1}'.format(ApiPath.CLOUDS.value['path'], api_params.pop('id'))
@@ -568,9 +513,4 @@ class MorpheusApi():
                 method='POST'
             )
 
-        return self._return_reponse_key(response, '')
-
-    def unlock_instance(self, instance_id: int):
-        path = '{0}/{1}/unlock'.format(ApiPath.INSTANCES_PATH.value['path'], instance_id)
-        response = self.connection.send_request(path=path, method='PUT')
         return self._return_reponse_key(response, '')

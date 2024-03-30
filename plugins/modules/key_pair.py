@@ -101,10 +101,10 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:
     import module_utils.morpheus_funcs as mf
-    from module_utils.morpheusapi import MorpheusApi
+    from module_utils.morpheusapi import ApiPath, MorpheusApi
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import ApiPath, MorpheusApi
 
 
 def create_key_pair(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
@@ -163,7 +163,7 @@ def remove_key_pair(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
     Returns:
         dict: Result Dictionary
     """
-    response = morpheus_api.delete_key_pair(module.params['id'])
+    response = morpheus_api.common_delete(ApiPath.KEY_PAIR_PATH, module.params['id'])
 
     success, msg = mf.success_response(response)
 
