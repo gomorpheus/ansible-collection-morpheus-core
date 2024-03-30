@@ -215,7 +215,7 @@ def create_update_group(module: AnsibleModule, morpheus_api: MorpheusApi, existi
         api_params['id'] = existing_group['id']
 
     action = {
-        'False': morpheus_api.create_group,
+        'False': partial(morpheus_api.common_create, path=ApiPath.GROUPS_PATH),
         'True': morpheus_api.update_group,
         'Check': partial(parse_check_mode, state=module.params['state'], existing_group=existing_group)
     }.get(str('id' in existing_group) if not module.check_mode else 'Check')

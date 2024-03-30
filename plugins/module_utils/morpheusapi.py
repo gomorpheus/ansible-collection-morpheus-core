@@ -166,28 +166,6 @@ class MorpheusApi():
 
         return args
 
-    def create_cloud(self, api_params: dict):
-        payload = self._payload_from_params(api_params)
-        body = {'zone': payload}
-
-        response = self.connection.send_request(
-            data=body,
-            path=ApiPath.CLOUDS.value['path'],
-            method='POST'
-        )
-        return self._return_reponse_key(response, 'zone')
-
-    def create_group(self, api_params: dict):
-        payload = self._payload_from_params(api_params)
-        body = {'group': payload}
-
-        response = self.connection.send_request(
-            data=body,
-            path=ApiPath.GROUPS_PATH.value['path'],
-            method='POST'
-        )
-        return self._return_reponse_key(response, 'group')
-
     def create_key_pair(self, api_params: dict):
         payload = self._payload_from_params(api_params)
         body = {'keyPair': payload}
@@ -204,27 +182,17 @@ class MorpheusApi():
         )
         return self._return_reponse_key(response, '')
 
-    def create_ssl_certificate(self, api_params: dict):
+    def common_create(self, path: ApiPath, api_params: dict):
         payload = self._payload_from_params(api_params)
-        body = {'certificate': payload}
+        body = {path.value['dict']: payload}
 
         response = self.connection.send_request(
             data=body,
-            path=ApiPath.SSL_CERTIFICATES_PATH.value['path'],
+            path=path.value['path'],
             method='POST'
         )
-        return self._return_reponse_key(response, 'certificate')
 
-    def create_virtual_image(self, api_params: dict):
-        payload = self._payload_from_params(api_params)
-        body = {'virtualImage': payload}
-
-        response = self.connection.send_request(
-            data=body,
-            path=ApiPath.VIRTUAL_IMAGES_PATH.value['path'],
-            method='POST'
-        )
-        return self._return_reponse_key(response, 'virtualImage')
+        return self._return_reponse_key(response, path.value['dict'])
 
     def common_delete(self, path: ApiPath, item_id: int, api_params: dict = None):
         path = '{0}/{1}'.format(path.value['path'], item_id)

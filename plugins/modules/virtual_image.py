@@ -335,7 +335,7 @@ def create_update_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
         virtual_image = []
 
     action = {
-        0: partial(morpheus_api.create_virtual_image, api_params=api_params),
+        0: partial(morpheus_api.common_create, path=ApiPath.VIRTUAL_IMAGES_PATH, api_params=api_params),
         1: partial(morpheus_api.update_virtual_image, api_params=api_params),
         3: partial(parse_check_mode, state=module.params['state'], api_params=api_params, virtual_images=virtual_image)
     }.get(len(virtual_image) if not module.check_mode else 3)

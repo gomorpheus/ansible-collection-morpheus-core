@@ -92,7 +92,7 @@ def create_update_cloud(
         api_params['id'] = existing_cloud['id']
 
     action = {
-        0: partial(morpheus_api.create_cloud, api_params),
+        0: partial(morpheus_api.common_create, path=ApiPath.CLOUDS, api_params=api_params),
         1: partial(morpheus_api.update_cloud, api_params),
         2: partial(
             parse_check_mode,
