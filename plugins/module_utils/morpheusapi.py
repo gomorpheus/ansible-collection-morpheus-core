@@ -50,11 +50,7 @@ class ApiPath(Enum):
     INSTANCES_PATH = {
         'path': '/api/instances',
         'dict': 'instance',
-        'list': 'instances',
-        'action_paths': {
-            'backup': '/backup',
-            'eject': '/eject'
-        }
+        'list': 'instances'
     }
     INTEGRATIONS_PATH = {
         'path': '/api/integrations',
