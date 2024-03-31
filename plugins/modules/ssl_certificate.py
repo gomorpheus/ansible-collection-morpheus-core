@@ -143,7 +143,7 @@ def create_update_cert(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict
 
     action = {
         0: partial(morpheus_api.common_create, path=ApiPath.SSL_CERTIFICATES_PATH, api_params=api_params),
-        1: partial(morpheus_api.update_ssl_certificate, api_params),
+        1: partial(morpheus_api.common_set, path=ApiPath.SSL_CERTIFICATES_PATH, item_id=api_params.pop('id'), api_params=api_params),
         2: partial(parse_check_mode, state=module.params['state'], api_params=api_params, cert=cert)
     }.get('id' in cert if not module.check_mode else 2)
 

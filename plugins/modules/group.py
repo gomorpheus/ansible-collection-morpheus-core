@@ -215,12 +215,12 @@ def create_update_group(module: AnsibleModule, morpheus_api: MorpheusApi, existi
         api_params['id'] = existing_group['id']
 
     action = {
-        'False': partial(morpheus_api.common_create, path=ApiPath.GROUPS_PATH),
-        'True': morpheus_api.update_group,
+        'False': partial(morpheus_api.common_create, path=ApiPath.GROUPS_PATH, api_params=api_params),
+        'True': partial(morpheus_api.common_set, path=ApiPath.GROUPS_PATH, item_id=api_params.pop('id'), api_params=api_params),
         'Check': partial(parse_check_mode, state=module.params['state'], existing_group=existing_group)
     }.get(str('id' in existing_group) if not module.check_mode else 'Check')
 
-    action_result = action(api_params=api_params)
+    action_result = action()
     action_result = mf.dict_keys_to_snake_case(action_result)
 
     changed, diff = mf.dict_diff(action_result, existing_group, {'last_updated', 'server_count', 'stats'})

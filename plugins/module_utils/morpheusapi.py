@@ -191,7 +191,6 @@ class MorpheusApi():
             path=path.value['path'],
             method='POST'
         )
-
         return self._return_reponse_key(response, path.value['dict'])
 
     def common_delete(self, path: ApiPath, item_id: int, api_params: dict = None):
@@ -215,6 +214,19 @@ class MorpheusApi():
 
         response = self._get_object(path.value['path'], api_params, True)
         return self._return_reponse_key(response, path.value['list'])
+
+    def common_set(self, path: ApiPath, item_id: int, api_params: dict):
+        api_path = '{0}/{1}'.format(path.value['path'], item_id)
+
+        payload = self._payload_from_params(api_params)
+        body = {path.value['dict']: payload}
+
+        response = self.connection.send_request(
+            data=body,
+            path=api_path,
+            method='PUT'
+        )
+        return self._return_reponse_key(response, path.value['dict'])
 
     def delete_all_instance_snapshots(self, instance_id: int):
         path = '{0}/{1}/delete-all-snapshots'.format(ApiPath.INSTANCES_PATH.value['path'], instance_id)
@@ -371,19 +383,6 @@ class MorpheusApi():
         response = self.connection.send_request(path=path, method='PUT')
         return self._return_reponse_key(response, '')
 
-    def update_cloud(self, api_params: dict):
-        path = '{0}/{1}'.format(ApiPath.CLOUDS.value['path'], api_params.pop('id'))
-
-        payload = self._payload_from_params(api_params)
-        body = {'zone': payload}
-
-        response = self.connection.send_request(
-            data=body,
-            path=path,
-            method='PUT'
-        )
-        return self._return_reponse_key(response, 'zone')
-
     def update_cloud_logo(self, api_params: dict):
         path = '{0}/{1}/update-logo'.format(ApiPath.CLOUDS.value['path'], api_params['id'])
 
@@ -412,19 +411,6 @@ class MorpheusApi():
 
         return self._return_reponse_key(response, '')
 
-    def update_group(self, api_params: dict):
-        path = '{0}/{1}'.format(ApiPath.GROUPS_PATH.value['path'], api_params.pop('id'))
-
-        payload = self._payload_from_params(api_params)
-        body = {'group': payload}
-
-        response = self.connection.send_request(
-            data=body,
-            path=path,
-            method='PUT'
-        )
-        return self._return_reponse_key(response, 'group')
-
     def update_group_zones(self, api_params: dict):
         path = '{0}/{1}/update-zones'.format(ApiPath.GROUPS_PATH.value['path'], api_params.pop('id'))
 
@@ -437,32 +423,6 @@ class MorpheusApi():
             method='PUT'
         )
         return self._return_reponse_key(response, '')
-
-    def update_ssl_certificate(self, api_params: dict):
-        path = '{0}/{1}'.format(ApiPath.SSL_CERTIFICATES_PATH.value['path'], api_params.pop('id'))
-
-        payload = self._payload_from_params(api_params)
-        body = {'certificate': payload}
-
-        response = self.connection.send_request(
-            data=body,
-            path=path,
-            method='PUT'
-        )
-        return self._return_reponse_key(response, 'certificate')
-
-    def update_virtual_image(self, api_params: dict):
-        path = '{0}/{1}'.format(ApiPath.VIRTUAL_IMAGES_PATH.value['path'], api_params.pop('virtual_image_id'))
-
-        payload = self._payload_from_params(api_params)
-        body = {'virtualImage': payload}
-
-        response = self.connection.send_request(
-            data=body,
-            path=path,
-            method='PUT'
-        )
-        return self._return_reponse_key(response, 'virtualImage')
 
     def upload_virtual_image_file(self, api_params: dict):
         path = '{0}/{1}/upload'.format(ApiPath.VIRTUAL_IMAGES_PATH.value['path'], api_params.pop('virtual_image_id'))
