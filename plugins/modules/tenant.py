@@ -31,6 +31,18 @@ options:
         description:
             - Description for the Tenant.
         type: string
+    account_name:
+        description:
+            - Additional Tenant Identifier.
+        type: string
+    account_number:
+        description:
+            - Additional Tenant Identifier.
+        type: string
+    customer_number:
+        description:
+            - Additional Tenant Identifier.
+        type: string
     role:
         description:
             - Id of a Role to act as the Tenant base role.
@@ -262,6 +274,9 @@ def run_module():
         'id': {'type': 'int'},
         'name': {'type': 'str'},
         'description': {'type': 'str'},
+        'account_name': {'type': 'str'},
+        'account_number': {'type': 'str'},
+        'customer_number': {'type': 'str'},
         'role': {'type': 'int'},
         'subdomain': {'type': 'str'},
         'currency': {'type': 'str', 'choices': CURRENCY_OPTIONS}
