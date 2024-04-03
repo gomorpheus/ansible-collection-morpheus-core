@@ -209,6 +209,16 @@ MOCK_GROUP = {
 
 
 def create_update_group(module: AnsibleModule, morpheus_api: MorpheusApi, existing_group: dict) -> dict:
+    """Create a new Group or Update and existing one.
+
+    Args:
+        module (AnsibleModule): An instantiated AnsibleModule Class
+        morpheus_api (MorpheusApi): An instantiated MorpheusApi Class
+        existing_group (dict): Details of an existing Group
+
+    Returns:
+        dict: Result of the creation or update request
+    """
     api_params = module_to_api_params(module.params)
 
     if 'id' in existing_group and api_params['id'] is None:
@@ -284,6 +294,15 @@ def create_update_group(module: AnsibleModule, morpheus_api: MorpheusApi, existi
 
 
 def get_existing_group(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
+    """Returns an existing group if one matches the module parameters.
+
+    Args:
+        module (AnsibleModule): An instantiated AnsibleModule Class
+        morpheus_api (MorpheusApi): An instantiated MorpheusApi Class
+
+    Returns:
+        dict: Dictionary details of the existing group if it exists
+    """
     existing_group = morpheus_api.common_get(
         ApiPath.GROUPS_PATH,
         {
@@ -303,6 +322,14 @@ def get_existing_group(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict
 
 
 def module_to_api_params(module_params: dict) -> dict:
+    """Convert Module Parameters to API Parameters.
+
+    Args:
+        module_params (dict): Ansible Module Parameters
+
+    Returns:
+        dict: Dictionary of API Parameters
+    """
     api_params = module_params.copy()
 
     api_params['config'] = {
@@ -320,7 +347,17 @@ def module_to_api_params(module_params: dict) -> dict:
     return api_params
 
 
-def parse_check_mode(state: str, api_params: dict, existing_group: dict):
+def parse_check_mode(state: str, api_params: dict, existing_group: dict) -> dict:
+    """Returns a predicted result when the module is run in check mode.
+
+    Args:
+        state (str): The value of the module state parameter
+        api_params (dict): API Parameters
+        existing_group (dict): Details of an existing group if it exists
+
+    Returns:
+        dict: Predicted result
+    """
     if state == 'absent':
         return {'success': True, 'msg': ''}
 
@@ -336,7 +373,17 @@ def parse_check_mode(state: str, api_params: dict, existing_group: dict):
     return updated_group
 
 
-def remove_group(module: AnsibleModule, morpheus_api: MorpheusApi, existing_group: dict):
+def remove_group(module: AnsibleModule, morpheus_api: MorpheusApi, existing_group: dict) -> dict:
+    """Removes an existing group.
+
+    Args:
+        module (AnsibleModule): An instantiated AnsibleModule Class
+        morpheus_api (MorpheusApi): An instantiated MorpheusApi Class
+        existing_group (dict): Dictionary details of an existing group
+
+    Returns:
+        dict: Result dictionary
+    """
     if 'id' not in existing_group:
         module.fail_json(
             msg='Specified Group does not exist'
@@ -358,6 +405,16 @@ def remove_group(module: AnsibleModule, morpheus_api: MorpheusApi, existing_grou
 
 
 def zone_update_params(zone_states: list, current_zones: list) -> dict:
+    """Compares the existing zones in a group and updates the list from those
+    specified in the module parameters.
+
+    Args:
+        zone_states (list): List of Dictionaries with expected state of each specified zone
+        current_zones (list): The List of Zones in the existing group
+
+    Returns:
+        dict: An API formated list of zones to apply.
+    """
     current_zone_ids = [zone['id'] for zone in current_zones]
 
     removals = [zone['id'] for zone in zone_states if zone['state'] == 'absent']

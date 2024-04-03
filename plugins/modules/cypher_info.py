@@ -90,6 +90,14 @@ except ModuleNotFoundError:
 
 
 def module_to_api_params(module_params: dict) -> dict:
+    """Convert Module Parameters to API Parameters.
+
+    Args:
+        module_params (dict): Ansible Module Parameters
+
+    Returns:
+        dict: Dictionary of API Parameters
+    """
     api_params = module_params.copy()
 
     api_params['key'] = api_params.pop('cypher_path') if not api_params['regex_match'] else None

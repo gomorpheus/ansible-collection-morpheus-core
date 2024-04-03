@@ -149,7 +149,17 @@ MOCK_TENANT = {
 }
 
 
-def create_update_tenant(module: AnsibleModule, morpheus_api: MorpheusApi, existing_tenant: dict = None):
+def create_update_tenant(module: AnsibleModule, morpheus_api: MorpheusApi, existing_tenant: dict = None) -> dict:
+    """Create a new Tenant or Update an existing one.
+
+    Args:
+        module (AnsibleModule): An instantiated AnsibleModule Class
+        morpheus_api (MorpheusApi): An instantiated MorpheusApi Class
+        existing_tenant (dict, optional): A dictionary of an existing Tenant. Defaults to None.
+
+    Returns:
+        dict: Result Dictionary
+    """
     api_params = module_to_api_params(module.params)
 
     if 'id' in existing_tenant and api_params['id'] is None:
@@ -194,7 +204,16 @@ def create_update_tenant(module: AnsibleModule, morpheus_api: MorpheusApi, exist
     return result
 
 
-def get_existing_tenant(module: AnsibleModule, morpheus_api: MorpheusApi):
+def get_existing_tenant(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
+    """Return details of an existing Tenant if it exists, based on module parameters.
+
+    Args:
+        module (AnsibleModule): An instantiated AnsibleModule Class
+        morpheus_api (MorpheusApi): An instantiated MorpheusApi Class
+
+    Returns:
+        dict: Dictionary details of existing Tenant
+    """
     existing_tenant = morpheus_api.common_get(
         ApiPath.TENANTS_PATH,
         {
@@ -214,6 +233,14 @@ def get_existing_tenant(module: AnsibleModule, morpheus_api: MorpheusApi):
 
 
 def module_to_api_params(module_params: dict):
+    """Convert Module Parameters to API Parameters.
+
+    Args:
+        module_params (dict): Ansible Module Parameters
+
+    Returns:
+        dict: Dictionary of API Parameters
+    """
     api_params = module_params.copy()
 
     del api_params['state']
@@ -224,6 +251,16 @@ def module_to_api_params(module_params: dict):
 
 
 def parse_check_mode(state: str, api_params: dict, existing_tenant: dict):
+    """Returns a predicted result when the module is run in check mode.
+
+    Args:
+        state (str): The value of the module state parameter
+        api_params (dict): API Parameters
+        existing_tenant (dict): Details of an existing tenant if it exists
+
+    Returns:
+        dict: Predicted result
+    """
     if state == 'absent':
         return {'success': True, 'msg': ''}
 
@@ -239,7 +276,17 @@ def parse_check_mode(state: str, api_params: dict, existing_tenant: dict):
     return updated_tenant
 
 
-def remove_tenant(module: AnsibleModule, morpheus_api: MorpheusApi, existing_tenant: dict):
+def remove_tenant(module: AnsibleModule, morpheus_api: MorpheusApi, existing_tenant: dict) -> dict:
+    """Remove an existing Tenant.
+
+    Args:
+        module (AnsibleModule): An instantiated AnsibleModule Class
+        morpheus_api (MorpheusApi): An instantiated MorpheusApi Class
+        existing_tenant (dict): Dictionary details of an existing tenant
+
+    Returns:
+        dict: Result Dictionary
+    """
     if 'id' not in existing_tenant:
         module.fail_json(
             msg='Specified Tenant not found'

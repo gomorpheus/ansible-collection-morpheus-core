@@ -129,6 +129,15 @@ except ModuleNotFoundError:
 
 
 def create_cypher(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
+    """Write an item to Cypher.
+
+    Args:
+        module (AnsibleModule): An instantiated AnsibleModule Class
+        morpheus_api (MorpheusApi): An instantiated MorpheusApi Class
+
+    Returns:
+        dict: Result Dictionary
+    """
     api_params = module_to_api_params(module.params)
     path_ext = api_params.pop('cypher_path')
 
@@ -151,6 +160,14 @@ def create_cypher(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
 
 
 def module_to_api_params(module_params: dict) -> dict:
+    """Convert Module Parameters to API Parameters.
+
+    Args:
+        module_params (dict): Ansible Module Parameters
+
+    Returns:
+        dict: Dictionary of API Parameters
+    """
     api_params = module_params.copy()
 
     if api_params['cypher_path'] is None:
@@ -168,6 +185,15 @@ def module_to_api_params(module_params: dict) -> dict:
 
 
 def remove_cypher(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
+    """Remove an item from Cypher.
+
+    Args:
+        module (AnsibleModule): An instantiated AnsibleModule Class
+        morpheus_api (MorpheusApi): An instantiated MorpheusApi Class
+
+    Returns:
+        dict: Result Dictionary
+    """
     api_params = module_to_api_params(module.params)
 
     response = morpheus_api.common_delete(ApiPath.CYPHER_PATH, api_params['cypher_path'])
