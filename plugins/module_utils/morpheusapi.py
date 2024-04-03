@@ -38,6 +38,11 @@ class ApiPath(Enum):
         'dict': 'zoneType',
         'list': 'zoneTypes'
     }
+    CYPHER_PATH = {
+        'path': '/api/cypher',
+        'dict': 'cypher',
+        'list': 'cyphers'
+    }
     GROUPS_PATH = {
         'path': '/api/groups',
         'dict': 'group',
@@ -178,18 +183,21 @@ class MorpheusApi():
         )
         return self._return_reponse_key(response, '')
 
-    def common_create(self, path: ApiPath, api_params: dict):
+    def common_create(self, path: ApiPath, api_params: dict, path_extension: str = None, raw: bool = False):
+        api_path = '{0}/{1}'.format(path.value['path'], path_extension) if path_extension is not None else path.value['path']
+
         payload = self._payload_from_params(api_params)
         body = {path.value['dict']: payload}
 
         response = self.connection.send_request(
             data=body,
-            path=path.value['path'],
+            path=api_path,
             method='POST'
         )
-        return self._return_reponse_key(response, path.value['dict'])
+        return self._return_reponse_key(response, path.value['dict']) \
+            if not raw else self._return_reponse_key(response, '')
 
-    def common_delete(self, path: ApiPath, item_id: int, api_params: dict = None):
+    def common_delete(self, path: ApiPath, item_id: int | str, api_params: dict = None):
         path = '{0}/{1}'.format(path.value['path'], item_id)
 
         if api_params is not None:
@@ -203,15 +211,19 @@ class MorpheusApi():
         )
         return self._return_reponse_key(response, '')
 
-    def common_get(self, path: ApiPath, api_params: dict):
-        if api_params['id'] is not None:
-            response = self._get_object_by_id(path.value['path'], api_params['id'])
-            return self._return_reponse_key(response, path.value['dict'])
+    def common_get(self, path: ApiPath, api_params: dict, path_extension: str = None, raw: bool = False):
+        api_path = '{0}/{1}'.format(path.value['path'], path_extension) if path_extension is not None else path.value['path']
 
-        response = self._get_object(path.value['path'], api_params, True)
-        return self._return_reponse_key(response, path.value['list'])
+        if 'id' in api_params and api_params['id'] is not None:
+            response = self._get_object_by_id(api_path, api_params['id'])
+            return self._return_reponse_key(response, path.value['dict']) \
+                if not raw else self._return_reponse_key(response, '')
 
-    def common_set(self, path: ApiPath, item_id: int, api_params: dict):
+        response = self._get_object(api_path, api_params, True)
+        return self._return_reponse_key(response, path.value['list']) \
+            if not raw else self._return_reponse_key(response, '')
+
+    def common_set(self, path: ApiPath, item_id: int, api_params: dict, raw: bool = False):
         api_path = '{0}/{1}'.format(path.value['path'], item_id)
 
         payload = self._payload_from_params(api_params)
@@ -222,7 +234,8 @@ class MorpheusApi():
             path=api_path,
             method='PUT'
         )
-        return self._return_reponse_key(response, path.value['dict'])
+        return self._return_reponse_key(response, path.value['dict']) \
+            if not raw else self._return_reponse_key(response, '')
 
     def delete_all_instance_snapshots(self, instance_id: int):
         path = '{0}/{1}/delete-all-snapshots'.format(ApiPath.INSTANCES_PATH.value['path'], instance_id)
