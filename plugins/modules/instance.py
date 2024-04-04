@@ -64,6 +64,7 @@ options:
                 default: false
                 type: bool
 extends_documentation_fragment:
+    - action_common_attributes
     - morpheus.core.instance_filter_base
 attributes:
     check_mode:

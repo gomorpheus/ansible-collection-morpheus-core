@@ -41,6 +41,8 @@ options:
         description:
             - Specify the Private Key passphrase.
         type: string
+extends_documentation_fragment:
+    - action_common_attributes
 attributes:
     check_mode:
         support: none

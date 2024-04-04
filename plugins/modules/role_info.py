@@ -55,7 +55,7 @@ roles:
         - List of matching roles.
     returned: always
     sample:
-        roles [
+        "roles": [
             {
                 "authority": "Support",
                 "date_created": "2022-01-01T00:00:01Z",

@@ -157,6 +157,8 @@ options:
         description:
             - Disable All Cloud (Zone) Types
         type: bool
+extends_documentation_fragment:
+    - action_common_attributes
 attributes:
     check_mode:
         support: full

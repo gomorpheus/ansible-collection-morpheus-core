@@ -63,7 +63,7 @@ options:
     cmdb_discovery:
         description:
             - Enable/Disable CMDB Discovery.
-        type bool
+        type: bool
     zones:
         description:
             - Set the state of Clouds/Zones in this Group.

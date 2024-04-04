@@ -17,23 +17,29 @@ author: James Riach
 httpapi : morpheus
 short_description: Httpapi Plugin for Morpheus
 description:
-  - Httpapi plugin to connect to and manage morpheus appliances through the morpheus api
+  - Httpapi plugin to connect to and manage morpheus appliances through the morpheus api.
 version_added: "0.3.0"
 options:
     morpheus_user:
-        type: str
+        description:
+            - A Morpheus Username to Authenticate as.
+        type: string
         env:
            - name: ANSIBLE_MORPHEUS_USER
         vars:
            - name: ansible_morpheus_user
     morpheus_password:
-        type: str
+        description:
+            - Password associated with the specified Username.
+        type: string
         env:
            - name: ANSIBLE_MORPHEUS_PASSWORD
         vars:
            - name: ansible_morpheus_password
     morpheus_api_token:
-        type: str
+        description:
+            - Specify an API token instead of O(morpheus_user) and O(morpheus_password).
+        type: string
         env:
             - name: ANSIBLE_MORPHEUS_TOKEN
         vars:

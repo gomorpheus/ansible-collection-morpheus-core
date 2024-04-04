@@ -43,6 +43,8 @@ options:
         description:
             - The Private Key contents.
         type: string
+extends_documentation_fragment:
+    - action_common_attributes
 attributes:
     check_mode:
         support: full

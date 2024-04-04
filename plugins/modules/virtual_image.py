@@ -149,6 +149,8 @@ options:
                 description:
                     - The Tag value.
                 type: string
+extends_documentation_fragment:
+    - action_common_attributes
 attributes:
     check_mode:
         support: full

@@ -54,6 +54,7 @@ options:
         default: latest
         type: string
 extends_documentation_fragment:
+    - action_common_attributes
     - morpheus.core.instance_filter_base
 attributes:
     check_mode:
