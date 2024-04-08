@@ -8,7 +8,7 @@ module: cypher_info
 short_description: Return Cypher Information
 description:
     - Returns items stored in Cypher.
-version_added: 0.x.x
+version_added: 0.7.0
 author: James Riach
 options:
     cypher_path:

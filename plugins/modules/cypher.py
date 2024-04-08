@@ -8,7 +8,7 @@ module: cypher
 short_description: Manage items stored in Cypher
 description:
     - Create and Delete items stored in Cypher.
-version_added: 0.x.x
+version_added: 0.7.0
 author: James Riach
 options:
     state:

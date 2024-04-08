@@ -8,7 +8,7 @@ module: tenant_info
 short_description: Retrieves Tenant Info
 description:
     - Returns information about Morpheus Tenants.
-version_added: 0.x.x
+version_added: 0.7.0
 author: James Riach
 options:
     account_name:

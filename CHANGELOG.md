@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.7.0
+- Added `azure_cloud` module
+- Added `cloud_datastore_info` module
+- Added `cloud_datastore` module
+- Added `cloud_info` module
+- Added `cloud_type_info` module
+- Added `cypher_info` module
+- Added `cypher` module
+- Added `group_info` module
+- Added `group` module
+- Added `integration_info` module
+- Added `role_info` module
+- Added `standard_cloud` module
+- Added `tenant_info` module
+- Added `tenant` module
+- Added `vcenter_cloud` module
+
 ## v0.6.0
 - Added `virtual_image_info` module
 - Added `virtual_image` module

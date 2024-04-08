@@ -8,7 +8,7 @@ module: vcenter_cloud
 short_description: Manage a VMware VCenter Cloud
 description:
     - Manage VMware VCenter Clouds.
-version_added: 0.x.x
+version_added: 0.7.0
 author: James Riach
 options:
     api_url:

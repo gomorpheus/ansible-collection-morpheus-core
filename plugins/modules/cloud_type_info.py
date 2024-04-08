@@ -8,7 +8,7 @@ module: cloud_type_info
 short_description: Return available Cloud types
 description:
     - Returns the available Cloud Types.
-version_added: 0.x.x
+version_added: 0.7.0
 author: James Riach
 options:
     code:

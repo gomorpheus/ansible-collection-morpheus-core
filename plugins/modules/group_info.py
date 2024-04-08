@@ -8,7 +8,7 @@ module: group_info
 short_description: Retrieves Group Info
 description:
     - Retrieves information about Groups.
-version_added: 0.x.x
+version_added: 0.7.0
 author: James Riach
 options:
     detail:

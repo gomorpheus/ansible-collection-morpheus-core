@@ -8,7 +8,7 @@ module: integration_info
 short_description: Retrieves Integration Info
 description:
     - Retrieves information about Integrations.
-version_added: 0.x.x
+version_added: 0.7.0
 author: James Riach
 options:
     detail:

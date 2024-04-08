@@ -8,7 +8,7 @@ module: tenant
 short_description: Manage Tenants
 description:
     - Create, Update and Remove Tenants.
-version_added: 0.x.x
+version_added: 0.7.0
 author: James Riach
 options:
     state:

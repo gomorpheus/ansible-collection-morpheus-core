@@ -335,19 +335,34 @@ Individual Module Documentation can be found included with the module and can be
 
 |Module Name|Description|
 |---|---|
-|[appliance_facts](docs/morpheus.core.appliance_facts.md)|Gathers appliance settings and license facts of the target Morpheus Appliance|
-|[appliance_settings](docs/morpheus.core.appliance_settings.md)|Configure Morpheus Appliance Settings|
-|[appliance_maintenance_mode](docs/morpheus.core.appliance_maintenance_mode.md)|Set Morpheus Appliance Maintenance Mode|
-|[instance_info](docs/morpheus.core.instance_info.md)|Retrieve information about Morpheus Instances|
-|[instance](docs/morpheus.core.instance.md)|Manage state of Morpheus Instances|
-|[instance_snapshot_info](docs/morpheus.core.instance_snapshot_info.md)|Gather information about Instance Snapshots|
-|[instance_snapshot](docs/morpheus.core.instance_snapshot.md)|Manage Instance Snapshots|
-|[key_pair_info](docs/morpheus.core.key_pair_info.md)|Gather information about Key Pairs|
-|[key_pair](docs/morpheus.core.key_pair.md)|Create, Generate and Remove Key Pairs|
-|[ssl_certificate_info](docs/morpheus.core.ssl_certificate_info.md)|Gather information about SSL Certificates|
-|[ssl_certificate](docs/morpheus.core.ssl_certificate_info.md)|Create, Update and Remove SSL Certificates|
-|[virtual_image_info](docs/morpheus.core.virtual_image_info.md)|Gather information about Virtual Images|
-|[virtual_image](docs/morpheus.core.virtual_image.md)|Create, Update and Remove Virtual Images and Virtual Image Files|
+|[appliance_facts](docs/appliance_facts_module.rst)|Gathers appliance settings and license facts of the target Morpheus Appliance|
+|[appliance_maintenance_mode](docs/appliance_maintenance_mode_module.rst)|Set Morpheus Appliance Maintenance Mode|
+|[appliance_settings](docs/appliance_settings_module.rst)|Configure Morpheus Appliance Settings|
+|[azure_cloud](docs/azure_cloud_module.rst)|Configure an Azure Cloud|
+|[cloud_datastore_info](docs/cloud_datastore_info_module.rst)|Retrieve information about Cloud Datastores|
+|[cloud_datastore](docs/cloud_datastore_module.rst)|Manage configurtaion of Cloud Datastores|
+|[cloud_info](docs/cloud_info_module.rst)|Retrieve information about Clouds|
+|[cloud_type_info](docs/cloud_type_info_module.rst)|Retrieve information about Cloud Types|
+|[cypher_info](docs/cypher_info_module.rst)|Retrieve items from Cypher and optionally decrypt|
+|[cypher](docs/cypher_module.rst)|Manage items in Cypher|
+|[group_info](docs/group_info_module.rst)|Retrieve information about Groups|
+|[group](docs/group_module.rst)|Manage Groups|
+|[instance_info](docs/instance_info_module.rst)|Retrieve information about Morpheus Instances|
+|[instance](docs/instance_module.rst)|Manage state of Morpheus Instances|
+|[instance_snapshot_info](docs/instance_snapshot_info_module.rst)|Gather information about Instance Snapshots|
+|[instance_snapshot](docs/instance_snapshot_module.rst)|Manage Instance Snapshots|
+|[integration_info](docs/integration_info_module.rst)|Retrieve information about Integrations|
+|[key_pair_info](docs/key_pair_info_module.rst)|Gather information about Key Pairs|
+|[key_pair](docs/key_pair_module.rst)|Create, Generate and Remove Key Pairs|
+|[role_info](docs/role_info_module.rst)|Retrieve information about Roles|
+|[ssl_certificate_info](docs/ssl_certificate_info_module.rst)|Gather information about SSL Certificates|
+|[ssl_certificate](docs/ssl_certificate_module.rst)|Create, Update and Remove SSL Certificates|
+|[standard_cloud](docs/standard_cloud_module.rst)|Manage Standard Clouds|
+|[tenant_info](docs/tenant_info_module.rst)|Retrieve information about Tenants|
+|[tenant](docs/tenant_module.rst)|Manage Tenants|
+|[vcenter_cloud](docs/vcenter_cloud_module.rst)|Manage VMWare vCenter Clouds|
+|[virtual_image_info](docs/virtual_image_info_module.rst)|Gather information about Virtual Images|
+|[virtual_image](docs/virtual_image_module.rst)|Create, Update and Remove Virtual Images and Virtual Image Files|
 
 ## Support Expectations
 

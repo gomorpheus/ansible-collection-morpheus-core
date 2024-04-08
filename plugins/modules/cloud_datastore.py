@@ -8,7 +8,7 @@ module: cloud_datastore
 short_description: Configure Cloud Datastores
 description:
     - Update the configuration of Cloud Datastores.
-version_added: 0.x.x
+version_added: 0.7.0
 author: James Riach
 options:
     id:

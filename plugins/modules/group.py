@@ -8,7 +8,7 @@ module: group
 short_description: Manage Groups
 description:
     - Create, Update and Remove Groups.
-version_added: 0.x.x
+version_added: 0.7.0
 author: James Riach
 options:
     state:

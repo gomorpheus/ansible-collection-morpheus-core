@@ -8,7 +8,7 @@ module: role_info
 short_description: Retrieves Role Information
 description:
     - Retrieves list of Morpheus Roles.
-version_added: 0.x.x
+version_added: 0.7.0
 author: James Riach
 options:
     diverged:

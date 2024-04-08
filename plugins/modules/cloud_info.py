@@ -8,7 +8,7 @@ module: cloud_info
 short_description: Retrieves Cloud Info
 description:
     - Retrieves information about Morpheus Clouds.
-version_added: 0.x.x
+version_added: 0.7.0
 author: James Riach
 options:
     detail:

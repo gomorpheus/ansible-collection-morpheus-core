@@ -8,7 +8,7 @@ module: standard_cloud
 short_description: Manage a Standard Morpheus Cloud
 description:
     - Manage Standard Morpheus Clouds.
-version_added: 0.x.x
+version_added: 0.7.0
 author: James Riach
 options:
     enable_network_type_selection:

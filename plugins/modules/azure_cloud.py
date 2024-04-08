@@ -8,7 +8,7 @@ module: azure_cloud
 short_description: Manage an Azure Cloud
 description:
     - Manage Azure Clouds.
-version_added: 0.x.x
+version_added: 0.7.0
 author: James Riach
 options:
     subscriber_id:
