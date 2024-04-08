@@ -13,7 +13,7 @@ author: James Riach
 options:
     match_name:
         description:
-            - Define instance selection method when specifying I(name) should more than one instance match.
+            - Define instance selection method when specifying O(name) should more than one instance match.
         default: none
         choices:
             - none
@@ -24,7 +24,7 @@ options:
     state:
         description:
             - Set the State of the Instance.
-            - C(eject) - Ejects ISO media from the instance.
+            - V(eject) - Ejects ISO media from the instance.
         choices:
             - running
             - started
@@ -40,7 +40,7 @@ options:
         type: string
     remove_options:
         description:
-            - When I(state=absent) specify additional removal options.
+            - When O(state=absent) specify additional removal options.
         type: dict
         suboptions:
             preserve_volumes:

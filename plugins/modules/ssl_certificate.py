@@ -13,7 +13,7 @@ author: James Riach
 options:
     state:
         description:
-            - When I(state=present) create or update an SSL Certificate.
+            - When O(state=present) create or update an SSL Certificate.
         default: present
         choices:
             - absent

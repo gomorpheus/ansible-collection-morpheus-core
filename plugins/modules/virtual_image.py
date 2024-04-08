@@ -14,7 +14,7 @@ options:
     state:
         description:
             - Create, update or remove a Virtual Image.
-            - If I(state=absent) and I(filename) is specified then remove the specified file.
+            - If O(state=absent) and O(filename) is specified then remove the specified file.
         default: present
         choices:
             - absent

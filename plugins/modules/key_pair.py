@@ -22,11 +22,11 @@ options:
         type: string
     id:
         description:
-            - Required when I(state=absent), specify the Key Pair to remove.
+            - Required when O(state=absent), specify the Key Pair to remove.
         type: int
     name:
         description:
-            - Required when I(state=present), specify the name of the Key Pair.
+            - Required when O(state=present), specify the name of the Key Pair.
             - Specifying this parameter alone will generate a Key Pair.
         type: string
     private_key:
@@ -61,7 +61,7 @@ EXAMPLES = r'''
     state: present
     name: My Existing Key Pair
     private_key: "{{ q('ansible.builtin.file', 'path/to/private_key')[0] }}"
-    public_key: "{{ q('ansible.builtin.file', 'path/to/public_key)[0] }}"
+    public_key: "{{ q('ansible.builtin.file', 'path/to/public_key')[0] }}"
     passphrase: Password123
 
 - name: Delete a Key Pair
