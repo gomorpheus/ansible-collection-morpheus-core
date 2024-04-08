@@ -13,7 +13,7 @@ author: James Riach
 options:
     match_name:
         description:
-            - Define instance selection method when specifying I(name) should more than one instance match.
+            - Define instance selection method when specifying O(name) should more than one instance match.
         default: none
         choices:
             - none
@@ -33,17 +33,17 @@ options:
         type: string
     snapshot_id:
         description:
-            - Specify snapshot by id when using I(state=absent) or I(state=revert).
+            - Specify snapshot by id when using O(state=absent) or O(state=revert).
         type: int
     snapshot_name:
         description:
             - Specify snapshot name.
-            - Can be used with I(state=present), I(state=absent), I(state=revert).
+            - Can be used with O(state=present), O(state=absent), O(state=revert).
         type: string
     snapshot_description:
         description:
             - Specify description for snapshot.
-            - Used with I(state=present)
+            - Used with O(state=present)
         type: string
     snapshot_age:
         description:
@@ -54,6 +54,7 @@ options:
         default: latest
         type: string
 extends_documentation_fragment:
+    - action_common_attributes
     - morpheus.core.instance_filter_base
 attributes:
     check_mode:

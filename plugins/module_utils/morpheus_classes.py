@@ -2,7 +2,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = r'''
-name: morph_api_classes
+name: morpheus_classes
 short_description: Shared Morpheus API Classes
 description:
     - Shared Classes for Morpheus API Modules
@@ -13,10 +13,10 @@ author: James Riach
 from datetime import datetime
 try:
     import morpheus_funcs as mf
-    from morpheusapi import MorpheusApi
+    from morpheusapi import ApiPath, MorpheusApi
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import ApiPath, MorpheusApi
 
 
 class InstanceSnapshots():
@@ -83,7 +83,7 @@ class SnapshotAction():
         self.success, self.msg = mf.success_response(response)
 
     def _remove(self):
-        response = self._morpheus_api.delete_snapshot(self.snapshot_id)
+        response = self._morpheus_api.common_delete(ApiPath.SNAPSHOTS_PATH, self.snapshot_id)
         self.success, self.msg = mf.success_response(response)
 
     def _remove_all(self):

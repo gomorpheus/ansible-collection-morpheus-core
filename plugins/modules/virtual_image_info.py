@@ -123,14 +123,15 @@ virtual_images:
         ]
 '''
 
-import re
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 
 try:
+    import module_utils.info_module_common as info_module
     import module_utils.morpheus_funcs as mf
     from module_utils.morpheusapi import MorpheusApi
 except ModuleNotFoundError:
+    import ansible_collections.morpheus.core.plugins.module_utils.info_module_common as info_module
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
     from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
 
@@ -194,30 +195,11 @@ def run_module():
     connection = Connection(module._socket_path)
     morpheus_api = MorpheusApi(connection)
 
-    api_params = module.params.copy()
-
-    if module.params['regex_name']:
-        api_params['name'] = None
-    api_params['all_labels'] = api_params.pop('labels') if module.params['match_all_labels'] else None
-
-    for k in ['detail', 'match_all_labels', 'regex_name']:
-        del api_params[k]
+    api_params = info_module.param_filter(module)
 
     response = morpheus_api.get_virtual_images(api_params)
 
-    if not isinstance(response, list):
-        response = [response]
-
-    if module.params['name'] is not None and module.params['regex_name']:
-        response = [image for image in response if re.match(module.params['name'], image['name'])]
-
-    if module.params['detail'] != 'full':
-        filter_keys = API_FILTER_KEYS[module.params['detail']]
-
-        filtered_info = [mf.dict_filter(image, list(filter_keys)) for image in response]
-        result['virtual_images'] = [mf.dict_keys_to_snake_case(image) for image in filtered_info]
-
-        module.exit_json(**result)
+    response = info_module.response_filter(module, response, API_FILTER_KEYS)
 
     result['virtual_images'] = [mf.dict_keys_to_snake_case(response_item) for response_item in response]
 

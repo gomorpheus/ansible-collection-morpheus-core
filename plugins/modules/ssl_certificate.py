@@ -13,7 +13,7 @@ author: James Riach
 options:
     state:
         description:
-            - When I(state=present) create or update an SSL Certificate.
+            - When O(state=present) create or update an SSL Certificate.
         default: present
         choices:
             - absent
@@ -43,6 +43,8 @@ options:
         description:
             - The Private Key contents.
         type: string
+extends_documentation_fragment:
+    - action_common_attributes
 attributes:
     check_mode:
         support: full
@@ -104,10 +106,10 @@ from ansible.module_utils.connection import Connection
 from functools import partial
 try:
     import module_utils.morpheus_funcs as mf
-    from module_utils.morpheusapi import MorpheusApi
+    from module_utils.morpheusapi import ApiPath, MorpheusApi
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import ApiPath, MorpheusApi
 
 
 MOCK_SSL_CERT = {
@@ -142,8 +144,8 @@ def create_update_cert(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict
         api_params['id'] = cert['id']
 
     action = {
-        0: partial(morpheus_api.create_ssl_certificate, api_params),
-        1: partial(morpheus_api.update_ssl_certificate, api_params),
+        0: partial(morpheus_api.common_create, path=ApiPath.SSL_CERTIFICATES_PATH, api_params=api_params),
+        1: partial(morpheus_api.common_set, path=ApiPath.SSL_CERTIFICATES_PATH, item_id=api_params.pop('id'), api_params=api_params),
         2: partial(parse_check_mode, state=module.params['state'], api_params=api_params, cert=cert)
     }.get('id' in cert if not module.check_mode else 2)
 
@@ -185,7 +187,7 @@ def create_update_cert(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict
 def get_cert(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
     api_params = module_to_api_params(module.params)
 
-    cert = morpheus_api.get_ssl_certificates(api_params)
+    cert = morpheus_api.common_get(ApiPath.SSL_CERTIFICATES_PATH, api_params)
 
     if isinstance(cert, list) and len(cert) > 1:
         module.fail_json(
@@ -236,7 +238,7 @@ def remove_cert(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
             msg='No matching certificate found'
         )
 
-    response = morpheus_api.delete_ssl_certificate(cert['id']) if not module.check_mode \
+    response = morpheus_api.common_delete(ApiPath.SSL_CERTIFICATES_PATH, cert['id']) if not module.check_mode \
         else parse_check_mode(state=module.params['state'])
 
     success, msg = mf.success_response(response)

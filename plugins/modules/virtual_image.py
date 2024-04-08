@@ -14,7 +14,7 @@ options:
     state:
         description:
             - Create, update or remove a Virtual Image.
-            - If I(state=absent) and I(filename) is specified then remove the specified file.
+            - If O(state=absent) and O(filename) is specified then remove the specified file.
         default: present
         choices:
             - absent
@@ -149,6 +149,8 @@ options:
                 description:
                     - The Tag value.
                 type: string
+extends_documentation_fragment:
+    - action_common_attributes
 attributes:
     check_mode:
         support: full
@@ -293,10 +295,10 @@ from ansible.module_utils.connection import Connection
 
 try:
     import module_utils.morpheus_funcs as mf
-    from module_utils.morpheusapi import MorpheusApi
+    from module_utils.morpheusapi import ApiPath, MorpheusApi
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import ApiPath, MorpheusApi
 
 
 def create_update_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
@@ -335,8 +337,8 @@ def create_update_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
         virtual_image = []
 
     action = {
-        0: partial(morpheus_api.create_virtual_image, api_params=api_params),
-        1: partial(morpheus_api.update_virtual_image, api_params=api_params),
+        0: partial(morpheus_api.common_create, path=ApiPath.VIRTUAL_IMAGES_PATH, api_params=api_params),
+        1: partial(morpheus_api.common_set, path=ApiPath.VIRTUAL_IMAGES_PATH, item_id=api_params.pop('virtual_image_id'), api_params=api_params),
         3: partial(parse_check_mode, state=module.params['state'], api_params=api_params, virtual_images=virtual_image)
     }.get(len(virtual_image) if not module.check_mode else 3)
 
@@ -541,7 +543,7 @@ def remove_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
     file_params['virtual_image_id'] = virtual_image[0]['id']
 
     action = {
-        0: partial(morpheus_api.delete_virtual_image, virtual_image[0]['id']),
+        0: partial(morpheus_api.common_delete, path=ApiPath.VIRTUAL_IMAGES_PATH, item_id=virtual_image[0]['id']),
         1: partial(morpheus_api.delete_virtual_image_file, file_params),
         2: partial(parse_check_mode, state=module.params['state'], virtual_images=virtual_image)
     }.get(int(module.params['filename'] is not None) if not module.check_mode else 2)

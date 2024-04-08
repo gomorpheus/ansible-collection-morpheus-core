@@ -22,11 +22,11 @@ options:
         type: string
     id:
         description:
-            - Required when I(state=absent), specify the Key Pair to remove.
+            - Required when O(state=absent), specify the Key Pair to remove.
         type: int
     name:
         description:
-            - Required when I(state=present), specify the name of the Key Pair.
+            - Required when O(state=present), specify the name of the Key Pair.
             - Specifying this parameter alone will generate a Key Pair.
         type: string
     private_key:
@@ -41,6 +41,8 @@ options:
         description:
             - Specify the Private Key passphrase.
         type: string
+extends_documentation_fragment:
+    - action_common_attributes
 attributes:
     check_mode:
         support: none
@@ -59,7 +61,7 @@ EXAMPLES = r'''
     state: present
     name: My Existing Key Pair
     private_key: "{{ q('ansible.builtin.file', 'path/to/private_key')[0] }}"
-    public_key: "{{ q('ansible.builtin.file', 'path/to/public_key)[0] }}"
+    public_key: "{{ q('ansible.builtin.file', 'path/to/public_key')[0] }}"
     passphrase: Password123
 
 - name: Delete a Key Pair
@@ -101,10 +103,10 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:
     import module_utils.morpheus_funcs as mf
-    from module_utils.morpheusapi import MorpheusApi
+    from module_utils.morpheusapi import ApiPath, MorpheusApi
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import ApiPath, MorpheusApi
 
 
 def create_key_pair(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
@@ -163,7 +165,7 @@ def remove_key_pair(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
     Returns:
         dict: Result Dictionary
     """
-    response = morpheus_api.delete_key_pair(module.params['id'])
+    response = morpheus_api.common_delete(ApiPath.KEY_PAIR_PATH, module.params['id'])
 
     success, msg = mf.success_response(response)
 

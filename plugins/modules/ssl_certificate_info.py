@@ -10,20 +10,8 @@ description:
     - Gathers information about SSL Certificates.
 version_added: 0.6.0
 author: James Riach
-options:
-    id:
-        description:
-            - The Id of a specific SSL Certificate.
-        type: int
-    name:
-        description:
-            - The name of the SSL Certificate.
-        type: string
-    regex_name:
-        description:
-            - Treat the name parameter as a Regular Expression.
-        default: false
-        type: bool
+extends_documentation_fragment:
+    - morpheus.core.generic_name_filter
 '''
 
 EXAMPLES = r'''
@@ -70,37 +58,27 @@ certificates:
         ]
 '''
 
-import re
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:
+    import module_utils.info_module_common as info_module
     import module_utils.morpheus_funcs as mf
-    from module_utils.morpheusapi import MorpheusApi
+    from module_utils.morpheusapi import ApiPath, MorpheusApi
 except ModuleNotFoundError:
+    import ansible_collections.morpheus.core.plugins.module_utils.info_module_common as info_module
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import ApiPath, MorpheusApi
 
 
 def run_module():
-    argument_spec = {
-        'id': {'type': 'int'},
-        'name': {'type': 'str'},
-        'regex_name': {'type': 'bool', 'default': 'false'}
-    }
-
-    mutually_exclusive = [
-        ('id', 'name'),
-        ('id', 'regex_name')
-    ]
-
     result = {
         'changed': False,
         'certificates': []
     }
 
     module = AnsibleModule(
-        argument_spec=argument_spec,
-        mutually_exclusive=mutually_exclusive,
+        argument_spec=info_module.COMMON_ARG_SPEC,
+        mutually_exclusive=info_module.COMMON_MUTUALLY_EXCLUSIVE,
         supports_check_mode=True
     )
 
@@ -108,21 +86,15 @@ def run_module():
     morpheus_api = MorpheusApi(connection)
 
     if module.params['id'] is not None:
-        response = morpheus_api.get_ssl_certificates({'id': module.params['id']})
+        response = morpheus_api.common_get(ApiPath.SSL_CERTIFICATES_PATH, {'id': module.params['id']})
         result['certificates'] = [mf.dict_keys_to_snake_case(response)]
         module.exit_json(**result)
 
-    api_params = module.params.copy()
+    api_params = info_module.param_filter(module)
 
-    if module.params['regex_name']:
-        api_params['name'] = None
+    response = morpheus_api.common_get(ApiPath.SSL_CERTIFICATES_PATH, api_params)
 
-    del api_params['regex_name']
-
-    response = morpheus_api.get_ssl_certificates(api_params)
-
-    if module.params['regex_name']:
-        response = [cert for cert in response if re.match(module.params['name'], cert['name'])]
+    response = info_module.response_filter(module, response)
 
     result['certificates'] = [mf.dict_keys_to_snake_case(cert) for cert in response]
 

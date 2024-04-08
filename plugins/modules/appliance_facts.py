@@ -14,10 +14,10 @@ options:
     gather_subset:
         description:
             - "Specify or restrict the facts that are gathered.
-              Possible values: C(all), C(database), C(elastic), C(license), C(rabbitmq),
-              C(settings), C(system), C(threads).
-              The minimum subset is: C(license), C(settings), C(system).
-              To specify a specific subset, use C(!all, !min) and then specify the fact(s) required."
+              Possible values: V(all), V(database), V(elastic), V(license), V(rabbitmq),
+              V(settings), V(system), V(threads).
+              The minimum subset is: V(license), V(settings), V(system).
+              To specify a specific subset, use V(!all, !min) and then specify the fact(s) required."
         type: list
         elements: str
         default: "all"
