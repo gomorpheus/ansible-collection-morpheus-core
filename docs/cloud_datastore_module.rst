@@ -1,17 +1,40 @@
 
-.. Created with antsibull-docs 2.7.0
+.. Document meta
+
+:orphan:
+
+.. |antsibull-internal-nbsp| unicode:: 0xA0
+    :trim:
+
+.. meta::
+  :antsibull-docs: 2.9.0
+
+.. Anchors
+
+.. _ansible_collections.morpheus.core.cloud_datastore_module:
+
+.. Anchors: short name for ansible.builtin
+
+.. Title
 
 morpheus.core.cloud_datastore module -- Configure Cloud Datastores
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-This module is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
+.. Collection note
 
-It is not included in ``ansible-core``.
-To check whether it is installed, run ``ansible-galaxy collection list``.
+.. note::
+    This module is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
 
-To install it, use: :code:`ansible-galaxy collection install morpheus.core`.
+    It is not included in ``ansible-core``.
+    To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-To use it in a playbook, specify: ``morpheus.core.cloud_datastore``.
+    To install it, use: :code:`ansible-galaxy collection install morpheus.core`.
+
+    To use it in a playbook, specify: :code:`morpheus.core.cloud_datastore`.
+
+.. version_added
+
+.. rst-class:: ansible-version-added
 
 New in morpheus.core 0.7.0
 
@@ -19,416 +42,1003 @@ New in morpheus.core 0.7.0
    :local:
    :depth: 1
 
+.. Deprecated
+
 
 Synopsis
 --------
 
+.. Description
+
 - Update the configuration of Cloud Datastores.
 
 
+.. Aliases
+
+
+.. Requirements
 
 
 
 
 
+
+.. Options
 
 Parameters
 ----------
 
-.. raw:: html
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th colspan="3"><p>Parameter</p></th>
-    <th><p>Comments</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td colspan="3" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-id"></div>
-      <p style="display: inline;"><strong>id</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-id" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-        / <span style="color: red;">required</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The Id of the Datastore.</p>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="3" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-resource_permissions"></div>
-      <p style="display: inline;"><strong>resource_permissions</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-resource_permissions" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">dictionary</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Resource permissions for the Datastore.</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-resource_permissions/all_groups"></div>
-      <p style="display: inline;"><strong>all_groups</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-resource_permissions/all_groups" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Allow or disallow access to all groups.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
 
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-resource_permissions/all_plans"></div>
-      <p style="display: inline;"><strong>all_plans</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-resource_permissions/all_plans" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Allow access to all plans.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
+  * - Parameter
+    - Comments
 
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-resource_permissions/groups"></div>
-      <div class="ansibleOptionAnchor" id="parameter-resource_permissions/sites"></div>
-      <p style="display: inline;"><strong>groups</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-resource_permissions/groups" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;"><span style="color: darkgreen; white-space: normal;">aliases: sites</span></p>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">list</span>
-        / <span style="color: purple;">elements=dictionary</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>List of groups that are allowed access to the Datastore.</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-resource_permissions/groups/group_id"></div>
-      <div class="ansibleOptionAnchor" id="parameter-resource_permissions/sites/group_id"></div>
-      <div class="ansibleOptionAnchor" id="parameter-resource_permissions/groups/site_id"></div>
-      <div class="ansibleOptionAnchor" id="parameter-resource_permissions/sites/site_id"></div>
-      <p style="display: inline;"><strong>group_id</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-resource_permissions/groups/group_id" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;"><span style="color: darkgreen; white-space: normal;">aliases: site_id</span></p>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Id of the group to allow access.</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-resource_permissions/groups/state"></div>
-      <div class="ansibleOptionAnchor" id="parameter-resource_permissions/sites/state"></div>
-      <p style="display: inline;"><strong>state</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-resource_permissions/groups/state" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>If the Group should have access or not.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>&#34;absent&#34;</code></p></li>
-        <li><p><code style="color: blue;"><b>&#34;present&#34;</b></code> <span style="color: blue;">← (default)</span></p></li>
-      </ul>
+  * - .. raw:: html
 
-    </td>
-  </tr>
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-id"></div>
 
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-resource_permissions/plans"></div>
-      <p style="display: inline;"><strong>plans</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-resource_permissions/plans" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">list</span>
-        / <span style="color: purple;">elements=dictionary</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>List of Plans to allow access.</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-resource_permissions/plans/plan_id"></div>
-      <p style="display: inline;"><strong>plan_id</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-resource_permissions/plans/plan_id" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Id of the Plan to allow access.</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-resource_permissions/plans/state"></div>
-      <p style="display: inline;"><strong>state</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-resource_permissions/plans/state" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>If the plan should be present or not.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>&#34;absent&#34;</code></p></li>
-        <li><p><code style="color: blue;"><b>&#34;present&#34;</b></code> <span style="color: blue;">← (default)</span></p></li>
-      </ul>
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-id:
 
-    </td>
-  </tr>
+      .. rst-class:: ansible-option-title
+
+      **id**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-id" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer` / :ansible-option-required:`required`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The Id of the Datastore.
 
 
-  <tr>
-    <td colspan="3" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-state"></div>
-      <p style="display: inline;"><strong>state</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The active state of the Datastore.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>&#34;active&#34;</code></p></li>
-        <li><p><code>&#34;inactive&#34;</code></p></li>
-      </ul>
+      .. raw:: html
 
-    </td>
-  </tr>
-  <tr>
-    <td colspan="3" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-tenant_permissions"></div>
-      <p style="display: inline;"><strong>tenant_permissions</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-tenant_permissions" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">list</span>
-        / <span style="color: purple;">elements=dictionary</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>List of Tenant Permissions on the Datastore.</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-tenant_permissions/default_store"></div>
-      <p style="display: inline;"><strong>default_store</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-tenant_permissions/default_store" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Set the Datastore as the default image store for the specified tenant.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
+        </div>
 
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-tenant_permissions/default_target"></div>
-      <p style="display: inline;"><strong>default_target</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-tenant_permissions/default_target" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Set the Datastore as the default for the specified tenant.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
+  * - .. raw:: html
 
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-tenant_permissions/state"></div>
-      <p style="display: inline;"><strong>state</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-tenant_permissions/state" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>If the Account should have access or not.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>&#34;absent&#34;</code></p></li>
-        <li><p><code style="color: blue;"><b>&#34;present&#34;</b></code> <span style="color: blue;">← (default)</span></p></li>
-      </ul>
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-resource_permissions"></div>
 
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-tenant_permissions/tenant_id"></div>
-      <p style="display: inline;"><strong>tenant_id</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-tenant_permissions/tenant_id" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The id of the tenant to add or remove permissions for.</p>
-    </td>
-  </tr>
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-resource_permissions:
 
-  <tr>
-    <td colspan="3" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-visibility"></div>
-      <p style="display: inline;"><strong>visibility</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-visibility" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The visibility of the Datastore.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>&#34;private&#34;</code></p></li>
-        <li><p><code>&#34;public&#34;</code></p></li>
-      </ul>
+      .. rst-class:: ansible-option-title
 
-    </td>
-  </tr>
-  <tr>
-    <td colspan="3" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-zone_id"></div>
-      <div class="ansibleOptionAnchor" id="parameter-cloud_id"></div>
-      <p style="display: inline;"><strong>zone_id</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-zone_id" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;"><span style="color: darkgreen; white-space: normal;">aliases: cloud_id</span></p>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-        / <span style="color: red;">required</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The Id of the Cloud the Datastore belongs to.</p>
-    </td>
-  </tr>
-  </tbody>
-  </table>
+      **resource_permissions**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-resource_permissions" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`dictionary`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Resource permissions for the Datastore.
 
 
+      .. raw:: html
+
+        </div>
+    
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-resource_permissions/all_groups"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-resource_permissions/all_groups:
+
+      .. rst-class:: ansible-option-title
+
+      **all_groups**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-resource_permissions/all_groups" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Allow or disallow access to all groups.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-resource_permissions/all_plans"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-resource_permissions/all_plans:
+
+      .. rst-class:: ansible-option-title
+
+      **all_plans**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-resource_permissions/all_plans" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Allow access to all plans.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-resource_permissions/groups"></div>
+        <div class="ansibleOptionAnchor" id="parameter-resource_permissions/sites"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-resource_permissions/groups:
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-resource_permissions/sites:
+
+      .. rst-class:: ansible-option-title
+
+      **groups**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-resource_permissions/groups" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: sites`
+
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      List of groups that are allowed access to the Datastore.
+
+
+      .. raw:: html
+
+        </div>
+    
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-resource_permissions/groups/group_id"></div>
+        <div class="ansibleOptionAnchor" id="parameter-resource_permissions/sites/group_id"></div>
+        <div class="ansibleOptionAnchor" id="parameter-resource_permissions/groups/site_id"></div>
+        <div class="ansibleOptionAnchor" id="parameter-resource_permissions/sites/site_id"></div>
+
+      .. raw:: latex
+
+        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-resource_permissions/groups/group_id:
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-resource_permissions/groups/site_id:
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-resource_permissions/sites/group_id:
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-resource_permissions/sites/site_id:
+
+      .. rst-class:: ansible-option-title
+
+      **group_id**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-resource_permissions/groups/group_id" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: site_id`
+
+        :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Id of the group to allow access.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-resource_permissions/groups/state"></div>
+        <div class="ansibleOptionAnchor" id="parameter-resource_permissions/sites/state"></div>
+
+      .. raw:: latex
+
+        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-resource_permissions/groups/state:
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-resource_permissions/sites/state:
+
+      .. rst-class:: ansible-option-title
+
+      **state**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-resource_permissions/groups/state" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      If the Group should have access or not.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"absent"`
+      - :ansible-option-choices-entry-default:`"present"` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-resource_permissions/plans"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-resource_permissions/plans:
+
+      .. rst-class:: ansible-option-title
+
+      **plans**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-resource_permissions/plans" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      List of Plans to allow access.
+
+
+      .. raw:: html
+
+        </div>
+    
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-resource_permissions/plans/plan_id"></div>
+
+      .. raw:: latex
+
+        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-resource_permissions/plans/plan_id:
+
+      .. rst-class:: ansible-option-title
+
+      **plan_id**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-resource_permissions/plans/plan_id" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Id of the Plan to allow access.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-resource_permissions/plans/state"></div>
+
+      .. raw:: latex
+
+        \hspace{0.04\textwidth}\begin{minipage}[t]{0.28\textwidth}
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-resource_permissions/plans/state:
+
+      .. rst-class:: ansible-option-title
+
+      **state**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-resource_permissions/plans/state" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      If the plan should be present or not.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"absent"`
+      - :ansible-option-choices-entry-default:`"present"` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-state"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-state:
+
+      .. rst-class:: ansible-option-title
+
+      **state**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The active state of the Datastore.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"active"`
+      - :ansible-option-choices-entry:`"inactive"`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-tenant_permissions"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-tenant_permissions:
+
+      .. rst-class:: ansible-option-title
+
+      **tenant_permissions**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-tenant_permissions" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=dictionary`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      List of Tenant Permissions on the Datastore.
+
+
+      .. raw:: html
+
+        </div>
+    
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-tenant_permissions/default_store"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-tenant_permissions/default_store:
+
+      .. rst-class:: ansible-option-title
+
+      **default_store**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-tenant_permissions/default_store" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Set the Datastore as the default image store for the specified tenant.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-tenant_permissions/default_target"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-tenant_permissions/default_target:
+
+      .. rst-class:: ansible-option-title
+
+      **default_target**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-tenant_permissions/default_target" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Set the Datastore as the default for the specified tenant.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-tenant_permissions/state"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-tenant_permissions/state:
+
+      .. rst-class:: ansible-option-title
+
+      **state**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-tenant_permissions/state" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      If the Account should have access or not.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"absent"`
+      - :ansible-option-choices-entry-default:`"present"` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-tenant_permissions/tenant_id"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-tenant_permissions/tenant_id:
+
+      .. rst-class:: ansible-option-title
+
+      **tenant_id**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-tenant_permissions/tenant_id" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      The id of the tenant to add or remove permissions for.
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-visibility"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-visibility:
+
+      .. rst-class:: ansible-option-title
+
+      **visibility**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-visibility" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The visibility of the Datastore.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"private"`
+      - :ansible-option-choices-entry:`"public"`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-zone_id"></div>
+        <div class="ansibleOptionAnchor" id="parameter-cloud_id"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-cloud_id:
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__parameter-zone_id:
+
+      .. rst-class:: ansible-option-title
+
+      **zone_id**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-zone_id" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: cloud_id`
+
+        :ansible-option-type:`integer` / :ansible-option-required:`required`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The Id of the Cloud the Datastore belongs to.
+
+
+      .. raw:: html
+
+        </div>
+
+
+.. Attributes
 
 
 Attributes
 ----------
 
+.. tabularcolumns:: \X{2}{10}\X{3}{10}\X{5}{10}
+
 .. list-table::
+  :width: 100%
   :widths: auto
   :header-rows: 1
+  :class: longtable ansible-option-table
 
   * - Attribute
     - Support
     - Description
 
-  * - .. _ansible_collections.morpheus.core.cloud_datastore_module__attribute-check_mode:
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-check_mode"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__attribute-check_mode:
+
+      .. rst-class:: ansible-option-title
 
       **check_mode**
 
-    - Support: full
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-check_mode" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-label:`Support: \ `\ :ansible-attribute-support-full:`full`
 
 
+      .. raw:: html
 
-    - 
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
       Can run in check\_mode and return changed status prediction without modifying target
 
 
+      .. raw:: html
 
-  * - .. _ansible_collections.morpheus.core.cloud_datastore_module__attribute-diff_mode:
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-diff_mode"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__attribute-diff_mode:
+
+      .. rst-class:: ansible-option-title
 
       **diff_mode**
 
-    - Support: full
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-diff_mode" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-label:`Support: \ `\ :ansible-attribute-support-full:`full`
 
 
+      .. raw:: html
 
-    - 
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
       Will return details on what has changed (or possibly needs changing in check\_mode), when in diff mode
 
 
+      .. raw:: html
 
-  * - .. _ansible_collections.morpheus.core.cloud_datastore_module__attribute-platform:
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-platform"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__attribute-platform:
+
+      .. rst-class:: ansible-option-title
 
       **platform**
 
-    - Platforms:
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-platform" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-property:`Platform:` |antsibull-internal-nbsp|:ansible-attribute-support-full:`httpapi`
 
 
-    - 
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
       Target OS/families that can be operated against
 
 
+      .. raw:: html
+
+        </div>
 
 
 
+.. Notes
+
+
+.. Seealso
+
+
+.. Examples
 
 Examples
 --------
 
-.. code-block:: yaml
+.. code-block:: yaml+jinja
 
     
     - name: Set a Datastore to Active and Public Visibility
@@ -466,41 +1076,76 @@ Examples
 
 
 
+.. Facts
+
+
+.. Return values
 
 Return Values
 -------------
-The following are the fields unique to this module:
+Common return values are documented :ref:`here <common_return_values>`, the following are the fields unique to this module:
 
-.. raw:: html
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th><p>Key</p></th>
-    <th><p>Description</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="return-datastore"></div>
-      <p style="display: inline;"><strong>datastore</strong></p>
-      <a class="ansibleOptionLink" href="#return-datastore" title="Permalink to this return value"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Information about the datastore after changes.</p>
-      <p style="margin-top: 8px;"><b>Returned:</b> always</p>
-      <p style="margin-top: 8px; color: blue; word-wrap: break-word; word-break: break-all;"><b style="color: black;">Sample:</b> <code>{&#34;datastore&#34;: {&#34;active&#34;: true, &#34;free_space&#34;: 17589585575936, &#34;id&#34;: 100, &#34;name&#34;: &#34;vmfs01&#34;, &#34;online&#34;: true, &#34;resource_permission&#34;: {&#34;all&#34;: true, &#34;all_plans&#34;: false, &#34;plans&#34;: [], &#34;sites&#34;: []}, &#34;tenants&#34;: [{&#34;default_store&#34;: false, &#34;default_target&#34;: false, &#34;id&#34;: 1, &#34;name&#34;: &#34;MasterTenant&#34;}], &#34;type&#34;: &#34;vmfs&#34;, &#34;visibility&#34;: &#34;private&#34;, &#34;zone&#34;: {&#34;id&#34;: 20, &#34;name&#34;: &#34;VMware Cloud&#34;}}}</code></p>
-    </td>
-  </tr>
-  </tbody>
-  </table>
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
+
+  * - Key
+    - Description
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-datastore"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_datastore_module__return-datastore:
+
+      .. rst-class:: ansible-option-title
+
+      **datastore**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-datastore" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Information about the datastore after changes.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` always
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`{"datastore": {"active": true, "free\_space": 17589585575936, "id": 100, "name": "vmfs01", "online": true, "resource\_permission": {"all": true, "all\_plans": false, "plans": [], "sites": []}, "tenants": [{"default\_store": false, "default\_target": false, "id": 1, "name": "MasterTenant"}], "type": "vmfs", "visibility": "private", "zone": {"id": 20, "name": "VMware Cloud"}}}`
+
+
+      .. raw:: html
+
+        </div>
 
 
 
+..  Status (Presently only deprecated)
+
+
+.. Authors
 
 Authors
 ~~~~~~~
@@ -509,8 +1154,17 @@ Authors
 
 
 
+.. Extra links
+
 Collection links
 ~~~~~~~~~~~~~~~~
 
-* `Repository (Sources) <https://www.github.com/gomorpheus/ansible-collection-morpheus-core>`__
+.. ansible-links::
+
+  - title: "Repository (Sources)"
+    url: "https://www.github.com/gomorpheus/ansible-collection-morpheus-core"
+    external: true
+
+
+.. Parsing errors
 

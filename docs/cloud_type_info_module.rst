@@ -1,17 +1,40 @@
 
-.. Created with antsibull-docs 2.7.0
+.. Document meta
+
+:orphan:
+
+.. |antsibull-internal-nbsp| unicode:: 0xA0
+    :trim:
+
+.. meta::
+  :antsibull-docs: 2.9.0
+
+.. Anchors
+
+.. _ansible_collections.morpheus.core.cloud_type_info_module:
+
+.. Anchors: short name for ansible.builtin
+
+.. Title
 
 morpheus.core.cloud_type_info module -- Return available Cloud types
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-This module is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
+.. Collection note
 
-It is not included in ``ansible-core``.
-To check whether it is installed, run ``ansible-galaxy collection list``.
+.. note::
+    This module is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
 
-To install it, use: :code:`ansible-galaxy collection install morpheus.core`.
+    It is not included in ``ansible-core``.
+    To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-To use it in a playbook, specify: ``morpheus.core.cloud_type_info``.
+    To install it, use: :code:`ansible-galaxy collection install morpheus.core`.
+
+    To use it in a playbook, specify: :code:`morpheus.core.cloud_type_info`.
+
+.. version_added
+
+.. rst-class:: ansible-version-added
 
 New in morpheus.core 0.7.0
 
@@ -19,121 +42,387 @@ New in morpheus.core 0.7.0
    :local:
    :depth: 1
 
+.. Deprecated
+
 
 Synopsis
 --------
 
+.. Description
+
 - Returns the available Cloud Types.
 
 
+.. Aliases
+
+
+.. Requirements
 
 
 
 
 
+
+.. Options
 
 Parameters
 ----------
 
-.. raw:: html
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th><p>Parameter</p></th>
-    <th><p>Comments</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-code"></div>
-      <p style="display: inline;"><strong>code</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-code" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Filter Cloud Types by code.</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-detail"></div>
-      <p style="display: inline;"><strong>detail</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-detail" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Level of detail returned.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code style="color: blue;"><b>&#34;summary&#34;</b></code> <span style="color: blue;">← (default)</span></p></li>
-        <li><p><code>&#34;full&#34;</code></p></li>
-      </ul>
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
 
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-id"></div>
-      <p style="display: inline;"><strong>id</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-id" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Return specific object by id.</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-name"></div>
-      <p style="display: inline;"><strong>name</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Filter by name.</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-regex_name"></div>
-      <p style="display: inline;"><strong>regex_name</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-regex_name" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Treat the name parameter as a regular expression.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code style="color: blue;"><b>false</b></code> <span style="color: blue;">← (default)</span></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
+  * - Parameter
+    - Comments
 
-    </td>
-  </tr>
-  </tbody>
-  </table>
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-code"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_type_info_module__parameter-code:
+
+      .. rst-class:: ansible-option-title
+
+      **code**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-code" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Filter Cloud Types by code.
 
 
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-detail"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_type_info_module__parameter-detail:
+
+      .. rst-class:: ansible-option-title
+
+      **detail**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-detail" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Level of detail returned.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`"summary"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"full"`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-id"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_type_info_module__parameter-id:
+
+      .. rst-class:: ansible-option-title
+
+      **id**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-id" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Return specific object by id.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-name"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_type_info_module__parameter-name:
+
+      .. rst-class:: ansible-option-title
+
+      **name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Filter by name.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-regex_name"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_type_info_module__parameter-regex_name:
+
+      .. rst-class:: ansible-option-title
+
+      **regex_name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-regex_name" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Treat the name parameter as a regular expression.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+
+.. Attributes
+
+
+Attributes
+----------
+
+.. tabularcolumns:: \X{2}{10}\X{3}{10}\X{5}{10}
+
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
+
+  * - Attribute
+    - Support
+    - Description
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-check_mode"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_type_info_module__attribute-check_mode:
+
+      .. rst-class:: ansible-option-title
+
+      **check_mode**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-check_mode" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-label:`Support: \ `      \ :ansible-attribute-support-na:`N/A`
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Can run in check\_mode and return changed status prediction without modifying target
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-diff_mode"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_type_info_module__attribute-diff_mode:
+
+      .. rst-class:: ansible-option-title
+
+      **diff_mode**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-diff_mode" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-label:`Support: \ `      \ :ansible-attribute-support-na:`N/A`
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Will return details on what has changed (or possibly needs changing in check\_mode), when in diff mode
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-platform"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_type_info_module__attribute-platform:
+
+      .. rst-class:: ansible-option-title
+
+      **platform**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-platform" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-property:`Platform:` |antsibull-internal-nbsp|:ansible-attribute-support-full:`httpapi`
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Target OS/families that can be operated against
+
+
+      .. raw:: html
+
+        </div>
 
 
 
+.. Notes
+
+
+.. Seealso
+
+
+.. Examples
 
 Examples
 --------
 
-.. code-block:: yaml
+.. code-block:: yaml+jinja
 
     
     - name: Return all Cloud Types
@@ -150,41 +439,76 @@ Examples
 
 
 
+.. Facts
+
+
+.. Return values
 
 Return Values
 -------------
-The following are the fields unique to this module:
+Common return values are documented :ref:`here <common_return_values>`, the following are the fields unique to this module:
 
-.. raw:: html
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th><p>Key</p></th>
-    <th><p>Description</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="return-cloud_types"></div>
-      <p style="display: inline;"><strong>cloud_types</strong></p>
-      <a class="ansibleOptionLink" href="#return-cloud_types" title="Permalink to this return value"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>List of Cloud Type Info.</p>
-      <p style="margin-top: 8px;"><b>Returned:</b> always</p>
-      <p style="margin-top: 8px; color: blue; word-wrap: break-word; word-break: break-all;"><b style="color: black;">Sample:</b> <code>{&#34;cloud_types&#34;: [{&#34;cloud&#34;: &#34;private&#34;, &#34;code&#34;: &#34;fusion&#34;, &#34;enabled&#34;: true, &#34;id&#34;: 38, &#34;name&#34;: &#34;VMware Fusion&#34;}, {&#34;cloud&#34;: &#34;private&#34;, &#34;code&#34;: &#34;vmware&#34;, &#34;enabled&#34;: true, &#34;id&#34;: 28, &#34;name&#34;: &#34;VMware vCenter&#34;}]}</code></p>
-    </td>
-  </tr>
-  </tbody>
-  </table>
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
+
+  * - Key
+    - Description
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-cloud_types"></div>
+
+      .. _ansible_collections.morpheus.core.cloud_type_info_module__return-cloud_types:
+
+      .. rst-class:: ansible-option-title
+
+      **cloud_types**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-cloud_types" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      List of Cloud Type Info.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` always
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`{"cloud\_types": [{"cloud": "private", "code": "fusion", "enabled": true, "id": 38, "name": "VMware Fusion"}, {"cloud": "private", "code": "vmware", "enabled": true, "id": 28, "name": "VMware vCenter"}]}`
+
+
+      .. raw:: html
+
+        </div>
 
 
 
+..  Status (Presently only deprecated)
+
+
+.. Authors
 
 Authors
 ~~~~~~~
@@ -193,8 +517,17 @@ Authors
 
 
 
+.. Extra links
+
 Collection links
 ~~~~~~~~~~~~~~~~
 
-* `Repository (Sources) <https://www.github.com/gomorpheus/ansible-collection-morpheus-core>`__
+.. ansible-links::
+
+  - title: "Repository (Sources)"
+    url: "https://www.github.com/gomorpheus/ansible-collection-morpheus-core"
+    external: true
+
+
+.. Parsing errors
 

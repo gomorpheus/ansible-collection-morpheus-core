@@ -1,160 +1,351 @@
 
-.. Created with antsibull-docs 2.7.0
+.. Document meta
+
+:orphan:
+
+.. |antsibull-internal-nbsp| unicode:: 0xA0
+    :trim:
+
+.. meta::
+  :antsibull-docs: 2.9.0
+
+.. Anchors
+
+.. _ansible_collections.morpheus.core.morpheus_inventory_inventory:
+
+.. Anchors: short name for ansible.builtin
+
+.. Title
 
 morpheus.core.morpheus_inventory inventory -- Returns Ansible inventory from Morpheus
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-This inventory plugin is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
+.. Collection note
 
-It is not included in ``ansible-core``.
-To check whether it is installed, run ``ansible-galaxy collection list``.
+.. note::
+    This inventory plugin is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
 
-To install it, use: :code:`ansible-galaxy collection install morpheus.core`.
+    It is not included in ``ansible-core``.
+    To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-To use it in a playbook, specify: ``morpheus.core.morpheus_inventory``.
+    To install it, use: :code:`ansible-galaxy collection install morpheus.core`.
+
+    To use it in a playbook, specify: :code:`morpheus.core.morpheus_inventory`.
+
+.. version_added
 
 
 .. contents::
    :local:
    :depth: 1
 
+.. Deprecated
+
 
 Synopsis
 --------
 
+.. Description
+
 - Returns Ansible inventory from Morpheus
 
 
+.. Aliases
+
+
+.. Requirements
 
 
 
 
 
+
+.. Options
 
 Parameters
 ----------
 
-.. raw:: html
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th><p>Parameter</p></th>
-    <th><p>Comments</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-groups"></div>
-      <p style="display: inline;"><strong>groups</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-groups" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-        / <span style="color: red;">required</span>
-      </p>
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
 
-    </td>
-    <td valign="top">
-      <p>whatever</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-morpheus_api_key"></div>
-      <p style="display: inline;"><strong>morpheus_api_key</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-morpheus_api_key" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
+  * - Parameter
+    - Comments
 
-    </td>
-    <td valign="top">
-      <p>Morpheus API Key - Can be a vault encrypted string</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-morpheus_url"></div>
-      <p style="display: inline;"><strong>morpheus_url</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-morpheus_url" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
+  * - .. raw:: html
 
-    </td>
-    <td valign="top">
-      <p>Morpheus URL</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-plugin"></div>
-      <p style="display: inline;"><strong>plugin</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-plugin" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-        / <span style="color: red;">required</span>
-      </p>
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-groups"></div>
 
-    </td>
-    <td valign="top">
-      <p>Morpheus Inventory</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>&#34;morpheus_inventory&#34;</code></p></li>
-        <li><p><code>&#34;morpheus.core.morpheus_inventory&#34;</code></p></li>
-      </ul>
+      .. _ansible_collections.morpheus.core.morpheus_inventory_inventory__parameter-groups:
 
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-searchstring"></div>
-      <p style="display: inline;"><strong>searchstring</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-searchstring" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
+      .. rst-class:: ansible-option-title
 
-    </td>
-    <td valign="top">
-      <p>Search term</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-searchtype"></div>
-      <p style="display: inline;"><strong>searchtype</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-searchtype" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
+      **groups**
 
-    </td>
-    <td valign="top">
-      <p>Search type</p>
-    </td>
-  </tr>
-  </tbody>
-  </table>
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-groups" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
 
 
 
 
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      whatever
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-morpheus_api_key"></div>
+
+      .. _ansible_collections.morpheus.core.morpheus_inventory_inventory__parameter-morpheus_api_key:
+
+      .. rst-class:: ansible-option-title
+
+      **morpheus_api_key**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-morpheus_api_key" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
 
 
 
 
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Morpheus API Key - Can be a vault encrypted string
 
 
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-morpheus_url"></div>
+
+      .. _ansible_collections.morpheus.core.morpheus_inventory_inventory__parameter-morpheus_url:
+
+      .. rst-class:: ansible-option-title
+
+      **morpheus_url**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-morpheus_url" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Morpheus URL
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-plugin"></div>
+
+      .. _ansible_collections.morpheus.core.morpheus_inventory_inventory__parameter-plugin:
+
+      .. rst-class:: ansible-option-title
+
+      **plugin**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-plugin" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Morpheus Inventory
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"morpheus\_inventory"`
+      - :ansible-option-choices-entry:`"morpheus.core.morpheus\_inventory"`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-searchstring"></div>
+
+      .. _ansible_collections.morpheus.core.morpheus_inventory_inventory__parameter-searchstring:
+
+      .. rst-class:: ansible-option-title
+
+      **searchstring**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-searchstring" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Search term
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-searchtype"></div>
+
+      .. _ansible_collections.morpheus.core.morpheus_inventory_inventory__parameter-searchtype:
+
+      .. rst-class:: ansible-option-title
+
+      **searchtype**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-searchtype" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Search type
+
+
+      .. raw:: html
+
+        </div>
+
+
+.. Attributes
+
+
+.. Notes
+
+
+.. Seealso
+
+
+.. Examples
+
+
+
+.. Facts
+
+
+.. Return values
+
+
+..  Status (Presently only deprecated)
+
+
+.. Authors
 
 
 .. hint::
     Configuration entries for each entry type have a low to high priority order. For example, a variable that is lower in the list will override a variable that is higher up.
 
+.. Extra links
+
 Collection links
 ~~~~~~~~~~~~~~~~
 
-* `Repository (Sources) <https://www.github.com/gomorpheus/ansible-collection-morpheus-core>`__
+.. ansible-links::
+
+  - title: "Repository (Sources)"
+    url: "https://www.github.com/gomorpheus/ansible-collection-morpheus-core"
+    external: true
+
+
+.. Parsing errors
 

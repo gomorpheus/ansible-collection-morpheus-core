@@ -1,17 +1,40 @@
 
-.. Created with antsibull-docs 2.7.0
+.. Document meta
+
+:orphan:
+
+.. |antsibull-internal-nbsp| unicode:: 0xA0
+    :trim:
+
+.. meta::
+  :antsibull-docs: 2.9.0
+
+.. Anchors
+
+.. _ansible_collections.morpheus.core.cypher_module:
+
+.. Anchors: short name for ansible.builtin
+
+.. Title
 
 morpheus.core.cypher module -- Manage items stored in Cypher
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-This module is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
+.. Collection note
 
-It is not included in ``ansible-core``.
-To check whether it is installed, run ``ansible-galaxy collection list``.
+.. note::
+    This module is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
 
-To install it, use: :code:`ansible-galaxy collection install morpheus.core`.
+    It is not included in ``ansible-core``.
+    To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-To use it in a playbook, specify: ``morpheus.core.cypher``.
+    To install it, use: :code:`ansible-galaxy collection install morpheus.core`.
+
+    To use it in a playbook, specify: :code:`morpheus.core.cypher`.
+
+.. version_added
+
+.. rst-class:: ansible-version-added
 
 New in morpheus.core 0.7.0
 
@@ -19,211 +42,482 @@ New in morpheus.core 0.7.0
    :local:
    :depth: 1
 
+.. Deprecated
+
 
 Synopsis
 --------
 
+.. Description
+
 - Create and Delete items stored in Cypher.
 
 
+.. Aliases
+
+
+.. Requirements
 
 
 
 
 
+
+.. Options
 
 Parameters
 ----------
 
-.. raw:: html
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th><p>Parameter</p></th>
-    <th><p>Comments</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-cypher_path"></div>
-      <p style="display: inline;"><strong>cypher_path</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-cypher_path" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Specify a full Cypher mount and key path.</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-length"></div>
-      <p style="display: inline;"><strong>length</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-length" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Required if <code class="ansible-option literal notranslate"><strong><a class="reference internal" href="#parameter-mount"><span class="std std-ref"><span class="pre">mount</span></span></a></strong></code> is either <code class="ansible-value literal notranslate">key</code> or <code class="ansible-value literal notranslate">password</code></p>
-      <p>For <code class="ansible-option-value literal notranslate"><a class="reference internal" href="#parameter-mount"><span class="std std-ref"><span class="pre">mount=key</span></span></a></code> specify the bit length for the generated key.</p>
-      <p>For <code class="ansible-option-value literal notranslate"><a class="reference internal" href="#parameter-mount"><span class="std std-ref"><span class="pre">mount=password</span></span></a></code> specify the character length for the generated password.</p>
-      <p>Mutually exclusive with <code class="ansible-option literal notranslate"><strong><a class="reference internal" href="#parameter-cypher_path"><span class="std std-ref"><span class="pre">cypher_path</span></span></a></strong></code>.</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-mount"></div>
-      <p style="display: inline;"><strong>mount</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-mount" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Specify the Cypher mount point.</p>
-      <p>Mutually exclusive with <code class="ansible-option literal notranslate"><strong><a class="reference internal" href="#parameter-cypher_path"><span class="std std-ref"><span class="pre">cypher_path</span></span></a></strong></code>.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>&#34;key&#34;</code></p></li>
-        <li><p><code>&#34;password&#34;</code></p></li>
-        <li><p><code>&#34;secret&#34;</code></p></li>
-        <li><p><code>&#34;tfvars&#34;</code></p></li>
-        <li><p><code>&#34;uuid&#34;</code></p></li>
-      </ul>
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
 
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-name"></div>
-      <p style="display: inline;"><strong>name</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Specify the Key Name.</p>
-      <p>Required when <code class="ansible-option literal notranslate"><strong><a class="reference internal" href="#parameter-mount"><span class="std std-ref"><span class="pre">mount</span></span></a></strong></code> is specified.</p>
-      <p>Mutually exclusive with <code class="ansible-option literal notranslate"><strong><a class="reference internal" href="#parameter-cypher_path"><span class="std std-ref"><span class="pre">cypher_path</span></span></a></strong></code>.</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-state"></div>
-      <p style="display: inline;"><strong>state</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>State of the stored item.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>&#34;absent&#34;</code></p></li>
-        <li><p><code style="color: blue;"><b>&#34;present&#34;</b></code> <span style="color: blue;">← (default)</span></p></li>
-      </ul>
+  * - Parameter
+    - Comments
 
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-ttl"></div>
-      <div class="ansibleOptionAnchor" id="parameter-lease_duration"></div>
-      <div class="ansibleOptionAnchor" id="parameter-duration"></div>
-      <p style="display: inline;"><strong>ttl</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-ttl" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;"><span style="color: darkgreen; white-space: normal;">aliases: lease_duration, duration</span></p>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Specify the lease duration either in seconds or human readable format, e.g 15m, 8h, 7d.</p>
-      <p style="margin-top: 8px;"><b style="color: blue;">Default:</b> <code style="color: blue;">&#34;0&#34;</code></p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-value"></div>
-      <p style="display: inline;"><strong>value</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-value" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Specify the data to be stored when <code class="ansible-option literal notranslate"><strong><a class="reference internal" href="#parameter-mount"><span class="std std-ref"><span class="pre">mount</span></span></a></strong></code> is either <code class="ansible-value literal notranslate">secret</code> or <code class="ansible-value literal notranslate">tfvars</code>.</p>
-      <p>Required when <code class="ansible-option literal notranslate"><strong><a class="reference internal" href="#parameter-mount"><span class="std std-ref"><span class="pre">mount</span></span></a></strong></code> is either <code class="ansible-value literal notranslate">secret</code> or <code class="ansible-value literal notranslate">tfvars</code>.</p>
-    </td>
-  </tr>
-  </tbody>
-  </table>
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-cypher_path"></div>
+
+      .. _ansible_collections.morpheus.core.cypher_module__parameter-cypher_path:
+
+      .. rst-class:: ansible-option-title
+
+      **cypher_path**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-cypher_path" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Specify a full Cypher mount and key path.
 
 
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-length"></div>
+
+      .. _ansible_collections.morpheus.core.cypher_module__parameter-length:
+
+      .. rst-class:: ansible-option-title
+
+      **length**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-length" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Required if \ :ansopt:`morpheus.core.cypher#module:mount`\  is either \ :ansval:`key`\  or \ :ansval:`password`\ 
+
+      For \ :ansopt:`morpheus.core.cypher#module:mount=key`\  specify the bit length for the generated key.
+
+      For \ :ansopt:`morpheus.core.cypher#module:mount=password`\  specify the character length for the generated password.
+
+      Mutually exclusive with \ :ansopt:`morpheus.core.cypher#module:cypher\_path`\ .
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-mount"></div>
+
+      .. _ansible_collections.morpheus.core.cypher_module__parameter-mount:
+
+      .. rst-class:: ansible-option-title
+
+      **mount**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-mount" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Specify the Cypher mount point.
+
+      Mutually exclusive with \ :ansopt:`morpheus.core.cypher#module:cypher\_path`\ .
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"key"`
+      - :ansible-option-choices-entry:`"password"`
+      - :ansible-option-choices-entry:`"secret"`
+      - :ansible-option-choices-entry:`"tfvars"`
+      - :ansible-option-choices-entry:`"uuid"`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-name"></div>
+
+      .. _ansible_collections.morpheus.core.cypher_module__parameter-name:
+
+      .. rst-class:: ansible-option-title
+
+      **name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Specify the Key Name.
+
+      Required when \ :ansopt:`morpheus.core.cypher#module:mount`\  is specified.
+
+      Mutually exclusive with \ :ansopt:`morpheus.core.cypher#module:cypher\_path`\ .
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-state"></div>
+
+      .. _ansible_collections.morpheus.core.cypher_module__parameter-state:
+
+      .. rst-class:: ansible-option-title
+
+      **state**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      State of the stored item.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"absent"`
+      - :ansible-option-choices-entry-default:`"present"` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-ttl"></div>
+        <div class="ansibleOptionAnchor" id="parameter-lease_duration"></div>
+        <div class="ansibleOptionAnchor" id="parameter-duration"></div>
+
+      .. _ansible_collections.morpheus.core.cypher_module__parameter-duration:
+      .. _ansible_collections.morpheus.core.cypher_module__parameter-lease_duration:
+      .. _ansible_collections.morpheus.core.cypher_module__parameter-ttl:
+
+      .. rst-class:: ansible-option-title
+
+      **ttl**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-ttl" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-aliases:`aliases: lease_duration, duration`
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Specify the lease duration either in seconds or human readable format, e.g 15m, 8h, 7d.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-default-bold:`Default:` :ansible-option-default:`"0"`
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-value"></div>
+
+      .. _ansible_collections.morpheus.core.cypher_module__parameter-value:
+
+      .. rst-class:: ansible-option-title
+
+      **value**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-value" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Specify the data to be stored when \ :ansopt:`morpheus.core.cypher#module:mount`\  is either \ :ansval:`secret`\  or \ :ansval:`tfvars`\ .
+
+      Required when \ :ansopt:`morpheus.core.cypher#module:mount`\  is either \ :ansval:`secret`\  or \ :ansval:`tfvars`\ .
+
+
+      .. raw:: html
+
+        </div>
+
+
+.. Attributes
 
 
 Attributes
 ----------
 
+.. tabularcolumns:: \X{2}{10}\X{3}{10}\X{5}{10}
+
 .. list-table::
+  :width: 100%
   :widths: auto
   :header-rows: 1
+  :class: longtable ansible-option-table
 
   * - Attribute
     - Support
     - Description
 
-  * - .. _ansible_collections.morpheus.core.cypher_module__attribute-check_mode:
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-check_mode"></div>
+
+      .. _ansible_collections.morpheus.core.cypher_module__attribute-check_mode:
+
+      .. rst-class:: ansible-option-title
 
       **check_mode**
 
-    - Support: none
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-check_mode" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-label:`Support: \ `\ :ansible-attribute-support-none:`none`
 
 
+      .. raw:: html
 
-    - 
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
       Can run in check\_mode and return changed status prediction without modifying target
 
 
+      .. raw:: html
 
-  * - .. _ansible_collections.morpheus.core.cypher_module__attribute-diff_mode:
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-diff_mode"></div>
+
+      .. _ansible_collections.morpheus.core.cypher_module__attribute-diff_mode:
+
+      .. rst-class:: ansible-option-title
 
       **diff_mode**
 
-    - Support: none
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-diff_mode" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-label:`Support: \ `\ :ansible-attribute-support-none:`none`
 
 
+      .. raw:: html
 
-    - 
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
       Will return details on what has changed (or possibly needs changing in check\_mode), when in diff mode
 
 
+      .. raw:: html
 
-  * - .. _ansible_collections.morpheus.core.cypher_module__attribute-platform:
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-platform"></div>
+
+      .. _ansible_collections.morpheus.core.cypher_module__attribute-platform:
+
+      .. rst-class:: ansible-option-title
 
       **platform**
 
-    - Platforms:
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-platform" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-property:`Platform:` |antsibull-internal-nbsp|:ansible-attribute-support-full:`httpapi`
 
 
-    - 
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
       Target OS/families that can be operated against
 
 
+      .. raw:: html
+
+        </div>
 
 
 
+.. Notes
+
+
+.. Seealso
+
+
+.. Examples
 
 Examples
 --------
 
-.. code-block:: yaml
+.. code-block:: yaml+jinja
 
     
     - name: Generate a 7 Character Password
@@ -254,41 +548,76 @@ Examples
 
 
 
+.. Facts
+
+
+.. Return values
 
 Return Values
 -------------
-The following are the fields unique to this module:
+Common return values are documented :ref:`here <common_return_values>`, the following are the fields unique to this module:
 
-.. raw:: html
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th><p>Key</p></th>
-    <th><p>Description</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="return-cypher"></div>
-      <p style="display: inline;"><strong>cypher</strong></p>
-      <a class="ansibleOptionLink" href="#return-cypher" title="Permalink to this return value"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Details of the Cypher item.</p>
-      <p style="margin-top: 8px;"><b>Returned:</b> always</p>
-      <p style="margin-top: 8px; color: blue; word-wrap: break-word; word-break: break-all;"><b style="color: black;">Sample:</b> <code>{&#34;cypher&#34;: {&#34;created_by&#34;: &#34;130&#34;, &#34;data&#34;: &#34;rfYTVB&gt;1VNQpW5!%b{Sj=I60o!`q.V%jXk/Aga^0&amp;B_/p/w&gt;Q08~_0Pze_fhyfQrx)&#34;, &#34;date_created&#34;: null, &#34;expire_date&#34;: null, &#34;id&#34;: 165, &#34;item_key&#34;: &#34;password/64/my_pass&#34;, &#34;last_accessed&#34;: &#34;2024-01-01T00:00:01Z&#34;, &#34;last_updated&#34;: &#34;2024-01-01T00:00:01Z&#34;, &#34;lease_duration&#34;: null, &#34;lease_timeout&#34;: 0, &#34;success&#34;: true, &#34;type&#34;: &#34;string&#34;}}</code></p>
-    </td>
-  </tr>
-  </tbody>
-  </table>
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
+
+  * - Key
+    - Description
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-cypher"></div>
+
+      .. _ansible_collections.morpheus.core.cypher_module__return-cypher:
+
+      .. rst-class:: ansible-option-title
+
+      **cypher**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-cypher" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Details of the Cypher item.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` always
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`{"cypher": {"created\_by": "130", "data": "rfYTVB\>1VNQpW5!%b{Sj=I60o!\`q.V%jXk/Aga^0&B\_/p/w\>Q08~\_0Pze\_fhyfQrx)", "date\_created": null, "expire\_date": null, "id": 165, "item\_key": "password/64/my\_pass", "last\_accessed": "2024-01-01T00:00:01Z", "last\_updated": "2024-01-01T00:00:01Z", "lease\_duration": null, "lease\_timeout": 0, "success": true, "type": "string"}}`
+
+
+      .. raw:: html
+
+        </div>
 
 
 
+..  Status (Presently only deprecated)
+
+
+.. Authors
 
 Authors
 ~~~~~~~
@@ -297,8 +626,17 @@ Authors
 
 
 
+.. Extra links
+
 Collection links
 ~~~~~~~~~~~~~~~~
 
-* `Repository (Sources) <https://www.github.com/gomorpheus/ansible-collection-morpheus-core>`__
+.. ansible-links::
+
+  - title: "Repository (Sources)"
+    url: "https://www.github.com/gomorpheus/ansible-collection-morpheus-core"
+    external: true
+
+
+.. Parsing errors
 

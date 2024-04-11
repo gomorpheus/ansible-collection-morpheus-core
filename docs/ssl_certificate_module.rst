@@ -1,17 +1,40 @@
 
-.. Created with antsibull-docs 2.7.0
+.. Document meta
+
+:orphan:
+
+.. |antsibull-internal-nbsp| unicode:: 0xA0
+    :trim:
+
+.. meta::
+  :antsibull-docs: 2.9.0
+
+.. Anchors
+
+.. _ansible_collections.morpheus.core.ssl_certificate_module:
+
+.. Anchors: short name for ansible.builtin
+
+.. Title
 
 morpheus.core.ssl_certificate module -- Manage SSL Certificates
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-This module is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
+.. Collection note
 
-It is not included in ``ansible-core``.
-To check whether it is installed, run ``ansible-galaxy collection list``.
+.. note::
+    This module is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
 
-To install it, use: :code:`ansible-galaxy collection install morpheus.core`.
+    It is not included in ``ansible-core``.
+    To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-To use it in a playbook, specify: ``morpheus.core.ssl_certificate``.
+    To install it, use: :code:`ansible-galaxy collection install morpheus.core`.
+
+    To use it in a playbook, specify: :code:`morpheus.core.ssl_certificate`.
+
+.. version_added
+
+.. rst-class:: ansible-version-added
 
 New in morpheus.core 0.6.0
 
@@ -19,197 +42,455 @@ New in morpheus.core 0.6.0
    :local:
    :depth: 1
 
+.. Deprecated
+
 
 Synopsis
 --------
 
+.. Description
+
 - Create, Update or Delete SSL Certificates.
 
 
+.. Aliases
+
+
+.. Requirements
 
 
 
 
 
+
+.. Options
 
 Parameters
 ----------
 
-.. raw:: html
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th><p>Parameter</p></th>
-    <th><p>Comments</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-certificate"></div>
-      <p style="display: inline;"><strong>certificate</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-certificate" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The SSL Certificate contents.</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-domain_name"></div>
-      <p style="display: inline;"><strong>domain_name</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-domain_name" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The Domain Name this SSL Certificate is responsible for.</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-id"></div>
-      <p style="display: inline;"><strong>id</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-id" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Specify the Id of a SSL Certificate to Update or Remove.</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-key"></div>
-      <p style="display: inline;"><strong>key</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-key" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The Private Key contents.</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-name"></div>
-      <p style="display: inline;"><strong>name</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Name of the SSL Certificate.</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-state"></div>
-      <p style="display: inline;"><strong>state</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>When <code class="ansible-option-value literal notranslate"><a class="reference internal" href="#parameter-state"><span class="std std-ref"><span class="pre">state=present</span></span></a></code> create or update an SSL Certificate.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>&#34;absent&#34;</code></p></li>
-        <li><p><code style="color: blue;"><b>&#34;present&#34;</b></code> <span style="color: blue;">← (default)</span></p></li>
-      </ul>
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
 
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-wildcard"></div>
-      <p style="display: inline;"><strong>wildcard</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-wildcard" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Is this a wildcard certificate.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
+  * - Parameter
+    - Comments
 
-    </td>
-  </tr>
-  </tbody>
-  </table>
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-certificate"></div>
+
+      .. _ansible_collections.morpheus.core.ssl_certificate_module__parameter-certificate:
+
+      .. rst-class:: ansible-option-title
+
+      **certificate**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-certificate" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The SSL Certificate contents.
 
 
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-domain_name"></div>
+
+      .. _ansible_collections.morpheus.core.ssl_certificate_module__parameter-domain_name:
+
+      .. rst-class:: ansible-option-title
+
+      **domain_name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-domain_name" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The Domain Name this SSL Certificate is responsible for.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-id"></div>
+
+      .. _ansible_collections.morpheus.core.ssl_certificate_module__parameter-id:
+
+      .. rst-class:: ansible-option-title
+
+      **id**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-id" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Specify the Id of a SSL Certificate to Update or Remove.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-key"></div>
+
+      .. _ansible_collections.morpheus.core.ssl_certificate_module__parameter-key:
+
+      .. rst-class:: ansible-option-title
+
+      **key**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-key" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      The Private Key contents.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-name"></div>
+
+      .. _ansible_collections.morpheus.core.ssl_certificate_module__parameter-name:
+
+      .. rst-class:: ansible-option-title
+
+      **name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Name of the SSL Certificate.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-state"></div>
+
+      .. _ansible_collections.morpheus.core.ssl_certificate_module__parameter-state:
+
+      .. rst-class:: ansible-option-title
+
+      **state**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      When \ :ansopt:`morpheus.core.ssl\_certificate#module:state=present`\  create or update an SSL Certificate.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"absent"`
+      - :ansible-option-choices-entry-default:`"present"` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-wildcard"></div>
+
+      .. _ansible_collections.morpheus.core.ssl_certificate_module__parameter-wildcard:
+
+      .. rst-class:: ansible-option-title
+
+      **wildcard**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-wildcard" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Is this a wildcard certificate.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`false`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+
+.. Attributes
 
 
 Attributes
 ----------
 
+.. tabularcolumns:: \X{2}{10}\X{3}{10}\X{5}{10}
+
 .. list-table::
+  :width: 100%
   :widths: auto
   :header-rows: 1
+  :class: longtable ansible-option-table
 
   * - Attribute
     - Support
     - Description
 
-  * - .. _ansible_collections.morpheus.core.ssl_certificate_module__attribute-check_mode:
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-check_mode"></div>
+
+      .. _ansible_collections.morpheus.core.ssl_certificate_module__attribute-check_mode:
+
+      .. rst-class:: ansible-option-title
 
       **check_mode**
 
-    - Support: full
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-check_mode" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-label:`Support: \ `\ :ansible-attribute-support-full:`full`
 
 
+      .. raw:: html
 
-    - 
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
       Can run in check\_mode and return changed status prediction without modifying target
 
 
+      .. raw:: html
 
-  * - .. _ansible_collections.morpheus.core.ssl_certificate_module__attribute-diff_mode:
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-diff_mode"></div>
+
+      .. _ansible_collections.morpheus.core.ssl_certificate_module__attribute-diff_mode:
+
+      .. rst-class:: ansible-option-title
 
       **diff_mode**
 
-    - Support: full
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-diff_mode" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-label:`Support: \ `\ :ansible-attribute-support-full:`full`
 
 
+      .. raw:: html
 
-    - 
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
       Will return details on what has changed (or possibly needs changing in check\_mode), when in diff mode
 
 
+      .. raw:: html
 
-  * - .. _ansible_collections.morpheus.core.ssl_certificate_module__attribute-platform:
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-platform"></div>
+
+      .. _ansible_collections.morpheus.core.ssl_certificate_module__attribute-platform:
+
+      .. rst-class:: ansible-option-title
 
       **platform**
 
-    - Platforms:
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-platform" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-property:`Platform:` |antsibull-internal-nbsp|:ansible-attribute-support-full:`httpapi`
 
 
-    - 
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
       Target OS/families that can be operated against
 
 
+      .. raw:: html
+
+        </div>
 
 
 
+.. Notes
+
+
+.. Seealso
+
+
+.. Examples
 
 Examples
 --------
 
-.. code-block:: yaml
+.. code-block:: yaml+jinja
 
     
     - name: Create SSL Certificate
@@ -234,41 +515,76 @@ Examples
 
 
 
+.. Facts
+
+
+.. Return values
 
 Return Values
 -------------
-The following are the fields unique to this module:
+Common return values are documented :ref:`here <common_return_values>`, the following are the fields unique to this module:
 
-.. raw:: html
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th><p>Key</p></th>
-    <th><p>Description</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="return-certificate"></div>
-      <p style="display: inline;"><strong>certificate</strong></p>
-      <a class="ansibleOptionLink" href="#return-certificate" title="Permalink to this return value"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>SSL Certificate Details.</p>
-      <p style="margin-top: 8px;"><b>Returned:</b> always</p>
-      <p style="margin-top: 8px; color: blue; word-wrap: break-word; word-break: break-all;"><b style="color: black;">Sample:</b> <code>{&#34;certificate&#34;: {&#34;account_id&#34;: 0, &#34;category&#34;: null, &#34;cert_type&#34;: &#34;server&#34;, &#34;common_name&#34;: null, &#34;description&#34;: null, &#34;domain_name&#34;: &#34;host.domain.tld&#34;, &#34;enabled&#34;: true, &#34;generated&#34;: false, &#34;id&#34;: 82, &#34;integration_id&#34;: null, &#34;key_file_md5&#34;: &#34;aaaa....&#34;, &#34;name&#34;: &#34;My Domain Cert&#34;, &#34;self_signed&#34;: false, &#34;type&#34;: {&#34;code&#34;: &#34;internal&#34;, &#34;id&#34;: 1}, &#34;wildcard&#34;: false}}</code></p>
-    </td>
-  </tr>
-  </tbody>
-  </table>
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
+
+  * - Key
+    - Description
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-certificate"></div>
+
+      .. _ansible_collections.morpheus.core.ssl_certificate_module__return-certificate:
+
+      .. rst-class:: ansible-option-title
+
+      **certificate**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-certificate" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      SSL Certificate Details.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` always
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`{"certificate": {"account\_id": 0, "category": null, "cert\_type": "server", "common\_name": null, "description": null, "domain\_name": "host.domain.tld", "enabled": true, "generated": false, "id": 82, "integration\_id": null, "key\_file\_md5": "aaaa....", "name": "My Domain Cert", "self\_signed": false, "type": {"code": "internal", "id": 1}, "wildcard": false}}`
+
+
+      .. raw:: html
+
+        </div>
 
 
 
+..  Status (Presently only deprecated)
+
+
+.. Authors
 
 Authors
 ~~~~~~~
@@ -277,8 +593,17 @@ Authors
 
 
 
+.. Extra links
+
 Collection links
 ~~~~~~~~~~~~~~~~
 
-* `Repository (Sources) <https://www.github.com/gomorpheus/ansible-collection-morpheus-core>`__
+.. ansible-links::
+
+  - title: "Repository (Sources)"
+    url: "https://www.github.com/gomorpheus/ansible-collection-morpheus-core"
+    external: true
+
+
+.. Parsing errors
 

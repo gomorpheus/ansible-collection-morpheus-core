@@ -1,17 +1,40 @@
 
-.. Created with antsibull-docs 2.7.0
+.. Document meta
+
+:orphan:
+
+.. |antsibull-internal-nbsp| unicode:: 0xA0
+    :trim:
+
+.. meta::
+  :antsibull-docs: 2.9.0
+
+.. Anchors
+
+.. _ansible_collections.morpheus.core.instance_module:
+
+.. Anchors: short name for ansible.builtin
+
+.. Title
 
 morpheus.core.instance module -- Basic Management of Morpheus Instances
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-This module is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
+.. Collection note
 
-It is not included in ``ansible-core``.
-To check whether it is installed, run ``ansible-galaxy collection list``.
+.. note::
+    This module is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
 
-To install it, use: :code:`ansible-galaxy collection install morpheus.core`.
+    It is not included in ``ansible-core``.
+    To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-To use it in a playbook, specify: ``morpheus.core.instance``.
+    To install it, use: :code:`ansible-galaxy collection install morpheus.core`.
+
+    To use it in a playbook, specify: :code:`morpheus.core.instance`.
+
+.. version_added
+
+.. rst-class:: ansible-version-added
 
 New in morpheus.core 0.5.0
 
@@ -19,283 +42,642 @@ New in morpheus.core 0.5.0
    :local:
    :depth: 1
 
+.. Deprecated
+
 
 Synopsis
 --------
 
+.. Description
+
 - This module provides basic management of Morpheus Instances, such as setting running state, backup, deletion and lock status.
 
 
+.. Aliases
+
+
+.. Requirements
 
 
 
 
 
+
+.. Options
 
 Parameters
 ----------
 
-.. raw:: html
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th colspan="2"><p>Parameter</p></th>
-    <th><p>Comments</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-id"></div>
-      <p style="display: inline;"><strong>id</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-id" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Specify the id of an instance.</p>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-match_name"></div>
-      <p style="display: inline;"><strong>match_name</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-match_name" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Define instance selection method when specifying <code class="ansible-option literal notranslate"><strong><a class="reference internal" href="#parameter-name"><span class="std std-ref"><span class="pre">name</span></span></a></strong></code> should more than one instance match.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code style="color: blue;"><b>&#34;none&#34;</b></code> <span style="color: blue;">← (default)</span></p></li>
-        <li><p><code>&#34;first&#34;</code></p></li>
-        <li><p><code>&#34;last&#34;</code></p></li>
-        <li><p><code>&#34;all&#34;</code></p></li>
-      </ul>
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
 
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-name"></div>
-      <p style="display: inline;"><strong>name</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Filter instances by name.</p>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-regex_name"></div>
-      <p style="display: inline;"><strong>regex_name</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-regex_name" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Treat the name parameter as a regular expression.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code style="color: blue;"><b>false</b></code> <span style="color: blue;">← (default)</span></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
+  * - Parameter
+    - Comments
 
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-remove_options"></div>
-      <p style="display: inline;"><strong>remove_options</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-remove_options" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">dictionary</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>When <code class="ansible-option-value literal notranslate"><a class="reference internal" href="#parameter-state"><span class="std std-ref"><span class="pre">state=absent</span></span></a></code> specify additional removal options.</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-remove_options/force"></div>
-      <p style="display: inline;"><strong>force</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-remove_options/force" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Force removal of instance.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code style="color: blue;"><b>false</b></code> <span style="color: blue;">← (default)</span></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
+  * - .. raw:: html
 
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-remove_options/keep_backups"></div>
-      <p style="display: inline;"><strong>keep_backups</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-remove_options/keep_backups" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Keep instances backups.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code style="color: blue;"><b>false</b></code> <span style="color: blue;">← (default)</span></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-id"></div>
 
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-remove_options/preserve_volumes"></div>
-      <p style="display: inline;"><strong>preserve_volumes</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-remove_options/preserve_volumes" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Preserve the instances volumes.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code style="color: blue;"><b>false</b></code> <span style="color: blue;">← (default)</span></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
+      .. _ansible_collections.morpheus.core.instance_module__parameter-id:
 
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-remove_options/release_floating_ips"></div>
-      <p style="display: inline;"><strong>release_floating_ips</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-remove_options/release_floating_ips" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Release instances floating IP Addresses.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code style="color: blue;"><b>false</b></code> <span style="color: blue;">← (default)</span></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
+      .. rst-class:: ansible-option-title
 
-    </td>
-  </tr>
+      **id**
 
-  <tr>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-state"></div>
-      <p style="display: inline;"><strong>state</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-        / <span style="color: red;">required</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Set the State of the Instance.</p>
-      <p><code class="ansible-value literal notranslate">eject</code> - Ejects ISO media from the instance.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>&#34;running&#34;</code></p></li>
-        <li><p><code>&#34;started&#34;</code></p></li>
-        <li><p><code>&#34;stopped&#34;</code></p></li>
-        <li><p><code>&#34;restarted&#34;</code></p></li>
-        <li><p><code>&#34;suspended&#34;</code></p></li>
-        <li><p><code>&#34;locked&#34;</code></p></li>
-        <li><p><code>&#34;unlocked&#34;</code></p></li>
-        <li><p><code>&#34;backup&#34;</code></p></li>
-        <li><p><code>&#34;absent&#34;</code></p></li>
-        <li><p><code>&#34;eject&#34;</code></p></li>
-      </ul>
+      .. raw:: html
 
-    </td>
-  </tr>
-  </tbody>
-  </table>
+        <a class="ansibleOptionLink" href="#parameter-id" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Specify the id of an instance.
 
 
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-match_name"></div>
+
+      .. _ansible_collections.morpheus.core.instance_module__parameter-match_name:
+
+      .. rst-class:: ansible-option-title
+
+      **match_name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-match_name" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Define instance selection method when specifying \ :ansopt:`morpheus.core.instance#module:name`\  should more than one instance match.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`"none"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"first"`
+      - :ansible-option-choices-entry:`"last"`
+      - :ansible-option-choices-entry:`"all"`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-name"></div>
+
+      .. _ansible_collections.morpheus.core.instance_module__parameter-name:
+
+      .. rst-class:: ansible-option-title
+
+      **name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Filter instances by name.
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-regex_name"></div>
+
+      .. _ansible_collections.morpheus.core.instance_module__parameter-regex_name:
+
+      .. rst-class:: ansible-option-title
+
+      **regex_name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-regex_name" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Treat the name parameter as a regular expression.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-remove_options"></div>
+
+      .. _ansible_collections.morpheus.core.instance_module__parameter-remove_options:
+
+      .. rst-class:: ansible-option-title
+
+      **remove_options**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-remove_options" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`dictionary`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      When \ :ansopt:`morpheus.core.instance#module:state=absent`\  specify additional removal options.
+
+
+      .. raw:: html
+
+        </div>
+    
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-remove_options/force"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.morpheus.core.instance_module__parameter-remove_options/force:
+
+      .. rst-class:: ansible-option-title
+
+      **force**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-remove_options/force" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Force removal of instance.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-remove_options/keep_backups"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.morpheus.core.instance_module__parameter-remove_options/keep_backups:
+
+      .. rst-class:: ansible-option-title
+
+      **keep_backups**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-remove_options/keep_backups" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Keep instances backups.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-remove_options/preserve_volumes"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.morpheus.core.instance_module__parameter-remove_options/preserve_volumes:
+
+      .. rst-class:: ansible-option-title
+
+      **preserve_volumes**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-remove_options/preserve_volumes" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Preserve the instances volumes.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-indent"></div><div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-remove_options/release_floating_ips"></div>
+
+      .. raw:: latex
+
+        \hspace{0.02\textwidth}\begin{minipage}[t]{0.3\textwidth}
+
+      .. _ansible_collections.morpheus.core.instance_module__parameter-remove_options/release_floating_ips:
+
+      .. rst-class:: ansible-option-title
+
+      **release_floating_ips**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-remove_options/release_floating_ips" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+      .. raw:: latex
+
+        \end{minipage}
+
+    - .. raw:: html
+
+        <div class="ansible-option-indent-desc"></div><div class="ansible-option-cell">
+
+      Release instances floating IP Addresses.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-state"></div>
+
+      .. _ansible_collections.morpheus.core.instance_module__parameter-state:
+
+      .. rst-class:: ansible-option-title
+
+      **state**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string` / :ansible-option-required:`required`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Set the State of the Instance.
+
+      \ :ansval:`eject`\  - Ejects ISO media from the instance.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"running"`
+      - :ansible-option-choices-entry:`"started"`
+      - :ansible-option-choices-entry:`"stopped"`
+      - :ansible-option-choices-entry:`"restarted"`
+      - :ansible-option-choices-entry:`"suspended"`
+      - :ansible-option-choices-entry:`"locked"`
+      - :ansible-option-choices-entry:`"unlocked"`
+      - :ansible-option-choices-entry:`"backup"`
+      - :ansible-option-choices-entry:`"absent"`
+      - :ansible-option-choices-entry:`"eject"`
+
+
+      .. raw:: html
+
+        </div>
+
+
+.. Attributes
 
 
 Attributes
 ----------
 
+.. tabularcolumns:: \X{2}{10}\X{3}{10}\X{5}{10}
+
 .. list-table::
+  :width: 100%
   :widths: auto
   :header-rows: 1
+  :class: longtable ansible-option-table
 
   * - Attribute
     - Support
     - Description
 
-  * - .. _ansible_collections.morpheus.core.instance_module__attribute-check_mode:
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-check_mode"></div>
+
+      .. _ansible_collections.morpheus.core.instance_module__attribute-check_mode:
+
+      .. rst-class:: ansible-option-title
 
       **check_mode**
 
-    - Support: full
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-check_mode" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-label:`Support: \ `\ :ansible-attribute-support-full:`full`
 
 
+      .. raw:: html
 
-    - 
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
       Can run in check\_mode and return changed status prediction without modifying target
 
 
+      .. raw:: html
 
-  * - .. _ansible_collections.morpheus.core.instance_module__attribute-diff_mode:
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-diff_mode"></div>
+
+      .. _ansible_collections.morpheus.core.instance_module__attribute-diff_mode:
+
+      .. rst-class:: ansible-option-title
 
       **diff_mode**
 
-    - Support: full
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-diff_mode" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-label:`Support: \ `\ :ansible-attribute-support-full:`full`
 
 
+      .. raw:: html
 
-    - 
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
       Will return details on what has changed (or possibly needs changing in check\_mode), when in diff mode
 
 
+      .. raw:: html
 
-  * - .. _ansible_collections.morpheus.core.instance_module__attribute-platform:
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-platform"></div>
+
+      .. _ansible_collections.morpheus.core.instance_module__attribute-platform:
+
+      .. rst-class:: ansible-option-title
 
       **platform**
 
-    - Platforms:
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-platform" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-property:`Platform:` |antsibull-internal-nbsp|:ansible-attribute-support-full:`httpapi`
 
 
-    - 
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
       Target OS/families that can be operated against
 
 
+      .. raw:: html
+
+        </div>
 
 
 
+.. Notes
+
+
+.. Seealso
+
+
+.. Examples
 
 Examples
 --------
 
-.. code-block:: yaml
+.. code-block:: yaml+jinja
 
     
     - name: Restart a specific instance
@@ -334,41 +716,76 @@ Examples
 
 
 
+.. Facts
+
+
+.. Return values
 
 Return Values
 -------------
-The following are the fields unique to this module:
+Common return values are documented :ref:`here <common_return_values>`, the following are the fields unique to this module:
 
-.. raw:: html
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th><p>Key</p></th>
-    <th><p>Description</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="return-instance_state"></div>
-      <p style="display: inline;"><strong>instance_state</strong></p>
-      <a class="ansibleOptionLink" href="#return-instance_state" title="Permalink to this return value"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>State of the instance(s) following the requested action.</p>
-      <p style="margin-top: 8px;"><b>Returned:</b> always</p>
-      <p style="margin-top: 8px; color: blue; word-wrap: break-word; word-break: break-all;"><b style="color: black;">Sample:</b> <code>{&#34;instance_state&#34;: [{&#34;id&#34;: 200, &#34;locked&#34;: true, &#34;name&#34;: &#34;PRODWEBSVR001&#34;, &#34;status&#34;: &#34;running&#34;}]}</code></p>
-    </td>
-  </tr>
-  </tbody>
-  </table>
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
+
+  * - Key
+    - Description
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-instance_state"></div>
+
+      .. _ansible_collections.morpheus.core.instance_module__return-instance_state:
+
+      .. rst-class:: ansible-option-title
+
+      **instance_state**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-instance_state" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      State of the instance(s) following the requested action.
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` always
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`{"instance\_state": [{"id": 200, "locked": true, "name": "PRODWEBSVR001", "status": "running"}]}`
+
+
+      .. raw:: html
+
+        </div>
 
 
 
+..  Status (Presently only deprecated)
+
+
+.. Authors
 
 Authors
 ~~~~~~~
@@ -377,8 +794,17 @@ Authors
 
 
 
+.. Extra links
+
 Collection links
 ~~~~~~~~~~~~~~~~
 
-* `Repository (Sources) <https://www.github.com/gomorpheus/ansible-collection-morpheus-core>`__
+.. ansible-links::
+
+  - title: "Repository (Sources)"
+    url: "https://www.github.com/gomorpheus/ansible-collection-morpheus-core"
+    external: true
+
+
+.. Parsing errors
 

@@ -1,17 +1,40 @@
 
-.. Created with antsibull-docs 2.7.0
+.. Document meta
+
+:orphan:
+
+.. |antsibull-internal-nbsp| unicode:: 0xA0
+    :trim:
+
+.. meta::
+  :antsibull-docs: 2.9.0
+
+.. Anchors
+
+.. _ansible_collections.morpheus.core.virtual_image_info_module:
+
+.. Anchors: short name for ansible.builtin
+
+.. Title
 
 morpheus.core.virtual_image_info module -- Gather Virtual Image information
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-This module is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
+.. Collection note
 
-It is not included in ``ansible-core``.
-To check whether it is installed, run ``ansible-galaxy collection list``.
+.. note::
+    This module is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
 
-To install it, use: :code:`ansible-galaxy collection install morpheus.core`.
+    It is not included in ``ansible-core``.
+    To check whether it is installed, run :code:`ansible-galaxy collection list`.
 
-To use it in a playbook, specify: ``morpheus.core.virtual_image_info``.
+    To install it, use: :code:`ansible-galaxy collection install morpheus.core`.
+
+    To use it in a playbook, specify: :code:`morpheus.core.virtual_image_info`.
+
+.. version_added
+
+.. rst-class:: ansible-version-added
 
 New in morpheus.core 0.6.0
 
@@ -19,175 +42,507 @@ New in morpheus.core 0.6.0
    :local:
    :depth: 1
 
+.. Deprecated
+
 
 Synopsis
 --------
 
+.. Description
+
 - Gathers information about Virtual Images.
 
 
+.. Aliases
+
+
+.. Requirements
 
 
 
 
 
+
+.. Options
 
 Parameters
 ----------
 
-.. raw:: html
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th><p>Parameter</p></th>
-    <th><p>Comments</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-detail"></div>
-      <p style="display: inline;"><strong>detail</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-detail" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Level of detail returned about Virtual Images</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>&#34;full&#34;</code></p></li>
-        <li><p><code style="color: blue;"><b>&#34;summary&#34;</b></code> <span style="color: blue;">← (default)</span></p></li>
-      </ul>
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
 
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-filter_type"></div>
-      <p style="display: inline;"><strong>filter_type</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-filter_type" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Filter Virtual Images by type</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code style="color: blue;"><b>&#34;all&#34;</b></code> <span style="color: blue;">← (default)</span></p></li>
-        <li><p><code>&#34;synced&#34;</code></p></li>
-        <li><p><code>&#34;system&#34;</code></p></li>
-        <li><p><code>&#34;user&#34;</code></p></li>
-      </ul>
+  * - Parameter
+    - Comments
 
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-image_type"></div>
-      <p style="display: inline;"><strong>image_type</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-image_type" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Filter by image type code, e.g. vmware, ami</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-labels"></div>
-      <p style="display: inline;"><strong>labels</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-labels" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">list</span>
-        / <span style="color: purple;">elements=string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Filter by matching labels</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-match_all_labels"></div>
-      <p style="display: inline;"><strong>match_all_labels</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-match_all_labels" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>If true, match all specified labels</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code style="color: blue;"><b>false</b></code> <span style="color: blue;">← (default)</span></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
+  * - .. raw:: html
 
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-name"></div>
-      <p style="display: inline;"><strong>name</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Return info for Virtual Image by Name</p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-regex_name"></div>
-      <p style="display: inline;"><strong>regex_name</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-regex_name" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Treat name parameter as a Regular Expression</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code style="color: blue;"><b>false</b></code> <span style="color: blue;">← (default)</span></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-detail"></div>
 
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-virtual_image_id"></div>
-      <p style="display: inline;"><strong>virtual_image_id</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-virtual_image_id" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Return info for specic Virtual Image by Id</p>
-    </td>
-  </tr>
-  </tbody>
-  </table>
+      .. _ansible_collections.morpheus.core.virtual_image_info_module__parameter-detail:
+
+      .. rst-class:: ansible-option-title
+
+      **detail**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-detail" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Level of detail returned about Virtual Images
 
 
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry:`"full"`
+      - :ansible-option-choices-entry-default:`"summary"` :ansible-option-choices-default-mark:`← (default)`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-filter_type"></div>
+
+      .. _ansible_collections.morpheus.core.virtual_image_info_module__parameter-filter_type:
+
+      .. rst-class:: ansible-option-title
+
+      **filter_type**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-filter_type" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Filter Virtual Images by type
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`"all"` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`"synced"`
+      - :ansible-option-choices-entry:`"system"`
+      - :ansible-option-choices-entry:`"user"`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-image_type"></div>
+
+      .. _ansible_collections.morpheus.core.virtual_image_info_module__parameter-image_type:
+
+      .. rst-class:: ansible-option-title
+
+      **image_type**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-image_type" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Filter by image type code, e.g. vmware, ami
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-labels"></div>
+
+      .. _ansible_collections.morpheus.core.virtual_image_info_module__parameter-labels:
+
+      .. rst-class:: ansible-option-title
+
+      **labels**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-labels" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Filter by matching labels
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-match_all_labels"></div>
+
+      .. _ansible_collections.morpheus.core.virtual_image_info_module__parameter-match_all_labels:
+
+      .. rst-class:: ansible-option-title
+
+      **match_all_labels**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-match_all_labels" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      If true, match all specified labels
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-name"></div>
+
+      .. _ansible_collections.morpheus.core.virtual_image_info_module__parameter-name:
+
+      .. rst-class:: ansible-option-title
+
+      **name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-name" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Return info for Virtual Image by Name
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-regex_name"></div>
+
+      .. _ansible_collections.morpheus.core.virtual_image_info_module__parameter-regex_name:
+
+      .. rst-class:: ansible-option-title
+
+      **regex_name**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-regex_name" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`boolean`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Treat name parameter as a Regular Expression
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-choices:`Choices:`
+
+      - :ansible-option-choices-entry-default:`false` :ansible-option-choices-default-mark:`← (default)`
+      - :ansible-option-choices-entry:`true`
+
+
+      .. raw:: html
+
+        </div>
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="parameter-virtual_image_id"></div>
+
+      .. _ansible_collections.morpheus.core.virtual_image_info_module__parameter-virtual_image_id:
+
+      .. rst-class:: ansible-option-title
+
+      **virtual_image_id**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#parameter-virtual_image_id" title="Permalink to this option"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`integer`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Return info for specic Virtual Image by Id
+
+
+      .. raw:: html
+
+        </div>
+
+
+.. Attributes
+
+
+Attributes
+----------
+
+.. tabularcolumns:: \X{2}{10}\X{3}{10}\X{5}{10}
+
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
+
+  * - Attribute
+    - Support
+    - Description
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-check_mode"></div>
+
+      .. _ansible_collections.morpheus.core.virtual_image_info_module__attribute-check_mode:
+
+      .. rst-class:: ansible-option-title
+
+      **check_mode**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-check_mode" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-label:`Support: \ `      \ :ansible-attribute-support-na:`N/A`
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Can run in check\_mode and return changed status prediction without modifying target
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-diff_mode"></div>
+
+      .. _ansible_collections.morpheus.core.virtual_image_info_module__attribute-diff_mode:
+
+      .. rst-class:: ansible-option-title
+
+      **diff_mode**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-diff_mode" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-label:`Support: \ `      \ :ansible-attribute-support-na:`N/A`
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Will return details on what has changed (or possibly needs changing in check\_mode), when in diff mode
+
+
+      .. raw:: html
+
+        </div>
+
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="attribute-platform"></div>
+
+      .. _ansible_collections.morpheus.core.virtual_image_info_module__attribute-platform:
+
+      .. rst-class:: ansible-option-title
+
+      **platform**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#attribute-platform" title="Permalink to this attribute"></a>
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      :ansible-attribute-support-property:`Platform:` |antsibull-internal-nbsp|:ansible-attribute-support-full:`httpapi`
+
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      Target OS/families that can be operated against
+
+
+      .. raw:: html
+
+        </div>
 
 
 
+.. Notes
+
+
+.. Seealso
+
+
+.. Examples
 
 Examples
 --------
 
-.. code-block:: yaml
+.. code-block:: yaml+jinja
 
     
     - name: Get Virtual Image by Id
@@ -215,41 +570,76 @@ Examples
 
 
 
+.. Facts
+
+
+.. Return values
 
 Return Values
 -------------
-The following are the fields unique to this module:
+Common return values are documented :ref:`here <common_return_values>`, the following are the fields unique to this module:
 
-.. raw:: html
+.. tabularcolumns:: \X{1}{3}\X{2}{3}
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th><p>Key</p></th>
-    <th><p>Description</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="return-virtual_images"></div>
-      <p style="display: inline;"><strong>virtual_images</strong></p>
-      <a class="ansibleOptionLink" href="#return-virtual_images" title="Permalink to this return value"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>List of Virtual Images</p>
-      <p style="margin-top: 8px;"><b>Returned:</b> always</p>
-      <p style="margin-top: 8px; color: blue; word-wrap: break-word; word-break: break-all;"><b style="color: black;">Sample:</b> <code>{&#34;virtual_images&#34;: [{&#34;date_created&#34;: &#34;2023-01-01T00:00:00Z&#34;, &#34;description&#34;: null, &#34;id&#34;: 500, &#34;image_type&#34;: &#34;vmdk&#34;, &#34;install_agent&#34;: false, &#34;is_cloud_init&#34;: false, &#34;is_force_customization&#34;: false, &#34;labels&#34;: [], &#34;locations&#34;: [], &#34;min_disk_gb&#34;: null, &#34;min_ram_gb&#34;: 4, &#34;name&#34;: &#34;My User Image&#34;, &#34;os_type&#34;: {&#34;bit_count&#34;: 64, &#34;category&#34;: &#34;suse&#34;, &#34;code&#34;: &#34;suse.11.64&#34;, &#34;description&#34;: null, &#34;id&#34;: 92, &#34;name&#34;: &#34;suse enterprise 11 64-bit&#34;, &#34;os_family&#34;: &#34;suse&#34;, &#34;os_version&#34;: &#34;11&#34;, &#34;platform&#34;: &#34;linux&#34;, &#34;vendor&#34;: &#34;suse&#34;}, &#34;raw_size_gb&#34;: null, &#34;ssh_username&#34;: null, &#34;status&#34;: &#34;queued&#34;, &#34;vm_tools_installed&#34;: true, &#34;volumes&#34;: []}]}</code></p>
-    </td>
-  </tr>
-  </tbody>
-  </table>
+.. list-table::
+  :width: 100%
+  :widths: auto
+  :header-rows: 1
+  :class: longtable ansible-option-table
+
+  * - Key
+    - Description
+
+  * - .. raw:: html
+
+        <div class="ansible-option-cell">
+        <div class="ansibleOptionAnchor" id="return-virtual_images"></div>
+
+      .. _ansible_collections.morpheus.core.virtual_image_info_module__return-virtual_images:
+
+      .. rst-class:: ansible-option-title
+
+      **virtual_images**
+
+      .. raw:: html
+
+        <a class="ansibleOptionLink" href="#return-virtual_images" title="Permalink to this return value"></a>
+
+      .. ansible-option-type-line::
+
+        :ansible-option-type:`string`
+
+      .. raw:: html
+
+        </div>
+
+    - .. raw:: html
+
+        <div class="ansible-option-cell">
+
+      List of Virtual Images
+
+
+      .. rst-class:: ansible-option-line
+
+      :ansible-option-returned-bold:`Returned:` always
+
+      .. rst-class:: ansible-option-line
+      .. rst-class:: ansible-option-sample
+
+      :ansible-option-sample-bold:`Sample:` :ansible-rv-sample-value:`{"virtual\_images": [{"date\_created": "2023-01-01T00:00:00Z", "description": null, "id": 500, "image\_type": "vmdk", "install\_agent": false, "is\_cloud\_init": false, "is\_force\_customization": false, "labels": [], "locations": [], "min\_disk\_gb": null, "min\_ram\_gb": 4, "name": "My User Image", "os\_type": {"bit\_count": 64, "category": "suse", "code": "suse.11.64", "description": null, "id": 92, "name": "suse enterprise 11 64-bit", "os\_family": "suse", "os\_version": "11", "platform": "linux", "vendor": "suse"}, "raw\_size\_gb": null, "ssh\_username": null, "status": "queued", "vm\_tools\_installed": true, "volumes": []}]}`
+
+
+      .. raw:: html
+
+        </div>
 
 
 
+..  Status (Presently only deprecated)
+
+
+.. Authors
 
 Authors
 ~~~~~~~
@@ -258,8 +648,17 @@ Authors
 
 
 
+.. Extra links
+
 Collection links
 ~~~~~~~~~~~~~~~~
 
-* `Repository (Sources) <https://www.github.com/gomorpheus/ansible-collection-morpheus-core>`__
+.. ansible-links::
+
+  - title: "Repository (Sources)"
+    url: "https://www.github.com/gomorpheus/ansible-collection-morpheus-core"
+    external: true
+
+
+.. Parsing errors
 
