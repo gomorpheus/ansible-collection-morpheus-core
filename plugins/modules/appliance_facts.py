@@ -32,6 +32,16 @@ options:
         type: list
         elements: str
         default: []
+extends_documentation_fragment:
+    - action_common_attributes
+attributes:
+    check_mode:
+        support: N/A
+    diff_mode:
+        support: N/A
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''

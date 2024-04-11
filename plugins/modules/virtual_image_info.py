@@ -56,6 +56,16 @@ options:
             - full
             - summary
         type: string
+extends_documentation_fragment:
+    - action_common_attributes
+attributes:
+    check_mode:
+        support: N/A
+    diff_mode:
+        support: N/A
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''

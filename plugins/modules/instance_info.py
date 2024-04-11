@@ -45,6 +45,15 @@ options:
 extends_documentation_fragment:
     - morpheus.core.instance_filter_base
     - morpheus.core.instance_filter_extended
+    - action_common_attributes
+attributes:
+    check_mode:
+        support: N/A
+    diff_mode:
+        support: N/A
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''

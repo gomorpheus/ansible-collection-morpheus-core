@@ -48,6 +48,9 @@ attributes:
         support: none
     diff_mode:
         support: full
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''

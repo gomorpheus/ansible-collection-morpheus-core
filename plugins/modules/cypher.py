@@ -67,6 +67,9 @@ attributes:
         support: none
     diff_mode:
         support: none
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''

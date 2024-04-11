@@ -25,6 +25,16 @@ options:
             - Specify to decrypt matching Cypher items.
             - Requires O(cypher_path) to be specified, cannot be used to decrypt all items when no parameters are specified.
         type: bool
+extends_documentation_fragment:
+    - action_common_attributes
+attributes:
+    check_mode:
+        support: N/A
+    diff_mode:
+        support: N/A
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''

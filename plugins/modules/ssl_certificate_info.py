@@ -12,6 +12,15 @@ version_added: 0.6.0
 author: James Riach
 extends_documentation_fragment:
     - morpheus.core.generic_name_filter
+    - action_common_attributes
+attributes:
+    check_mode:
+        support: N/A
+    diff_mode:
+        support: N/A
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''

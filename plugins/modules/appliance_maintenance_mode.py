@@ -26,6 +26,9 @@ attributes:
         support: full
     diff_mode:
         support: full
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''
