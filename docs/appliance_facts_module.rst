@@ -237,6 +237,8 @@ Attributes
 
       :ansible-attribute-support-label:`Support: \ `      \ :ansible-attribute-support-na:`N/A`
 
+      Not Required, Module does not make changes.
+
 
       .. raw:: html
 
@@ -385,7 +387,7 @@ Examples
 Authors
 ~~~~~~~
 
-- James Riach
+- James Riach (@McGlovin1337)
 
 
 

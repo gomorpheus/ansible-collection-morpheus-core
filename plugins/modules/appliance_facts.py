@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,7 +11,7 @@ short_description: Gather Morpheus Appliance Facts
 description:
     - Gathers Morpheus Appliance Facts
 version_added: 0.3.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     gather_subset:
         description:
@@ -37,6 +39,7 @@ extends_documentation_fragment:
 attributes:
     check_mode:
         support: N/A
+        details: Not Required, Module does not make changes.
     diff_mode:
         support: N/A
     platform:
@@ -63,7 +66,9 @@ EXAMPLES = r'''
 
 RETURN = r'''
 ansible_facts:
-    description: Example of returned ansible_facts
+    description:
+        - Example of returned ansible_facts
+    type: dict
     returned: always
     sample:
         "ansible_facts": {

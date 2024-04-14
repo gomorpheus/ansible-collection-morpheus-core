@@ -439,6 +439,8 @@ Attributes
 
       :ansible-attribute-support-label:`Support: \ `      \ :ansible-attribute-support-na:`N/A`
 
+      Not Required, Module does not make changes.
+
 
       .. raw:: html
 
@@ -610,7 +612,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string`
+        :ansible-option-type:`list` / :ansible-option-elements:`elements=string`
 
       .. raw:: html
 
@@ -647,7 +649,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 Authors
 ~~~~~~~
 
-- James Riach
+- James Riach (@McGlovin1337)
 
 
 

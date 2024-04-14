@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,12 +11,12 @@ short_description: Return Cypher Information
 description:
     - Returns items stored in Cypher.
 version_added: 0.7.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     cypher_path:
         description:
             - Filter Cypher items by path.
-        type: string
+        type: str
     regex_match:
         description:
             - Specify to treat O(cypher_path) as regex.
@@ -30,6 +32,7 @@ extends_documentation_fragment:
 attributes:
     check_mode:
         support: N/A
+        details: Not Required, Module does not make changes.
     diff_mode:
         support: N/A
     platform:
@@ -62,6 +65,7 @@ RETURN = r'''
 cyphers:
     description:
         - List of items stored in Cypher.
+    type: list
     returned: always
     sample:
         "cyphers": [
@@ -138,7 +142,7 @@ def run_module():
     module = AnsibleModule(
         argument_spec=argument_spec,
         required_by=required_by,
-        supports_check_mode=False
+        supports_check_mode=True
     )
 
     connection = Connection(module._socket_path)

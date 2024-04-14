@@ -8,7 +8,7 @@ options:
     currency:
         description:
             - ISO Currency Code.
-        type: string
+        type: str
         choices:
             - AUD
             - BGN

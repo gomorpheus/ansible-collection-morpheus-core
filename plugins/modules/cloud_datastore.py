@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,7 +11,7 @@ short_description: Configure Cloud Datastores
 description:
     - Update the configuration of Cloud Datastores.
 version_added: 0.7.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     id:
         description:
@@ -29,14 +31,14 @@ options:
         choices:
             - active
             - inactive
-        type: string
+        type: str
     visibility:
         description:
             - The visibility of the Datastore.
         choices:
             - private
             - public
-        type: string
+        type: str
     tenant_permissions:
         description:
             - List of Tenant Permissions on the Datastore.
@@ -50,11 +52,12 @@ options:
                     - absent
                     - present
                 default: present
-                type: string
+                type: str
             tenant_id:
                 description:
                     - The id of the tenant to add or remove permissions for.
                 type: int
+                required: true
             default_target:
                 description:
                     - Set the Datastore as the default for the specified tenant.
@@ -85,7 +88,7 @@ options:
                             - absent
                             - present
                         default: present
-                        type: string
+                        type: str
                     group_id:
                         description:
                             - Id of the group to allow access.
@@ -111,7 +114,7 @@ options:
                             - absent
                             - present
                         default: present
-                        type: string
+                        type: str
                     plan_id:
                         description:
                             - Id of the Plan to allow access.
@@ -166,6 +169,7 @@ RETURN = r'''
 datastore:
     description:
         - Information about the datastore after changes.
+    type: dict
     returned: always
     sample:
         "datastore": {

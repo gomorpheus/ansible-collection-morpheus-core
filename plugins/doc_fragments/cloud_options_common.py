@@ -8,6 +8,7 @@ options:
     state:
         description:
             - Create, Update or Remove a Cloud.
+        type: str
         choices:
             - present
             - absent
@@ -23,26 +24,26 @@ options:
     name:
         description:
             - Set the name of the Cloud.
-        type: string
+        type: str
     description:
         description:
             - Set the description of the Cloud.
-        type: string
+        type: str
     code:
         description:
             - The code to reference the Cloud for use in polcies etc.
-        type: string
+        type: str
     location:
         description:
             - Add location information for the Cloud.
-        type: string
+        type: str
     visibility:
         description:
             - Toggle tenant visibility between Private or Public.
         choices:
             - private
             - public
-        type: string
+        type: str
     group_id:
         description:
             - Set the Cloud Group this Cloud is a member of.
@@ -68,11 +69,11 @@ options:
             - ssh
             - winrm
             - unattend
-        type: string
+        type: str
     appliance_url:
         description:
             - URL of the Morpheus Appliance.
-        type: string
+        type: str
     auto_recover_power_state:
         description:
             - Automatically Power-on Virtual Machines.
@@ -81,22 +82,22 @@ options:
         description:
             - Enable costing on the Cloud.
         choices:
-            - off
+            - "off"
             - costing
-        type: string
+        type: str
         aliases:
             - costing
     datacenter_name:
         description:
             - Custom Datacenter Identifier.
-        type: string
-    guidence_mode:
+        type: str
+    guidance_mode:
         description:
             - Enable/Disable Cloud Guidance
         choices:
-            - off
+            - "off"
             - manual
-        type: string
+        type: str
         aliases:
             - guidance
     scale_priority:
@@ -107,21 +108,21 @@ options:
         description:
             - Host firewall.
         choices:
-            - off
+            - "off"
             - internal
-        type: string
+        type: str
     timezone:
         description:
             - The Time Zone of the Cloud.
-        type: string
+        type: str
     logo:
         description:
             - Path to an image file to use as the Cloud logo.
-        type: string
+        type: str
     dark_logo:
         description:
             - Path to an image file to use as the Cloud logo when in dark mode.
-        type: string
+        type: str
     remove_resources:
         description:
             - Relevant when O(state=absent), remove associated resources when removing the cloud.
@@ -140,7 +141,7 @@ options:
             - V(costing_rebuild) Purge existing costing data and rebuild by calling the Cloud API.
             - V(daily) Perform a daily Cloud Sync.
             - V(hourly) Perform hourly Cloud Sync.
-        type: string
+        type: str
         choices:
             - costing
             - costing_rebuild

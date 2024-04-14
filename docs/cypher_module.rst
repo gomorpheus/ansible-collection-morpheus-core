@@ -585,7 +585,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string`
+        :ansible-option-type:`dictionary`
 
       .. raw:: html
 
@@ -622,7 +622,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 Authors
 ~~~~~~~
 
-- James Riach
+- James Riach (@McGlovin1337)
 
 
 

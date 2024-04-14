@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,7 +11,7 @@ short_description: Retrieves Cloud Info
 description:
     - Retrieves information about Morpheus Clouds.
 version_added: 0.7.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     detail:
         description:
@@ -18,17 +20,18 @@ options:
         choices:
             - summary
             - full
-        type: string
+        type: str
     type:
         description:
             - Filter Clouds by Cloud Type Code.
-        type: string
+        type: str
 extends_documentation_fragment:
     - morpheus.core.generic_name_filter
     - action_common_attributes
 attributes:
     check_mode:
         support: N/A
+        details: Not Required, Module does not make changes.
     diff_mode:
         support: N/A
     platform:
@@ -62,6 +65,7 @@ RETURN = r'''
 clouds:
     description:
         - List of Clouds with Info.
+    type: list
     returned: always
     sample:
         "clouds": [

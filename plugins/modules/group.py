@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,7 +11,7 @@ short_description: Manage Groups
 description:
     - Create, Update and Remove Groups.
 version_added: 0.7.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     state:
         description:
@@ -18,7 +20,7 @@ options:
             - absent
             - present
         default: present
-        type: string
+        type: str
     id:
         description:
             - Id of an existing Group.
@@ -26,20 +28,20 @@ options:
     name:
         description:
             - Name of the Group.
-        type: string
+        type: str
     code:
         description:
             - Short Code name for the Group.
-        type: string
+        type: str
     labels:
         description:
             - List of Labels for the Group.
         type: list
-        elements: string
+        elements: str
     location:
         description:
             - Location information for the Group.
-        type: string
+        type: str
     dns_id:
         description:
             - Id of a DNS Integration.
@@ -77,7 +79,7 @@ options:
                     - absent
                     - present
                 default: present
-                type: string
+                type: str
             id:
                 description:
                     - The Id of the Cloud/Zone.
@@ -123,6 +125,7 @@ RETURN = r'''
 group:
     description:
         - Group Information.
+    type: dict
     returned: always
     sample:
         "group": {
@@ -442,9 +445,9 @@ def run_module():
         'service_registry_id': {'type': 'int'},
         'config_management_id': {'type': 'int'},
         'cmdb_discovery': {'type': 'bool'},
-        'zones': {'type': 'list', 'elements': 'dict', 'suboptions': {
+        'zones': {'type': 'list', 'elements': 'dict', 'options': {
             'state': {'type': 'str', 'choices': ['absent', 'present'], 'default': 'present'},
-            'id': {'type': 'int', 'required': 'true'}
+            'id': {'type': 'int', 'required': True}
         }}
     }
 

@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,13 +11,14 @@ short_description: Gather information about SSL Certificates
 description:
     - Gathers information about SSL Certificates.
 version_added: 0.6.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 extends_documentation_fragment:
     - morpheus.core.generic_name_filter
     - action_common_attributes
 attributes:
     check_mode:
         support: N/A
+        details: Not Required, Module does not make changes.
     diff_mode:
         support: N/A
     platform:
@@ -41,6 +44,7 @@ RETURN = r'''
 certificates:
     description:
         - List of SSL Certificates.
+    type: list
     returned: always
     sample:
         "certificates": [

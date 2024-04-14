@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,7 +11,7 @@ short_description: Manage Morpheus Virtual Images
 description:
     - Manage Morpheus Virtual Images.
 version_added: 0.6.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     state:
         description:
@@ -19,7 +21,7 @@ options:
         choices:
             - absent
             - present
-        type: string
+        type: str
     virtual_image_id:
         description:
             - Specify Virtual Image by Id.
@@ -27,24 +29,24 @@ options:
     name:
         description:
             - Set the Name of the Virtual Image
-        type: string
+        type: str
     filename:
         description:
             - Name of uploaded file.
-        type: string
+        type: str
     file_url:
         description:
             - URL of file to upload.
-        type: string
+        type: str
     labels:
         description:
             - Provide a list of labels to apply to Virtual Image.
         type: list
-        elements: string
+        elements: str
     image_type:
         description:
             - Set the Image Type code, e.g. vmware
-        type: string
+        type: str
     storage_provider_id:
         description:
             - Specify the Storage Provider by Id.
@@ -56,7 +58,7 @@ options:
     user_data:
         description:
             - Cloud Init user data.
-        type: string
+        type: str
     install_agent:
         description:
             - Specify if Morpheus Agent should be installed.
@@ -64,26 +66,26 @@ options:
     username:
         description:
             - Specify the Username for the Virtual Image.
-        type: string
+        type: str
     password:
         description:
             - Specify the Password for the Virtual Image.
-        type: string
+        type: str
     ssh_key:
         description:
             - Specify an SSH Key for the Virtual Image.
-        type: string
+        type: str
     os_type:
         description:
             - Specify the OS Type code or name.
-        type: string
+        type: str
     visibility:
         description:
             - If the Virtual Image should be private or public.
         choices:
             - private
             - public
-        type: string
+        type: str
     accounts:
         description:
             - List of Tenants by Id Virtual Image is available to.
@@ -104,7 +106,6 @@ options:
     trial_version:
         description:
             - Is the Virtual Image a Trial Version.
-        default: false
         type: bool
     is_sysprep:
         description:
@@ -118,19 +119,19 @@ options:
             publisher:
                 description:
                     - Name of Publisher in the Azure Marketplace.
-                type: string
+                type: str
             offer:
                 description:
                     - Name of Offer in the Azure Marketplace.
-                type: string
+                type: str
             sku:
                 description:
                     - Name of SKU in the Azure Marketplace.
-                type: string
+                type: str
             version:
                 description:
                     - Name of Version in the Azure Marketplace.
-                type: string
+                type: str
     config:
         description:
             - Dictionary of Virtual Image configuration.
@@ -144,11 +145,11 @@ options:
             name:
                 description:
                     - The Tag name.
-                type: string
+                type: str
             value:
                 description:
                     - The Tag value.
-                type: string
+                type: str
 extends_documentation_fragment:
     - action_common_attributes
 attributes:
@@ -200,6 +201,7 @@ RETURN = r'''
 virtual_image:
     description:
         - Information about the Virtual Image.
+    type: dict
     returned: always
     sample:
         "virtual_image": {
@@ -586,8 +588,8 @@ def run_module():
         'user_data': {'type': 'str'},
         'install_agent': {'type': 'bool'},
         'username': {'type': 'str'},
-        'password': {'type': 'str', 'no_log': 'true'},
-        'ssh_key': {'type': 'str', 'no_log': 'true'},
+        'password': {'type': 'str', 'no_log': True},
+        'ssh_key': {'type': 'str', 'no_log': True},
         'os_type': {'type': 'str'},
         'visibility': {'type': 'str', 'choices': ['private', 'public']},
         'accounts': {'type': 'list', 'elements': 'int'},

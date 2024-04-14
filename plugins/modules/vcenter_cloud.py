@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,33 +11,33 @@ short_description: Manage a VMware VCenter Cloud
 description:
     - Manage VMware VCenter Clouds.
 version_added: 0.7.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     api_url:
         description:
             - The VCenter API URL.
-        type: string
+        type: str
     api_version:
         description:
             - The VCenter API Version.
         choices:
-            - 7.0
-            - 6.7
-            - 6.5
-            - 6.0
-        type: string
+            - "7.0"
+            - "6.7"
+            - "6.5"
+            - "6.0"
+        type: str
     datacenter:
         description:
             - VCenter Datacenter name.
-        type: string
+        type: str
     cluster:
         description:
             - VCenter Cluster name.
-        type: string
+        type: str
     resource_pool:
         description:
             - VCenter Resource Pool name.
-        type: string
+        type: str
     rpc_mode:
         description:
             - Cloud workload interaction method.
@@ -44,7 +46,7 @@ options:
         choices:
             - guestexec
             - rpc
-        type: string
+        type: str
     disk_storage_type:
         description:
             - The default Virtual Machine Disk type.
@@ -52,7 +54,7 @@ options:
             - thin
             - thick
             - thick_eager
-        type: string
+        type: str
     enable_disk_type_selection:
         description:
             - Enable user to select Virtual Machine Disk type.
@@ -96,9 +98,9 @@ options:
             - it
             - jp
             - nl-be
-            - no
+            - "no"
             - pt
-        type: string
+        type: str
         aliases:
             - keyboard_layout
     credential_id:
@@ -177,6 +179,7 @@ RETURN = r'''
 cloud:
     description:
         - Information related to the specified cloud.
+    type: dict
     returned: always
     sample:
         "cloud": {
@@ -289,6 +292,7 @@ try:
     from module_utils.morpheus_const import KEYMAP_OPTIONS
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.cloud_module_common as cloud
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheus_const import KEYMAP_OPTIONS
 
 
 VCENTER_CLOUD_OPTIONS = {
@@ -305,7 +309,7 @@ VCENTER_CLOUD_OPTIONS = {
     'enable_vnc': {'type': 'bool', 'aliases': ['enable_console']},
     'hide_host_selection': {'type': 'bool'},
     'import_existing': {'type': 'bool'},
-    'console_keymap': {'type': 'str', 'choices': KEYMAP_OPTIONS,  'aliases': ['keyboard_layout']}
+    'console_keymap': {'type': 'str', 'choices': KEYMAP_OPTIONS, 'aliases': ['keyboard_layout']}
 }
 
 MOCK_VCENTER_CLOUD = {
@@ -382,8 +386,8 @@ def run_module():
     required_if = [
         ('state', 'absent', ('id', 'name'), True),
         ('state', 'refresh', ('id', 'name'), True),
-        ('id', None, ('name')),
-        ('name', None, ('id'))
+        ('id', None, ('name',)),
+        ('name', None, ('id',))
     ]
 
     module = AnsibleModule(

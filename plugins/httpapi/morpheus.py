@@ -23,7 +23,7 @@ options:
     morpheus_user:
         description:
             - A Morpheus Username to Authenticate as.
-        type: string
+        type: str
         env:
            - name: ANSIBLE_MORPHEUS_USER
         vars:
@@ -31,7 +31,7 @@ options:
     morpheus_password:
         description:
             - Password associated with the specified Username.
-        type: string
+        type: str
         env:
            - name: ANSIBLE_MORPHEUS_PASSWORD
         vars:
@@ -39,7 +39,7 @@ options:
     morpheus_api_token:
         description:
             - Specify an API token instead of O(morpheus_user) and O(morpheus_password).
-        type: string
+        type: str
         env:
             - name: ANSIBLE_MORPHEUS_TOKEN
         vars:

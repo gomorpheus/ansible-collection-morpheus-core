@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,12 +11,12 @@ short_description: Manage Tenants
 description:
     - Create, Update and Remove Tenants.
 version_added: 0.7.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     state:
         description:
             - The state of the Tenant.
-        type: string
+        type: str
         choices:
             - absent
             - present
@@ -26,23 +28,23 @@ options:
     name:
         description:
             - The name of the Tenant.
-        type: string
+        type: str
     description:
         description:
             - Description for the Tenant.
-        type: string
+        type: str
     account_name:
         description:
             - Additional Tenant Identifier.
-        type: string
+        type: str
     account_number:
         description:
             - Additional Tenant Identifier.
-        type: string
+        type: str
     customer_number:
         description:
             - Additional Tenant Identifier.
-        type: string
+        type: str
     role:
         description:
             - Id of a Role to act as the Tenant base role.
@@ -50,7 +52,7 @@ options:
     subdomain:
         description:
             - Subdomain name used in login URL and subtenant users.
-        type: string
+        type: str
 extends_documentation_fragment:
     - action_common_attributes
     - morpheus.core.currency_option
@@ -83,6 +85,7 @@ RETURN = r'''
 tenant:
     description:
         - Details of the Tenant state.
+    type: dict
     returned: always
     sample:
         "tenant": {

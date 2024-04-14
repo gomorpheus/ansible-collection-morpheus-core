@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,7 +11,7 @@ short_description: Gather information about instances
 description:
     - Gathers information about Morpheus instances
 version_added: 0.4.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     detail:
         description:
@@ -20,11 +22,11 @@ options:
             - full
             - extra
             - summary
-        type: string
+        type: str
     instance_type:
         description:
             - Filter by the instance type code.
-        type: string
+        type: str
     agent_installed:
         description:
             - Filter by if agent is installed or not.
@@ -32,7 +34,7 @@ options:
     status:
         description:
             - Filter by instance status, e.g. running
-        type: string
+        type: str
     deleted:
         description:
             - Include, Exclude or Only show deleted instances or those pending removal.
@@ -41,7 +43,7 @@ options:
             - include
             - only
         default: exclude
-        type: string
+        type: str
 extends_documentation_fragment:
     - morpheus.core.instance_filter_base
     - morpheus.core.instance_filter_extended
@@ -49,6 +51,7 @@ extends_documentation_fragment:
 attributes:
     check_mode:
         support: N/A
+        details: Not Required, Module does not make changes.
     diff_mode:
         support: N/A
     platform:
@@ -95,6 +98,7 @@ RETURN = r'''
 morpheus_instances:
     description:
         - List of instances with info
+    type: list
     returned: always
     sample:
         "morpheus_instances": [
@@ -224,7 +228,7 @@ def run_module():
             'deleted': {'type': 'str', 'choices': ['exclude', 'include', 'only'], 'default': 'exclude'},
             'labels': {'type': 'list', 'elements': 'str'},
             'match_all_labels': {'type': 'bool', 'default': 'false'},
-            'tags': {'type': 'str'}
+            'tags': {'type': 'list', 'elements': 'str'}
         }
     }
 

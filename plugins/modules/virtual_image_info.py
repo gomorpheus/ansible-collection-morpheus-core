@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,7 +11,7 @@ short_description: Gather Virtual Image information
 description:
     - Gathers information about Virtual Images.
 version_added: 0.6.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     virtual_image_id:
         description:
@@ -18,7 +20,7 @@ options:
     name:
         description:
             - Return info for Virtual Image by Name
-        type: string
+        type: str
     regex_name:
         description:
             - Treat name parameter as a Regular Expression
@@ -33,16 +35,16 @@ options:
             - synced
             - system
             - user
-        type: string
+        type: str
     image_type:
         description:
             - Filter by image type code, e.g. vmware, ami
-        type: string
+        type: str
     labels:
         description:
             - Filter by matching labels
         type: list
-        elements: string
+        elements: str
     match_all_labels:
         description:
             - If true, match all specified labels
@@ -55,12 +57,13 @@ options:
         choices:
             - full
             - summary
-        type: string
+        type: str
 extends_documentation_fragment:
     - action_common_attributes
 attributes:
     check_mode:
         support: N/A
+        details: Not Required, Module does not make changes.
     diff_mode:
         support: N/A
     platform:
@@ -96,6 +99,7 @@ RETURN = r'''
 virtual_images:
     description:
         - List of Virtual Images
+    type: list
     returned: always
     sample:
         "virtual_images": [
@@ -182,14 +186,14 @@ def run_module():
         'detail': {'type': 'str', 'choices': ['full', 'summary'], 'default': 'summary'}
     }
 
-    mutually_exclusive = {
+    mutually_exclusive = [
         ('virtual_image_id', 'name'),
         ('virtual_image_id', 'regex_name'),
         ('virtual_image_id', 'filter_type'),
         ('virtual_image_id', 'image_type'),
         ('virtual_image_id', 'labels'),
         ('virtual_image_id', 'match_all_labels')
-    }
+    ]
 
     result = {
         'changed': False,

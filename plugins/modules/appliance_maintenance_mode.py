@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,7 +11,7 @@ short_description: Toggle Maintenance Mode of the target Morpheus Appliance
 description:
     - Toggles Maintenance Mode of the target Morpheus Appliance
 version_added: 0.4.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     state:
         description:
@@ -18,7 +20,7 @@ options:
         choices:
             - enabled
             - disabled
-        type: string
+        type: str
 extends_documentation_fragment:
     - action_common_attributes
 attributes:

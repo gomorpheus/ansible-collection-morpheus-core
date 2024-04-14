@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,12 +11,12 @@ short_description: Return available Cloud types
 description:
     - Returns the available Cloud Types.
 version_added: 0.7.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     code:
         description:
             - Filter Cloud Types by code.
-        type: string
+        type: str
     detail:
         description:
             - Level of detail returned.
@@ -22,13 +24,14 @@ options:
         choices:
             - summary
             - full
-        type: string
+        type: str
 extends_documentation_fragment:
     - morpheus.core.generic_name_filter
     - action_common_attributes
 attributes:
     check_mode:
         support: N/A
+        details: Not Required, Module does not make changes.
     diff_mode:
         support: N/A
     platform:
@@ -53,6 +56,7 @@ RETURN = r'''
 cloud_types:
     description:
         - List of Cloud Type Info.
+    type: list
     returned: always
     sample:
         "cloud_types": [
@@ -73,7 +77,6 @@ cloud_types:
         ]
 '''
 
-import re
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:

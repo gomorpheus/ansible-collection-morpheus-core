@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,7 +11,7 @@ short_description: Manage SSL Certificates
 description:
     - Create, Update or Delete SSL Certificates.
 version_added: 0.6.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     state:
         description:
@@ -18,7 +20,7 @@ options:
         choices:
             - absent
             - present
-        type: string
+        type: str
     id:
         description:
             - Specify the Id of a SSL Certificate to Update or Remove.
@@ -26,11 +28,11 @@ options:
     name:
         description:
             - Name of the SSL Certificate.
-        type: string
+        type: str
     domain_name:
         description:
             - The Domain Name this SSL Certificate is responsible for.
-        type: string
+        type: str
     wildcard:
         description:
             - Is this a wildcard certificate.
@@ -38,11 +40,11 @@ options:
     certificate:
         description:
             - The SSL Certificate contents.
-        type: string
+        type: str
     key:
         description:
             - The Private Key contents.
-        type: string
+        type: str
 extends_documentation_fragment:
     - action_common_attributes
 attributes:
@@ -80,6 +82,7 @@ RETURN = r'''
 certificate:
     description:
         - SSL Certificate Details.
+    type: dict
     returned: always
     sample:
         "certificate": {
@@ -273,7 +276,7 @@ def run_module():
         'domain_name': {'type': 'str'},
         'wildcard': {'type': 'bool'},
         'certificate': {'type': 'str'},
-        'key': {'type': 'str', 'no_log': 'true'}
+        'key': {'type': 'str', 'no_log': True}
     }
 
     result = {

@@ -430,17 +430,17 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-docker_privilged_mode"></div>
+        <div class="ansibleOptionAnchor" id="parameter-docker_privileged_mode"></div>
 
-      .. _ansible_collections.morpheus.core.appliance_settings_module__parameter-docker_privilged_mode:
+      .. _ansible_collections.morpheus.core.appliance_settings_module__parameter-docker_privileged_mode:
 
       .. rst-class:: ansible-option-title
 
-      **docker_privilged_mode**
+      **docker_privileged_mode**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-docker_privilged_mode" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-docker_privileged_mode" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
 
@@ -1643,7 +1643,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 Authors
 ~~~~~~~
 
-- James Riach
+- James Riach (@McGlovin1337)
 
 
 

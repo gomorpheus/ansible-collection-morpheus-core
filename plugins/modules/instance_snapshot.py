@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,7 +11,7 @@ short_description: Manage Instance Snapshots
 description:
     - Manage Snapshots of Morpheus Instances.
 version_added: 0.5.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     match_name:
         description:
@@ -20,7 +22,7 @@ options:
             - first
             - last
             - all
-        type: string
+        type: str
     state:
         description:
             - Manage snapshot state of the specified instance(s)
@@ -30,7 +32,7 @@ options:
             - revert
             - remove_all
         default: present
-        type: string
+        type: str
     snapshot_id:
         description:
             - Specify snapshot by id when using O(state=absent) or O(state=revert).
@@ -39,12 +41,12 @@ options:
         description:
             - Specify snapshot name.
             - Can be used with O(state=present), O(state=absent), O(state=revert).
-        type: string
+        type: str
     snapshot_description:
         description:
             - Specify description for snapshot.
             - Used with O(state=present)
-        type: string
+        type: str
     snapshot_age:
         description:
             - Specify the age of the snapshot to match.
@@ -52,7 +54,7 @@ options:
             - latest
             - oldest
         default: latest
-        type: string
+        type: str
 extends_documentation_fragment:
     - action_common_attributes
     - morpheus.core.instance_filter_base
@@ -106,6 +108,7 @@ RETURN = r'''
 snapshot_results:
     description:
         - List of results of each action performed against each instance and/or snapshot.
+    type: list
     returned: always
     sample:
         "snapshot_results": [
@@ -279,11 +282,11 @@ def snapshot_revert(module_params: dict, morpheus_api: MorpheusApi, instance_sna
 
 def run_module():
     argument_spec = {
-        'id': {'type': 'str'},
+        'id': {'type': 'int'},
         'name': {'type': 'str'},
         'regex_name': {'type': 'bool', 'default': 'false'},
         'match_name': {'type': 'str', 'choices': ['none', 'first', 'last', 'all'], 'default': 'none'},
-        'state': {'type': 'str', 'choices': ['absent', 'present', 'revert', 'remove_all']},
+        'state': {'type': 'str', 'choices': ['absent', 'present', 'revert', 'remove_all'], 'default': 'present'},
         'snapshot_id': {'type': 'int'},
         'snapshot_name': {'type': 'str'},
         'snapshot_description': {'type': 'str'},
@@ -295,8 +298,7 @@ def run_module():
         ('id', 'regex_name'),
         ('id', 'match_name'),
         ('snapshot_id', 'snapshot_name'),
-        ('snapshot_id', 'snapshot_description'),
-        ('snapshot_id', 'match_age')
+        ('snapshot_id', 'snapshot_description')
     ]
 
     required_one_of = [

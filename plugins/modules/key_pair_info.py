@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,7 +11,7 @@ short_description: Gather Key Pair Information
 description:
     - Gathers Information of Key Pairs.
 version_added: 0.6.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     has_private_key:
         description:
@@ -21,6 +23,7 @@ extends_documentation_fragment:
 attributes:
     check_mode:
         support: N/A
+        details: Not Required, Module does not make changes.
     diff_mode:
         support: N/A
     platform:
@@ -47,6 +50,7 @@ RETURN = r'''
 key_pairs:
     description:
         - List of Key Pairs.
+    type: list
     returned: always
     sample:
         "key_pairs": [

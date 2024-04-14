@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,20 +11,20 @@ short_description: Configure Morpheus Appliance Settings
 description:
     - Configures Morpheus Appliance Settings
 version_added: 0.4.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     appliance_url:
         description:
             - Defines the URL of the Morpheus Appliance.
-        type: string
+        type: str
     internal_appliance_url:
         description:
             - Defines the Internal URL of the Morpheus Appliance.
-        type: string
+        type: str
     cors_allowed:
         description:
             - Define origins allowed to access the Morpheus API.
-        type: string
+        type: str
     registration_enabled:
         description:
             - Enable new users to register a new tenant.
@@ -35,7 +37,7 @@ options:
         description:
             - Set the default User Role applied the user created from Tenant Registration.
         type: int
-    docker_privilged_mode:
+    docker_privileged_mode:
         description:
             - Enable or Disable Docker privileged mode.
         type: bool
@@ -82,11 +84,11 @@ options:
     smtp_mail_from:
         description:
             - Set the SMTP Mail From address header
-        type: string
+        type: str
     smtp_server:
         description:
             - Set the SMTP Server to relay email through
-        type: string
+        type: str
     smtp_port:
         description:
             - Set the SMTP Server Port to connect to
@@ -102,15 +104,15 @@ options:
     smtp_user:
         description:
             - User to Authenticate with the defined SMTP Server
-        type: string
+        type: str
     smtp_password:
         description:
             - Password to Authenticate with the define SMTP Server
-        type: string
+        type: str
     proxy_host:
         description:
             - Define a Proxy Server
-        type: string
+        type: str
     proxy_port:
         description:
             - Set the Proxy Server port
@@ -118,27 +120,27 @@ options:
     proxy_user:
         description:
             - User to Authenticate with the defined Proxy Server
-        type: string
+        type: str
     proxy_password:
         description:
             - Password to Authenticate with the define Proxy Server
-        type: string
+        type: str
     proxy_domain:
         description:
             - Set the Proxy Domain
-        type: string
+        type: str
     proxy_workstation:
         description:
             - Set the Proxy Workstation
-        type: string
+        type: str
     currency_provider:
         description:
             - Define a Currency Provider
-        type: string
+        type: str
     currency_key:
         description:
             - Set the API Key for the defined Currency Provider
-        type: string
+        type: str
     enable_all_zone_types:
         description:
             - Enable All Cloud (Zone) Types
@@ -308,7 +310,7 @@ def run_module():
         'smtp_user': {'type': 'str'},
         'smtp_password': {'type': 'str', 'no_log': True},
         'proxy_host': {'type': 'str'},
-        'proxy_port': {'type': 'str'},
+        'proxy_port': {'type': 'int'},
         'proxy_user': {'type': 'str'},
         'proxy_password': {'type': 'str', 'no_log': True},
         'proxy_domain': {'type': 'str'},
@@ -322,8 +324,11 @@ def run_module():
     }
 
     mutually_exclusive = [
-        ('enable_all_zone_types', 'enable_zone_types', 'disable_zone_types', 'disable_all_zone_types'),
-        ('disable_all_zone_types', 'enable_zone_types', 'disable_zone_types', 'disable_all_zone_types')
+        ('enable_all_zone_types', 'enable_zone_types'),
+        ('enable_all_zone_types', 'disable_zone_types'),
+        ('enable_all_zone_types', 'disable_all_zone_types'),
+        ('disable_all_zone_types', 'enable_zone_types'),
+        ('disable_all_zone_types', 'disable_zone_types')
     ]
 
     required_by = {

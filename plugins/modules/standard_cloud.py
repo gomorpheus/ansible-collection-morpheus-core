@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,7 +11,7 @@ short_description: Manage a Standard Morpheus Cloud
 description:
     - Manage Standard Morpheus Clouds.
 version_added: 0.7.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     enable_network_type_selection:
         description:
@@ -67,6 +69,7 @@ RETURN = r'''
 cloud:
     description:
         - Information related to the specified cloud.
+    type: dict
     returned: always
     sample:
         "cloud": {
@@ -232,8 +235,8 @@ def run_module():
 
     required_if = [
         ('state', 'absent', ('id', 'name'), True),
-        ('id', None, ('name')),
-        ('name', None, ('id'))
+        ('id', None, ('name',)),
+        ('name', None, ('id',))
     ]
 
     module = AnsibleModule(

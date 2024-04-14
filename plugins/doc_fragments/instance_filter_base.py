@@ -12,7 +12,7 @@ options:
     name:
         description:
             - Filter instances by name.
-        type: string
+        type: str
     regex_name:
         description:
             - Treat the name parameter as a regular expression.

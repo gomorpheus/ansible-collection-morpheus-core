@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,7 +11,7 @@ short_description: Datastore information for a specified cloud
 description:
     - Retrieves Datastore information for a specified cloud.
 version_added: 0.7.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     detail:
         description:
@@ -18,7 +20,7 @@ options:
         choices:
             - summary
             - full
-        type: string
+        type: str
     zone_id:
         description:
             - Id of the Cloud to query.
@@ -40,13 +42,14 @@ options:
         choices:
             - private
             - public
-        type: string
+        type: str
 extends_documentation_fragment:
     - morpheus.core.generic_name_filter
     - action_common_attributes
 attributes:
     check_mode:
         support: N/A
+        details: Not Required, Module does not make changes.
     diff_mode:
         support: N/A
     platform:
@@ -75,6 +78,7 @@ RETURN = r'''
 datastores:
     description:
         - A List of Datastores.
+    type: list
     returned: always
     sample:
         "datastores": [
@@ -94,7 +98,6 @@ datastores:
         ]
 '''
 
-import re
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:

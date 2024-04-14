@@ -439,7 +439,7 @@ Parameters
       - :ansible-option-choices-entry:`"it"`
       - :ansible-option-choices-entry:`"jp"`
       - :ansible-option-choices-entry:`"nl-be"`
-      - :ansible-option-choices-entry:`"False"`
+      - :ansible-option-choices-entry:`"no"`
       - :ansible-option-choices-entry:`"pt"`
 
 
@@ -485,7 +485,7 @@ Parameters
 
       :ansible-option-choices:`Choices:`
 
-      - :ansible-option-choices-entry:`"False"`
+      - :ansible-option-choices-entry:`"off"`
       - :ansible-option-choices-entry:`"costing"`
 
 
@@ -999,19 +999,19 @@ Parameters
   * - .. raw:: html
 
         <div class="ansible-option-cell">
-        <div class="ansibleOptionAnchor" id="parameter-guidence_mode"></div>
+        <div class="ansibleOptionAnchor" id="parameter-guidance_mode"></div>
         <div class="ansibleOptionAnchor" id="parameter-guidance"></div>
 
       .. _ansible_collections.morpheus.core.vcenter_cloud_module__parameter-guidance:
-      .. _ansible_collections.morpheus.core.vcenter_cloud_module__parameter-guidence_mode:
+      .. _ansible_collections.morpheus.core.vcenter_cloud_module__parameter-guidance_mode:
 
       .. rst-class:: ansible-option-title
 
-      **guidence_mode**
+      **guidance_mode**
 
       .. raw:: html
 
-        <a class="ansibleOptionLink" href="#parameter-guidence_mode" title="Permalink to this option"></a>
+        <a class="ansibleOptionLink" href="#parameter-guidance_mode" title="Permalink to this option"></a>
 
       .. ansible-option-type-line::
 
@@ -1034,7 +1034,7 @@ Parameters
 
       :ansible-option-choices:`Choices:`
 
-      - :ansible-option-choices-entry:`"False"`
+      - :ansible-option-choices-entry:`"off"`
       - :ansible-option-choices-entry:`"manual"`
 
 
@@ -1582,7 +1582,7 @@ Parameters
 
       :ansible-option-choices:`Choices:`
 
-      - :ansible-option-choices-entry:`"False"`
+      - :ansible-option-choices-entry:`"off"`
       - :ansible-option-choices-entry:`"internal"`
 
 
@@ -1988,7 +1988,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 
       .. ansible-option-type-line::
 
-        :ansible-option-type:`string`
+        :ansible-option-type:`dictionary`
 
       .. raw:: html
 
@@ -2025,7 +2025,7 @@ Common return values are documented :ref:`here <common_return_values>`, the foll
 Authors
 ~~~~~~~
 
-- James Riach
+- James Riach (@McGlovin1337)
 
 
 

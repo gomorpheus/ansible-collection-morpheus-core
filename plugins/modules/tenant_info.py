@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -9,26 +11,27 @@ short_description: Retrieves Tenant Info
 description:
     - Returns information about Morpheus Tenants.
 version_added: 0.7.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     account_name:
         description:
             - Filter tenants by account name.
-        type: string
+        type: str
     account_number:
         description:
             - Filter tenants by account number.
-        type: string
+        type: str
     customer_number:
         description:
             - Filter tenants by customer number.
-        type: string
+        type: str
 extends_documentation_fragment:
     - morpheus.core.generic_name_filter
     - action_common_attributes
 attributes:
     check_mode:
         support: N/A
+        details: Not Required, Module does not make changes.
     diff_mode:
         support: N/A
     platform:
@@ -55,6 +58,7 @@ RETURN = r'''
 tenants:
     description:
         - List of matching tenants.
+    type: list
     returned: always
     sample:
         "tenants": [
