@@ -3,7 +3,10 @@ __metaclass__ = type
 
 from ansible.module_utils.facts.collector import BaseFactCollector
 from ansible.module_utils.connection import Connection
-from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+try:
+    from module_utils.morpheusapi import MorpheusApi
+except ModuleNotFoundError:
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
 
 
 class MorpheusSystemFactCollector(BaseFactCollector):

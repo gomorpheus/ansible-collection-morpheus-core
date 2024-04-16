@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -257,7 +255,7 @@ def create_update_group(module: AnsibleModule, morpheus_api: MorpheusApi, existi
                 **zone_params
             })
 
-            success, _ = mf.success_response(zone_update)
+            success, msg = mf.success_response(zone_update)
 
             if success:
                 updated_group = morpheus_api.common_get(ApiPath.GROUPS_PATH, {'id': action_result['id'] if 'id' in action_result else existing_group['id']})

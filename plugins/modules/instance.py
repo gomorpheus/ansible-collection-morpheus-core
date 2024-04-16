@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -255,7 +253,7 @@ def run_module():
         results = [mf.dict_keys_to_snake_case(action_func(item_id=instance['id'])) for instance in instances]
 
         for response in results:
-            success, _ = mf.success_response(response[list(response.keys())[0]]) \
+            success, msg = mf.success_response(response[list(response.keys())[0]]) \
                 if module.params['state'] not in ['absent', 'locked', 'unlocked'] \
                 else mf.success_response(response)
             result['changed'] = success if not result['changed'] else False

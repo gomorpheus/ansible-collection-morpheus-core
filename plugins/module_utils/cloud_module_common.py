@@ -65,8 +65,7 @@ def create_update_cloud(
         morpheus_api: MorpheusApi,
         param_convertor: Callable,
         existing_cloud: dict,
-        mock_cloud: dict = None
-        ) -> dict:
+        mock_cloud: dict = None) -> dict:
     """Create a new Morpheus Cloud, or update an existing one.
 
     Args:
@@ -99,8 +98,7 @@ def create_update_cloud(
             state=module.params['state'],
             api_params=api_params,
             existing_cloud=existing_cloud,
-            mock_cloud=mock_cloud
-            )
+            mock_cloud=mock_cloud)
     }.get('id' in existing_cloud if not module.check_mode else 2)
 
     action_result = action()
@@ -174,8 +172,7 @@ def parse_check_mode(
         state: str,
         mock_cloud: dict,
         api_params: dict = None,
-        existing_cloud: dict = None
-        ) -> dict:
+        existing_cloud: dict = None) -> dict:
     """Function for running the module in check mode
 
     Args:
@@ -206,8 +203,7 @@ def parse_check_mode(
 def refresh_cloud(
         module: AnsibleModule,
         morpheus_api: MorpheusApi,
-        existing_cloud: dict
-        ) -> dict:
+        existing_cloud: dict) -> dict:
     """Refresh a Cloud Instance
 
     Args:
@@ -252,8 +248,7 @@ def refresh_cloud(
 def remove_cloud(
         module: AnsibleModule,
         morpheus_api: MorpheusApi,
-        existing_cloud: dict
-        ) -> dict:
+        existing_cloud: dict) -> dict:
     """Function to remove a cloud
 
     Args:
@@ -275,12 +270,10 @@ def remove_cloud(
         api_params={
             'remove_resources': module.params['remove_resources'],
             'force': module.params['force_remove']
-        }
-        ) \
+        }) \
         if not module.check_mode else parse_check_mode(
             state='absent',
-            mock_cloud=None
-        )
+            mock_cloud=None)
 
     success, msg = mf.success_response(response)
 
@@ -295,8 +288,7 @@ def run_cloud_module(
         module: AnsibleModule,
         cloud_type: str,
         mock_cloud: dict,
-        param_to_api_func: Callable
-        ) -> dict:
+        param_to_api_func: Callable) -> dict:
     """Execute the module
 
     Args:
@@ -339,16 +331,14 @@ def run_cloud_module(
         'present': partial(
             create_update_cloud,
             mock_cloud=mock_cloud,
-            param_convertor=param_to_api_func
-            ),
+            param_convertor=param_to_api_func),
         'refresh': refresh_cloud
     }.get(module.params['state'])
 
     action_result = action(
         module=module,
         morpheus_api=morpheus_api,
-        existing_cloud=existing_cloud[0] if len(existing_cloud) > 0 else {}
-    )
+        existing_cloud=existing_cloud[0] if len(existing_cloud) > 0 else {})
 
     result.update(action_result)
 

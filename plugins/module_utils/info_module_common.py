@@ -21,7 +21,19 @@ COMMON_MUTUALLY_EXCLUSIVE = [
 ]
 
 
-def param_filter(module: AnsibleModule, remove_params: list[str] = []) -> dict:
+def param_filter(module: AnsibleModule, remove_params: list[str] = None) -> dict:
+    """Removes and converts common module parameters to usable API Parameters.
+
+    Args:
+        module (AnsibleModule): An instantiated AnsibleModule Class.
+        remove_params (list[str], optional): A list of additional module parameters to remove. Defaults to None.
+
+    Returns:
+        dict: A dictionary of API Parameters.
+    """
+    if remove_params is None:
+        remove_params = []
+
     api_params = module.params.copy()
 
     if all(param in api_params for param in ['labels', 'match_all_labels']):
@@ -44,14 +56,24 @@ def param_filter(module: AnsibleModule, remove_params: list[str] = []) -> dict:
     return api_params
 
 
-def response_filter(module: AnsibleModule, response: dict, response_filter: dict = None) -> list[dict]:
+def response_filter(module: AnsibleModule, response: dict | list, filter_items: dict = None) -> list[dict]:
+    """Filters a response based on the supplied dictionary keys.
+
+    Args:
+        module (AnsibleModule): An instantiated AnsibleModule Class.
+        response (dict | list): The API Response to filter.
+        filter_items (dict, optional): Dictionary of keys to filter. Defaults to None.
+
+    Returns:
+        list[dict]: A list of filtered API Responses
+    """
     if not isinstance(response, list):
         response = [response]
 
     if module.params['name'] is not None and module.params['regex_name']:
         response = [response_item for response_item in response if re.match(module.params['name'], response_item['name'])]
 
-    if response_filter is not None and module.params['detail'] in response_filter:
-        response = [mf.dict_filter(response_item, list(response_filter[module.params['detail']])) for response_item in response]
+    if filter_items is not None and module.params['detail'] in filter_items:
+        response = [mf.dict_filter(response_item, list(filter_items[module.params['detail']])) for response_item in response]
 
     return response

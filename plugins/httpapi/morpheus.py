@@ -1,20 +1,10 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-from ansible.module_utils.basic import to_text
-from ansible.errors import AnsibleConnectionFailure, AnsibleOptionsError, AnsibleAuthenticationFailure
-from ansible.module_utils.six.moves.urllib.error import HTTPError
-from ansible.plugins.httpapi import HttpApiBase
-from ansible.module_utils.connection import ConnectionError
-import json
-import re
-from urllib3 import encode_multipart_formdata
-from urllib3.fields import RequestField
-
 DOCUMENTATION = r'''
 ---
-author: James Riach
-httpapi : morpheus
+name: morpheus
+author: James Riach (@McGlovin1337)
 short_description: Httpapi Plugin for Morpheus
 description:
   - Httpapi plugin to connect to and manage morpheus appliances through the morpheus api.
@@ -46,6 +36,22 @@ options:
             - name: ansible_morpheus_token
 '''
 
+from ansible.module_utils.basic import to_text
+from ansible.errors import AnsibleConnectionFailure, AnsibleOptionsError, AnsibleAuthenticationFailure, AnsibleError
+from ansible.module_utils.six.moves.urllib.error import HTTPError
+from ansible.plugins.httpapi import HttpApiBase
+from ansible.module_utils.connection import ConnectionError
+import json
+import re
+
+try:
+    from urllib3 import encode_multipart_formdata
+    from urllib3.fields import RequestField
+except ImportError as imp_exc:
+    URLLIB3_IMPORT_ERROR = imp_exc
+else:
+    URLLIB3_IMPORT_ERROR = None
+
 LOGIN_PATH = '/oauth/token?client_id=morph-api&grant_type=password&scope=write'
 WHOAMI_PATH = '/api/whoami'
 
@@ -57,6 +63,9 @@ BASE_HEADERS = {
 
 class HttpApi(HttpApiBase):
     def __init__(self, connection):
+        if URLLIB3_IMPORT_ERROR:
+            raise AnsibleError('urllib3 must be installed to use this httpapi plugin') from URLLIB3_IMPORT_ERROR
+
         super(HttpApi, self).__init__(connection)
         self.headers = BASE_HEADERS
         self.access_token = None
@@ -154,10 +163,9 @@ class HttpApi(HttpApiBase):
         for item in file_data:
             with open(item['file_path'], 'rb') as file_item:
                 rf = RequestField(
-                        name=item['name'],
-                        data=file_item.read(),
-                        filename=file_item.name.split('/')[-1]
-                    )
+                    name=item['name'],
+                    data=file_item.read(),
+                    filename=file_item.name.split('/')[-1])
                 rf.make_multipart()
                 request_fields.append(rf)
 

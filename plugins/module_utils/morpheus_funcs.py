@@ -89,7 +89,7 @@ def dict_diff(dict_after: dict, dict_before: dict, ignore_keys: set = None) -> t
                     continue
 
         if isinstance(val_a, dict) and isinstance(val_b, dict):
-            _, sub_diff_list = dict_diff(val_a, val_b)
+            is_diff, sub_diff_list = dict_diff(val_a, val_b)
             diff_list += sub_diff_list
 
         if val_a != val_b:
@@ -184,10 +184,10 @@ def dict_filter(dictionary: dict, filter_keys: list) -> dict:
     filtered_dict = {k: v for k, v in dictionary.items() if k in filter_keys}
 
     if len(subkey_filters) > 0:
-        for _, v in subkey_filters.items():
+        for k, v in subkey_filters.items():
             try:
                 if isinstance(filtered_dict[v[0]], (list, set, tuple)):
-                    for idx, _ in enumerate(filtered_dict[v[0]]):
+                    for idx, itm in enumerate(filtered_dict[v[0]]):
                         filtered_dict[v[0]][idx] = dict_filter(filtered_dict[v[0]][idx], v[1])
                     continue
                 filtered_dict[v[0]] = dict_filter(filtered_dict[v[0]], v[1])

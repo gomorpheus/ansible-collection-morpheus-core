@@ -245,7 +245,7 @@ Parameters
 Authors
 ~~~~~~~
 
-- James Riach
+- James Riach (@McGlovin1337)
 
 
 .. hint::

@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -407,13 +405,12 @@ def get_vi(module_params: dict, morpheus_api: MorpheusApi) -> list:
     """
     virtual_image = []
 
-    api_params, _ = module_to_api_params(module_params)
+    api_params, file_params = module_to_api_params(module_params)
 
     if module_params['virtual_image_id'] is not None:
         virtual_image = [morpheus_api.get_virtual_images(api_params)]
-        try:
-            _ = virtual_image[0]['id']
-        except KeyError:
+
+        if 'id' not in virtual_image[0]:
             virtual_image = []
 
     if module_params['name'] is not None and len(virtual_image) == 0:
@@ -471,14 +468,11 @@ def parse_check_mode(
     images = deepcopy(virtual_images)
     result = {}
 
-    if state == 'absent':
-        try:
-            _ = images[0]['id']
-        except (IndexError, KeyError):
-            result = {
-                'success': False,
-                'msg': 'Virtual Image not found'
-            }
+    if state == 'absent' and (len(images) == 0 or 'id' not in images[0]):
+        result = {
+            'success': False,
+            'msg': 'Virtual Image not found'
+        }
 
         result = {'success': True}
 
@@ -504,15 +498,12 @@ def parse_check_mode(
 
         result = virtual_image
 
-    if file_params is not None and len(result) == 0:
-        try:
-            _ = images[0]['id']
-        except (IndexError, KeyError):
-            return {
-                'success': False,
-                'msg': 'Virtual Image not found'
-            }
-
+    if file_params is not None and len(result) == 0 and (len(images) == 0 or 'id' not in images[0]):
+        result = {
+            'success': False,
+            'msg': 'Virtual Image not found'
+        }
+    else:
         result = {
             'success': True,
         }
@@ -537,14 +528,12 @@ def remove_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
             msg='Number of matching Virtual Images exceeded 1, got {0}'.format(len(virtual_image))
         )
 
-    try:
-        _ = virtual_image[0]['id']
-    except (IndexError, KeyError):
+    if len(virtual_image) == 0 or 'id' not in virtual_image[0]:
         module.fail_json(
             msg='No Virtual Images matched query parameters'
         )
 
-    _, file_params = module_to_api_params(module.params)
+    api_params, file_params = module_to_api_params(module.params)
     file_params['virtual_image_id'] = virtual_image[0]['id']
 
     action = {
