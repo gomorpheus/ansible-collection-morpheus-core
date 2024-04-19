@@ -9,16 +9,16 @@ short_description: Manage SSL Certificates
 description:
     - Create, Update or Delete SSL Certificates.
 version_added: 0.6.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     state:
         description:
-            - When I(state=present) create or update an SSL Certificate.
+            - When O(state=present) create or update an SSL Certificate.
         default: present
         choices:
             - absent
             - present
-        type: string
+        type: str
     id:
         description:
             - Specify the Id of a SSL Certificate to Update or Remove.
@@ -26,11 +26,11 @@ options:
     name:
         description:
             - Name of the SSL Certificate.
-        type: string
+        type: str
     domain_name:
         description:
             - The Domain Name this SSL Certificate is responsible for.
-        type: string
+        type: str
     wildcard:
         description:
             - Is this a wildcard certificate.
@@ -38,16 +38,21 @@ options:
     certificate:
         description:
             - The SSL Certificate contents.
-        type: string
+        type: str
     key:
         description:
             - The Private Key contents.
-        type: string
+        type: str
+extends_documentation_fragment:
+    - action_common_attributes
 attributes:
     check_mode:
         support: full
     diff_mode:
         support: full
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''
@@ -75,6 +80,7 @@ RETURN = r'''
 certificate:
     description:
         - SSL Certificate Details.
+    type: dict
     returned: always
     sample:
         "certificate": {
@@ -104,10 +110,10 @@ from ansible.module_utils.connection import Connection
 from functools import partial
 try:
     import module_utils.morpheus_funcs as mf
-    from module_utils.morpheusapi import MorpheusApi
+    from module_utils.morpheusapi import ApiPath, MorpheusApi
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import ApiPath, MorpheusApi
 
 
 MOCK_SSL_CERT = {
@@ -142,8 +148,8 @@ def create_update_cert(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict
         api_params['id'] = cert['id']
 
     action = {
-        0: partial(morpheus_api.create_ssl_certificate, api_params),
-        1: partial(morpheus_api.update_ssl_certificate, api_params),
+        0: partial(morpheus_api.common_create, path=ApiPath.SSL_CERTIFICATES_PATH, api_params=api_params),
+        1: partial(morpheus_api.common_set, path=ApiPath.SSL_CERTIFICATES_PATH, item_id=api_params.pop('id'), api_params=api_params),
         2: partial(parse_check_mode, state=module.params['state'], api_params=api_params, cert=cert)
     }.get('id' in cert if not module.check_mode else 2)
 
@@ -185,7 +191,7 @@ def create_update_cert(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict
 def get_cert(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
     api_params = module_to_api_params(module.params)
 
-    cert = morpheus_api.get_ssl_certificates(api_params)
+    cert = morpheus_api.common_get(ApiPath.SSL_CERTIFICATES_PATH, api_params)
 
     if isinstance(cert, list) and len(cert) > 1:
         module.fail_json(
@@ -236,7 +242,7 @@ def remove_cert(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
             msg='No matching certificate found'
         )
 
-    response = morpheus_api.delete_ssl_certificate(cert['id']) if not module.check_mode \
+    response = morpheus_api.common_delete(ApiPath.SSL_CERTIFICATES_PATH, cert['id']) if not module.check_mode \
         else parse_check_mode(state=module.params['state'])
 
     success, msg = mf.success_response(response)
@@ -268,7 +274,7 @@ def run_module():
         'domain_name': {'type': 'str'},
         'wildcard': {'type': 'bool'},
         'certificate': {'type': 'str'},
-        'key': {'type': 'str', 'no_log': 'true'}
+        'key': {'type': 'str', 'no_log': True}
     }
 
     result = {

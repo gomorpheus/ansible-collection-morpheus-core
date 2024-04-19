@@ -8,12 +8,12 @@ options:
     environment:
         description:
             - Filter instances by environment.
-        type: string
+        type: str
     labels:
         description:
             - Filter instances by matching labels.
         type: list
-        elements: string
+        elements: str
     match_all_labels:
         description:
             - If labels have been specified, filter instances by those that match all specified labels.
@@ -23,5 +23,5 @@ options:
         description:
             - Filter instances by matching tags.
         type: list
-        elements: string
+        elements: str
 '''

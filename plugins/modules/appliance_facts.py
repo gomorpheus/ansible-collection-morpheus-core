@@ -9,15 +9,15 @@ short_description: Gather Morpheus Appliance Facts
 description:
     - Gathers Morpheus Appliance Facts
 version_added: 0.3.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     gather_subset:
         description:
             - "Specify or restrict the facts that are gathered.
-              Possible values: C(all), C(database), C(elastic), C(license), C(rabbitmq),
-              C(settings), C(system), C(threads).
-              The minimum subset is: C(license), C(settings), C(system).
-              To specify a specific subset, use C(!all, !min) and then specify the fact(s) required."
+              Possible values: V(all), V(database), V(elastic), V(license), V(rabbitmq),
+              V(settings), V(system), V(threads).
+              The minimum subset is: V(license), V(settings), V(system).
+              To specify a specific subset, use V(!all, !min) and then specify the fact(s) required."
         type: list
         elements: str
         default: "all"
@@ -32,6 +32,17 @@ options:
         type: list
         elements: str
         default: []
+extends_documentation_fragment:
+    - action_common_attributes
+attributes:
+    check_mode:
+        support: N/A
+        details: Not Required, Module does not make changes.
+    diff_mode:
+        support: N/A
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''
@@ -53,7 +64,9 @@ EXAMPLES = r'''
 
 RETURN = r'''
 ansible_facts:
-    description: Example of returned ansible_facts
+    description:
+        - Example of returned ansible_facts
+    type: dict
     returned: always
     sample:
         "ansible_facts": {

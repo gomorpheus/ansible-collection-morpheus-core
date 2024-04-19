@@ -1,0 +1,85 @@
+plugins/module_utils/facts/appliance_database.py import-3.6 # ignore circular import error
+plugins/module_utils/facts/appliance_database.py import-3.7 # ignore circular import error
+plugins/module_utils/facts/appliance_database.py import-3.8 # ignore circular import error
+plugins/module_utils/facts/appliance_database.py import-3.9 # ignore circular import error
+plugins/module_utils/facts/appliance_database.py import-3.10 # ignore circular import error
+plugins/module_utils/facts/appliance_database.py import-3.11 # ignore circular import error
+plugins/module_utils/facts/appliance_database.py import-3.12 # ignore circular import error
+plugins/module_utils/facts/appliance_elastic.py import-3.6 # ignore circular import error
+plugins/module_utils/facts/appliance_elastic.py import-3.7 # ignore circular import error
+plugins/module_utils/facts/appliance_elastic.py import-3.8 # ignore circular import error
+plugins/module_utils/facts/appliance_elastic.py import-3.9 # ignore circular import error
+plugins/module_utils/facts/appliance_elastic.py import-3.10 # ignore circular import error
+plugins/module_utils/facts/appliance_elastic.py import-3.11 # ignore circular import error
+plugins/module_utils/facts/appliance_elastic.py import-3.12 # ignore circular import error
+plugins/module_utils/facts/appliance_license.py import-3.6 # ignore circular import error
+plugins/module_utils/facts/appliance_license.py import-3.7 # ignore circular import error
+plugins/module_utils/facts/appliance_license.py import-3.8 # ignore circular import error
+plugins/module_utils/facts/appliance_license.py import-3.9 # ignore circular import error
+plugins/module_utils/facts/appliance_license.py import-3.10 # ignore circular import error
+plugins/module_utils/facts/appliance_license.py import-3.11 # ignore circular import error
+plugins/module_utils/facts/appliance_license.py import-3.12 # ignore circular import error
+plugins/module_utils/facts/appliance_rabbitmq.py import-3.6 # ignore circular import error
+plugins/module_utils/facts/appliance_rabbitmq.py import-3.7 # ignore circular import error
+plugins/module_utils/facts/appliance_rabbitmq.py import-3.8 # ignore circular import error
+plugins/module_utils/facts/appliance_rabbitmq.py import-3.9 # ignore circular import error
+plugins/module_utils/facts/appliance_rabbitmq.py import-3.10 # ignore circular import error
+plugins/module_utils/facts/appliance_rabbitmq.py import-3.11 # ignore circular import error
+plugins/module_utils/facts/appliance_settings.py import-3.6 # ignore circular import error
+plugins/module_utils/facts/appliance_settings.py import-3.7 # ignore circular import error
+plugins/module_utils/facts/appliance_settings.py import-3.8 # ignore circular import error
+plugins/module_utils/facts/appliance_settings.py import-3.9 # ignore circular import error
+plugins/module_utils/facts/appliance_settings.py import-3.10 # ignore circular import error
+plugins/module_utils/facts/appliance_settings.py import-3.11 # ignore circular import error
+plugins/module_utils/facts/appliance_settings.py import-3.12 # ignore circular import error
+plugins/module_utils/facts/appliance_system.py import-3.6 # ignore circular import error
+plugins/module_utils/facts/appliance_system.py import-3.7 # ignore circular import error
+plugins/module_utils/facts/appliance_system.py import-3.8 # ignore circular import error
+plugins/module_utils/facts/appliance_system.py import-3.9 # ignore circular import error
+plugins/module_utils/facts/appliance_system.py import-3.10 # ignore circular import error
+plugins/module_utils/facts/appliance_system.py import-3.11 # ignore circular import error
+plugins/module_utils/facts/appliance_system.py import-3.12 # ignore circular import error
+plugins/module_utils/facts/appliance_threads.py import-3.6 # ignore circular import error
+plugins/module_utils/facts/appliance_threads.py import-3.7 # ignore circular import error
+plugins/module_utils/facts/appliance_threads.py import-3.8 # ignore circular import error
+plugins/module_utils/facts/appliance_threads.py import-3.9 # ignore circular import error
+plugins/module_utils/facts/appliance_threads.py import-3.10 # ignore circular import error
+plugins/module_utils/facts/appliance_threads.py import-3.11 # ignore circular import error
+plugins/module_utils/facts/appliance_threads.py import-3.12 # ignore circular import error
+plugins/module_utils/morpheusapi.py import-3.6 # ignore circular import error
+plugins/module_utils/morpheusapi.py import-3.7 # ignore circular import error
+plugins/module_utils/morpheusapi.py import-3.8 # ignore circular import error
+plugins/module_utils/morpheusapi.py import-3.9 # ignore circular import error
+plugins/module_utils/morpheusapi.py import-3.10 # ignore circular import error
+plugins/module_utils/morpheusapi.py import-3.11 # ignore circular import error
+plugins/module_utils/morpheusapi.py import-3.12 # ignore circular import error
+plugins/httpapi/morpheus.py validate-modules:missing-gplv3-license
+plugins/inventory/morpheus_inventory.py validate-modules:missing-gplv3-license
+plugins/modules/appliance_facts.py validate-modules:missing-gplv3-license
+plugins/modules/appliance_maintenance_mode.py validate-modules:missing-gplv3-license
+plugins/modules/appliance_settings.py validate-modules:missing-gplv3-license
+plugins/modules/azure_cloud.py validate-modules:missing-gplv3-license
+plugins/modules/cloud_datastore_info.py validate-modules:missing-gplv3-license
+plugins/modules/cloud_datastore.py validate-modules:missing-gplv3-license
+plugins/modules/cloud_info.py validate-modules:missing-gplv3-license
+plugins/modules/cloud_type_info.py validate-modules:missing-gplv3-license
+plugins/modules/cypher_info.py validate-modules:missing-gplv3-license
+plugins/modules/cypher.py validate-modules:missing-gplv3-license
+plugins/modules/group_info.py validate-modules:missing-gplv3-license
+plugins/modules/group.py validate-modules:missing-gplv3-license
+plugins/modules/instance_info.py validate-modules:missing-gplv3-license
+plugins/modules/instance_snapshot_info.py validate-modules:missing-gplv3-license
+plugins/modules/instance_snapshot.py validate-modules:missing-gplv3-license
+plugins/modules/instance.py validate-modules:missing-gplv3-license
+plugins/modules/integration_info.py validate-modules:missing-gplv3-license
+plugins/modules/key_pair_info.py validate-modules:missing-gplv3-license
+plugins/modules/key_pair.py validate-modules:missing-gplv3-license
+plugins/modules/role_info.py validate-modules:missing-gplv3-license
+plugins/modules/ssl_certificate_info.py validate-modules:missing-gplv3-license
+plugins/modules/ssl_certificate.py validate-modules:missing-gplv3-license
+plugins/modules/standard_cloud.py validate-modules:missing-gplv3-license
+plugins/modules/tenant_info.py validate-modules:missing-gplv3-license
+plugins/modules/tenant.py validate-modules:missing-gplv3-license
+plugins/modules/vcenter_cloud.py validate-modules:missing-gplv3-license
+plugins/modules/virtual_image_info.py validate-modules:missing-gplv3-license
+plugins/modules/virtual_image.py validate-modules:missing-gplv3-license

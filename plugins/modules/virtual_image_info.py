@@ -9,7 +9,7 @@ short_description: Gather Virtual Image information
 description:
     - Gathers information about Virtual Images.
 version_added: 0.6.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     virtual_image_id:
         description:
@@ -18,7 +18,7 @@ options:
     name:
         description:
             - Return info for Virtual Image by Name
-        type: string
+        type: str
     regex_name:
         description:
             - Treat name parameter as a Regular Expression
@@ -33,16 +33,16 @@ options:
             - synced
             - system
             - user
-        type: string
+        type: str
     image_type:
         description:
             - Filter by image type code, e.g. vmware, ami
-        type: string
+        type: str
     labels:
         description:
             - Filter by matching labels
         type: list
-        elements: string
+        elements: str
     match_all_labels:
         description:
             - If true, match all specified labels
@@ -55,7 +55,18 @@ options:
         choices:
             - full
             - summary
-        type: string
+        type: str
+extends_documentation_fragment:
+    - action_common_attributes
+attributes:
+    check_mode:
+        support: N/A
+        details: Not Required, Module does not make changes.
+    diff_mode:
+        support: N/A
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''
@@ -86,6 +97,7 @@ RETURN = r'''
 virtual_images:
     description:
         - List of Virtual Images
+    type: list
     returned: always
     sample:
         "virtual_images": [
@@ -123,14 +135,15 @@ virtual_images:
         ]
 '''
 
-import re
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 
 try:
+    import module_utils.info_module_common as info_module
     import module_utils.morpheus_funcs as mf
     from module_utils.morpheusapi import MorpheusApi
 except ModuleNotFoundError:
+    import ansible_collections.morpheus.core.plugins.module_utils.info_module_common as info_module
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
     from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
 
@@ -171,14 +184,14 @@ def run_module():
         'detail': {'type': 'str', 'choices': ['full', 'summary'], 'default': 'summary'}
     }
 
-    mutually_exclusive = {
+    mutually_exclusive = [
         ('virtual_image_id', 'name'),
         ('virtual_image_id', 'regex_name'),
         ('virtual_image_id', 'filter_type'),
         ('virtual_image_id', 'image_type'),
         ('virtual_image_id', 'labels'),
         ('virtual_image_id', 'match_all_labels')
-    }
+    ]
 
     result = {
         'changed': False,
@@ -194,30 +207,11 @@ def run_module():
     connection = Connection(module._socket_path)
     morpheus_api = MorpheusApi(connection)
 
-    api_params = module.params.copy()
-
-    if module.params['regex_name']:
-        api_params['name'] = None
-    api_params['all_labels'] = api_params.pop('labels') if module.params['match_all_labels'] else None
-
-    for k in ['detail', 'match_all_labels', 'regex_name']:
-        del api_params[k]
+    api_params = info_module.param_filter(module)
 
     response = morpheus_api.get_virtual_images(api_params)
 
-    if not isinstance(response, list):
-        response = [response]
-
-    if module.params['name'] is not None and module.params['regex_name']:
-        response = [image for image in response if re.match(module.params['name'], image['name'])]
-
-    if module.params['detail'] != 'full':
-        filter_keys = API_FILTER_KEYS[module.params['detail']]
-
-        filtered_info = [mf.dict_filter(image, list(filter_keys)) for image in response]
-        result['virtual_images'] = [mf.dict_keys_to_snake_case(image) for image in filtered_info]
-
-        module.exit_json(**result)
+    response = info_module.response_filter(module, response, API_FILTER_KEYS)
 
     result['virtual_images'] = [mf.dict_keys_to_snake_case(response_item) for response_item in response]
 

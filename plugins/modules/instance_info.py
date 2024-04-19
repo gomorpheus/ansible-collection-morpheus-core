@@ -9,7 +9,7 @@ short_description: Gather information about instances
 description:
     - Gathers information about Morpheus instances
 version_added: 0.4.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     detail:
         description:
@@ -20,11 +20,11 @@ options:
             - full
             - extra
             - summary
-        type: string
+        type: str
     instance_type:
         description:
             - Filter by the instance type code.
-        type: string
+        type: str
     agent_installed:
         description:
             - Filter by if agent is installed or not.
@@ -32,7 +32,7 @@ options:
     status:
         description:
             - Filter by instance status, e.g. running
-        type: string
+        type: str
     deleted:
         description:
             - Include, Exclude or Only show deleted instances or those pending removal.
@@ -41,10 +41,20 @@ options:
             - include
             - only
         default: exclude
-        type: string
+        type: str
 extends_documentation_fragment:
     - morpheus.core.instance_filter_base
     - morpheus.core.instance_filter_extended
+    - action_common_attributes
+attributes:
+    check_mode:
+        support: N/A
+        details: Not Required, Module does not make changes.
+    diff_mode:
+        support: N/A
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''
@@ -86,6 +96,7 @@ RETURN = r'''
 morpheus_instances:
     description:
         - List of instances with info
+    type: list
     returned: always
     sample:
         "morpheus_instances": [
@@ -164,13 +175,14 @@ morpheus_instances:
         ]
 '''
 
-import re
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:
+    import module_utils.info_module_common as info_module
     import module_utils.morpheus_funcs as mf
     from module_utils.morpheusapi import MorpheusApi
 except ModuleNotFoundError:
+    import ansible_collections.morpheus.core.plugins.module_utils.info_module_common as info_module
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
     from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
 
@@ -204,23 +216,21 @@ API_FILTER_KEYS = {
 
 def run_module():
     argument_spec = {
-        'id': {'type': 'int'},
-        'name': {'type': 'str'},
-        'regex_name': {'type': 'bool', 'default': 'false'},
-        'detail': {'type': 'str', 'choices': ['minimal', 'full', 'extra', 'summary'], 'default': 'minimal'},
-        'instance_type': {'type': 'str'},
-        'agent_installed': {'type': 'bool'},
-        'status': {'type': 'str'},
-        'environment': {'type': 'str'},
-        'deleted': {'type': 'str', 'choices': ['exclude', 'include', 'only'], 'default': 'exclude'},
-        'labels': {'type': 'list', 'elements': 'str'},
-        'match_all_labels': {'type': 'bool', 'default': 'false'},
-        'tags': {'type': 'str'}
+        **info_module.COMMON_ARG_SPEC,
+        **{
+            'detail': {'type': 'str', 'choices': ['minimal', 'full', 'extra', 'summary'], 'default': 'minimal'},
+            'instance_type': {'type': 'str'},
+            'agent_installed': {'type': 'bool'},
+            'status': {'type': 'str'},
+            'environment': {'type': 'str'},
+            'deleted': {'type': 'str', 'choices': ['exclude', 'include', 'only'], 'default': 'exclude'},
+            'labels': {'type': 'list', 'elements': 'str'},
+            'match_all_labels': {'type': 'bool', 'default': 'false'},
+            'tags': {'type': 'list', 'elements': 'str'}
+        }
     }
 
-    mutually_exclusive = [
-        ('id', 'name'),
-        ('id', 'regex_name'),
+    mutually_exclusive = info_module.COMMON_MUTUALLY_EXCLUSIVE + [
         ('id', 'instance_type'),
         ('id', 'agent_installed'),
         ('id', 'status'),
@@ -245,32 +255,15 @@ def run_module():
     connection = Connection(module._socket_path)
     morpheus_api = MorpheusApi(connection)
 
-    api_params = module.params.copy()
-    if module.params['regex_name']:
-        api_params['name'] = None
+    api_params = info_module.param_filter(module)
     api_params['details'] = 'extra' in module.params['detail']
     api_params['show_deleted'] = 'include' in module.params['deleted']
     api_params['deleted'] = 'only' in module.params['deleted']
     api_params['all_labels'] = api_params.pop('labels') if module.params['match_all_labels'] else None
 
-    for k in ['detail', 'match_all_labels', 'regex_name']:
-        del api_params[k]
-
     response = morpheus_api.get_instances(api_params)
 
-    if not isinstance(response, list):
-        response = [response]
-
-    if module.params['name'] is not None and module.params['regex_name']:
-        response = [inst for inst in response if re.match(module.params['name'], inst['name'])]
-
-    if module.params['detail'] in ['minimal', 'summary']:
-        filter_keys = API_FILTER_KEYS[module.params['detail']]
-
-        filtered_info = [mf.dict_filter(instance, list(filter_keys)) for instance in response]
-
-        result['morpheus_instances'] = [mf.dict_keys_to_snake_case(simple_item) for simple_item in filtered_info]
-        module.exit_json(**result)
+    response = info_module.response_filter(module, response, API_FILTER_KEYS)
 
     result['morpheus_instances'] = [mf.dict_keys_to_snake_case(response_item) for response_item in response]
 

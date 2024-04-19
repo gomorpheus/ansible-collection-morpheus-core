@@ -9,17 +9,17 @@ short_description: Manage Morpheus Virtual Images
 description:
     - Manage Morpheus Virtual Images.
 version_added: 0.6.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     state:
         description:
             - Create, update or remove a Virtual Image.
-            - If I(state=absent) and I(filename) is specified then remove the specified file.
+            - If O(state=absent) and O(filename) is specified then remove the specified file.
         default: present
         choices:
             - absent
             - present
-        type: string
+        type: str
     virtual_image_id:
         description:
             - Specify Virtual Image by Id.
@@ -27,24 +27,24 @@ options:
     name:
         description:
             - Set the Name of the Virtual Image
-        type: string
+        type: str
     filename:
         description:
             - Name of uploaded file.
-        type: string
+        type: str
     file_url:
         description:
             - URL of file to upload.
-        type: string
+        type: str
     labels:
         description:
             - Provide a list of labels to apply to Virtual Image.
         type: list
-        elements: string
+        elements: str
     image_type:
         description:
             - Set the Image Type code, e.g. vmware
-        type: string
+        type: str
     storage_provider_id:
         description:
             - Specify the Storage Provider by Id.
@@ -56,7 +56,7 @@ options:
     user_data:
         description:
             - Cloud Init user data.
-        type: string
+        type: str
     install_agent:
         description:
             - Specify if Morpheus Agent should be installed.
@@ -64,26 +64,26 @@ options:
     username:
         description:
             - Specify the Username for the Virtual Image.
-        type: string
+        type: str
     password:
         description:
             - Specify the Password for the Virtual Image.
-        type: string
+        type: str
     ssh_key:
         description:
             - Specify an SSH Key for the Virtual Image.
-        type: string
+        type: str
     os_type:
         description:
             - Specify the OS Type code or name.
-        type: string
+        type: str
     visibility:
         description:
             - If the Virtual Image should be private or public.
         choices:
             - private
             - public
-        type: string
+        type: str
     accounts:
         description:
             - List of Tenants by Id Virtual Image is available to.
@@ -104,7 +104,6 @@ options:
     trial_version:
         description:
             - Is the Virtual Image a Trial Version.
-        default: false
         type: bool
     is_sysprep:
         description:
@@ -118,19 +117,19 @@ options:
             publisher:
                 description:
                     - Name of Publisher in the Azure Marketplace.
-                type: string
+                type: str
             offer:
                 description:
                     - Name of Offer in the Azure Marketplace.
-                type: string
+                type: str
             sku:
                 description:
                     - Name of SKU in the Azure Marketplace.
-                type: string
+                type: str
             version:
                 description:
                     - Name of Version in the Azure Marketplace.
-                type: string
+                type: str
     config:
         description:
             - Dictionary of Virtual Image configuration.
@@ -144,16 +143,21 @@ options:
             name:
                 description:
                     - The Tag name.
-                type: string
+                type: str
             value:
                 description:
                     - The Tag value.
-                type: string
+                type: str
+extends_documentation_fragment:
+    - action_common_attributes
 attributes:
     check_mode:
         support: full
     diff_mode:
         support: full
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''
@@ -195,6 +199,7 @@ RETURN = r'''
 virtual_image:
     description:
         - Information about the Virtual Image.
+    type: dict
     returned: always
     sample:
         "virtual_image": {
@@ -293,10 +298,10 @@ from ansible.module_utils.connection import Connection
 
 try:
     import module_utils.morpheus_funcs as mf
-    from module_utils.morpheusapi import MorpheusApi
+    from module_utils.morpheusapi import ApiPath, MorpheusApi
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import ApiPath, MorpheusApi
 
 
 def create_update_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
@@ -335,8 +340,8 @@ def create_update_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
         virtual_image = []
 
     action = {
-        0: partial(morpheus_api.create_virtual_image, api_params=api_params),
-        1: partial(morpheus_api.update_virtual_image, api_params=api_params),
+        0: partial(morpheus_api.common_create, path=ApiPath.VIRTUAL_IMAGES_PATH, api_params=api_params),
+        1: partial(morpheus_api.common_set, path=ApiPath.VIRTUAL_IMAGES_PATH, item_id=api_params.pop('virtual_image_id'), api_params=api_params),
         3: partial(parse_check_mode, state=module.params['state'], api_params=api_params, virtual_images=virtual_image)
     }.get(len(virtual_image) if not module.check_mode else 3)
 
@@ -400,13 +405,12 @@ def get_vi(module_params: dict, morpheus_api: MorpheusApi) -> list:
     """
     virtual_image = []
 
-    api_params, _ = module_to_api_params(module_params)
+    api_params, file_params = module_to_api_params(module_params)
 
     if module_params['virtual_image_id'] is not None:
         virtual_image = [morpheus_api.get_virtual_images(api_params)]
-        try:
-            _ = virtual_image[0]['id']
-        except KeyError:
+
+        if 'id' not in virtual_image[0]:
             virtual_image = []
 
     if module_params['name'] is not None and len(virtual_image) == 0:
@@ -464,14 +468,11 @@ def parse_check_mode(
     images = deepcopy(virtual_images)
     result = {}
 
-    if state == 'absent':
-        try:
-            _ = images[0]['id']
-        except (IndexError, KeyError):
-            result = {
-                'success': False,
-                'msg': 'Virtual Image not found'
-            }
+    if state == 'absent' and (len(images) == 0 or 'id' not in images[0]):
+        result = {
+            'success': False,
+            'msg': 'Virtual Image not found'
+        }
 
         result = {'success': True}
 
@@ -497,15 +498,12 @@ def parse_check_mode(
 
         result = virtual_image
 
-    if file_params is not None and len(result) == 0:
-        try:
-            _ = images[0]['id']
-        except (IndexError, KeyError):
-            return {
-                'success': False,
-                'msg': 'Virtual Image not found'
-            }
-
+    if file_params is not None and len(result) == 0 and (len(images) == 0 or 'id' not in images[0]):
+        result = {
+            'success': False,
+            'msg': 'Virtual Image not found'
+        }
+    else:
         result = {
             'success': True,
         }
@@ -530,18 +528,16 @@ def remove_vi(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
             msg='Number of matching Virtual Images exceeded 1, got {0}'.format(len(virtual_image))
         )
 
-    try:
-        _ = virtual_image[0]['id']
-    except (IndexError, KeyError):
+    if len(virtual_image) == 0 or 'id' not in virtual_image[0]:
         module.fail_json(
             msg='No Virtual Images matched query parameters'
         )
 
-    _, file_params = module_to_api_params(module.params)
+    api_params, file_params = module_to_api_params(module.params)
     file_params['virtual_image_id'] = virtual_image[0]['id']
 
     action = {
-        0: partial(morpheus_api.delete_virtual_image, virtual_image[0]['id']),
+        0: partial(morpheus_api.common_delete, path=ApiPath.VIRTUAL_IMAGES_PATH, item_id=virtual_image[0]['id']),
         1: partial(morpheus_api.delete_virtual_image_file, file_params),
         2: partial(parse_check_mode, state=module.params['state'], virtual_images=virtual_image)
     }.get(int(module.params['filename'] is not None) if not module.check_mode else 2)
@@ -581,8 +577,8 @@ def run_module():
         'user_data': {'type': 'str'},
         'install_agent': {'type': 'bool'},
         'username': {'type': 'str'},
-        'password': {'type': 'str', 'no_log': 'true'},
-        'ssh_key': {'type': 'str', 'no_log': 'true'},
+        'password': {'type': 'str', 'no_log': True},
+        'ssh_key': {'type': 'str', 'no_log': True},
         'os_type': {'type': 'str'},
         'visibility': {'type': 'str', 'choices': ['private', 'public']},
         'accounts': {'type': 'list', 'elements': 'int'},

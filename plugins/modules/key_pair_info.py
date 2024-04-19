@@ -9,25 +9,24 @@ short_description: Gather Key Pair Information
 description:
     - Gathers Information of Key Pairs.
 version_added: 0.6.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
-    id:
-        description:
-            - Specify Id of Key Pair.
-        type: int
-    name:
-        description:
-            - The name of the Key Pair.
-        type: string
-    regex_name:
-        description:
-            - Treat name as a Regular Expression.
-        default: false
-        type: bool
     has_private_key:
         description:
             - Filter Key Pairs with or without a stored Private Key.
         type: bool
+extends_documentation_fragment:
+    - morpheus.core.generic_name_filter
+    - action_common_attributes
+attributes:
+    check_mode:
+        support: N/A
+        details: Not Required, Module does not make changes.
+    diff_mode:
+        support: N/A
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''
@@ -49,6 +48,7 @@ RETURN = r'''
 key_pairs:
     description:
         - List of Key Pairs.
+    type: list
     returned: always
     sample:
         "key_pairs": [
@@ -77,28 +77,27 @@ key_pairs:
         ]
 '''
 
-import re
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:
+    import module_utils.info_module_common as info_module
     import module_utils.morpheus_funcs as mf
-    from module_utils.morpheusapi import MorpheusApi
+    from module_utils.morpheusapi import ApiPath, MorpheusApi
 except ModuleNotFoundError:
+    import ansible_collections.morpheus.core.plugins.module_utils.info_module_common as info_module
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import ApiPath, MorpheusApi
 
 
 def run_module():
     argument_spec = {
-        'id': {'type': 'int'},
-        'name': {'type': 'str'},
-        'regex_name': {'type': 'bool', 'default': 'false'},
-        'has_private_key': {'type': 'bool'}
+        **info_module.COMMON_ARG_SPEC,
+        **{
+            'has_private_key': {'type': 'bool'}
+        }
     }
 
-    mutually_exclusive = [
-        ('id', 'name'),
-        ('id', 'regex_name'),
+    mutually_exclusive = info_module.COMMON_MUTUALLY_EXCLUSIVE + [
         ('id', 'has_private_key')
     ]
 
@@ -117,22 +116,15 @@ def run_module():
     morpheus_api = MorpheusApi(connection)
 
     if module.params['id'] is not None:
-        response = morpheus_api.get_key_pairs({'id': module.params['id']})
+        response = morpheus_api.common_get(ApiPath.KEY_PAIR_PATH, {'id': module.params['id']})
         result['key_pairs'] = [mf.dict_keys_to_snake_case(response)]
         module.exit_json(**result)
 
-    api_params = module.params.copy()
+    api_params = info_module.param_filter(module, ['has_private_key'])
 
-    if module.params['regex_name']:
-        api_params['name'] = None
+    response = morpheus_api.common_get(ApiPath.KEY_PAIR_PATH, api_params)
 
-    for k in ['regex_name', 'has_private_key']:
-        del api_params[k]
-
-    response = morpheus_api.get_key_pairs(api_params)
-
-    if module.params['regex_name']:
-        response = [kp for kp in response if re.match(module.params['name'], kp['name'])]
+    response = info_module.response_filter(module, response)
 
     if module.params['has_private_key'] is not None:
         response = [kp for kp in response if kp['hasPrivateKey'] is module.params['has_private_key']]

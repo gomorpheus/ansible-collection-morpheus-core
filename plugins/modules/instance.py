@@ -9,22 +9,22 @@ short_description: Basic Management of Morpheus Instances
 description:
     - This module provides basic management of Morpheus Instances, such as setting running state, backup, deletion and lock status.
 version_added: 0.5.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     match_name:
         description:
-            - Define instance selection method when specifying I(name) should more than one instance match.
+            - Define instance selection method when specifying O(name) should more than one instance match.
         default: none
         choices:
             - none
             - first
             - last
             - all
-        type: string
+        type: str
     state:
         description:
             - Set the State of the Instance.
-            - C(eject) - Ejects ISO media from the instance.
+            - V(eject) - Ejects ISO media from the instance.
         choices:
             - running
             - started
@@ -37,10 +37,10 @@ options:
             - absent
             - eject
         required: true
-        type: string
+        type: str
     remove_options:
         description:
-            - When I(state=absent) specify additional removal options.
+            - When O(state=absent) specify additional removal options.
         type: dict
         suboptions:
             preserve_volumes:
@@ -64,12 +64,16 @@ options:
                 default: false
                 type: bool
 extends_documentation_fragment:
+    - action_common_attributes
     - morpheus.core.instance_filter_base
 attributes:
     check_mode:
         support: full
     diff_mode:
         support: full
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''
@@ -111,6 +115,7 @@ RETURN = r'''
 instance_state:
     description:
         - State of the instance(s) following the requested action.
+    type: list
     returned: always
     sample:
         "instance_state": [
@@ -124,14 +129,15 @@ instance_state:
 '''
 
 from copy import deepcopy
+from functools import partial
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 try:
     import module_utils.morpheus_funcs as mf
-    from module_utils.morpheusapi import MorpheusApi
+    from module_utils.morpheusapi import ApiPath, MorpheusApi
 except ModuleNotFoundError:
     import ansible_collections.morpheus.core.plugins.module_utils.morpheus_funcs as mf
-    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import MorpheusApi
+    from ansible_collections.morpheus.core.plugins.module_utils.morpheusapi import ApiPath, MorpheusApi
 
 
 INSTANCE_INFO_KEYS = (
@@ -150,6 +156,15 @@ def instance_state(morpheus_api: MorpheusApi, instance_id: int) -> dict:
     )
 
     return mf.dict_filter(response, INSTANCE_INFO_KEYS)
+
+
+def module_to_api_params(params: dict) -> dict:
+    api_params = {}
+
+    for k, v in params['remove_options'].items():
+        api_params[k] = v
+
+    return api_params
 
 
 def parse_check_mode(module_params: dict, instance: dict) -> dict:
@@ -173,16 +188,16 @@ def parse_check_mode(module_params: dict, instance: dict) -> dict:
 
 def run_module():
     argument_spec = {
-        'id': {'type': 'str'},
+        'id': {'type': 'int'},
         'name': {'type': 'str'},
         'regex_name': {'type': 'bool', 'default': 'false'},
         'match_name': {'type': 'str', 'choices': ['none', 'first', 'last', 'all'], 'default': 'none'},
         'state': {'type': 'str',
                   'choices': ['running', 'started', 'stopped', 'restarted', 'suspended', 'locked', 'unlocked', 'backup', 'absent', 'eject'],
-                  'required': 'true'},
+                  'required': True},
         'remove_options': {
             'type': 'dict',
-            'apply_defaults': 'true',
+            'apply_defaults': True,
             'options': {
                 'preserve_volumes': {'type': 'bool', 'default': 'false'},
                 'keep_backups': {'type': 'bool', 'default': 'false'},
@@ -222,23 +237,23 @@ def run_module():
     instances = mf.instance_filter(morpheus_api, module.params, INSTANCE_INFO_KEYS)
 
     action_func = {
-        'absent': morpheus_api.delete_instance,
-        'backup': morpheus_api.backup_instance,
-        'eject': morpheus_api.eject_instance,
-        'locked': morpheus_api.lock_instance,
-        'restarted': morpheus_api.restart_instance,
-        'running': morpheus_api.start_instance,
-        'started': morpheus_api.start_instance,
-        'stopped': morpheus_api.stop_instance,
-        'suspended': morpheus_api.suspend_instance,
-        'unlocked': morpheus_api.unlock_instance
+        'absent': partial(morpheus_api.common_delete, path=ApiPath.INSTANCES_PATH, api_params=module_to_api_params(module.params)),
+        'backup': partial(morpheus_api.instance_action, action='backup'),
+        'eject': partial(morpheus_api.instance_action, action='eject'),
+        'locked': partial(morpheus_api.instance_action, action='lock'),
+        'restarted': partial(morpheus_api.instance_action, action='restart'),
+        'running': partial(morpheus_api.instance_action, action='start'),
+        'started': partial(morpheus_api.instance_action, action='start'),
+        'stopped': partial(morpheus_api.instance_action, action='stop'),
+        'suspended': partial(morpheus_api.instance_action, action='suspend'),
+        'unlocked': partial(morpheus_api.instance_action, action='unlock')
     }.get(module.params['state'])
 
     if not module.check_mode:
-        results = [mf.dict_keys_to_snake_case(action_func(instance['id'])) for instance in instances]
+        results = [mf.dict_keys_to_snake_case(action_func(item_id=instance['id'])) for instance in instances]
 
         for response in results:
-            success, _ = mf.success_response(response[list(response.keys())[0]]) \
+            success, msg = mf.success_response(response[list(response.keys())[0]]) \
                 if module.params['state'] not in ['absent', 'locked', 'unlocked'] \
                 else mf.success_response(response)
             result['changed'] = success if not result['changed'] else False

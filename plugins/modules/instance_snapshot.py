@@ -9,18 +9,18 @@ short_description: Manage Instance Snapshots
 description:
     - Manage Snapshots of Morpheus Instances.
 version_added: 0.5.0
-author: James Riach
+author: James Riach (@McGlovin1337)
 options:
     match_name:
         description:
-            - Define instance selection method when specifying I(name) should more than one instance match.
+            - Define instance selection method when specifying O(name) should more than one instance match.
         default: none
         choices:
             - none
             - first
             - last
             - all
-        type: string
+        type: str
     state:
         description:
             - Manage snapshot state of the specified instance(s)
@@ -30,21 +30,21 @@ options:
             - revert
             - remove_all
         default: present
-        type: string
+        type: str
     snapshot_id:
         description:
-            - Specify snapshot by id when using I(state=absent) or I(state=revert).
+            - Specify snapshot by id when using O(state=absent) or O(state=revert).
         type: int
     snapshot_name:
         description:
             - Specify snapshot name.
-            - Can be used with I(state=present), I(state=absent), I(state=revert).
-        type: string
+            - Can be used with O(state=present), O(state=absent), O(state=revert).
+        type: str
     snapshot_description:
         description:
             - Specify description for snapshot.
-            - Used with I(state=present)
-        type: string
+            - Used with O(state=present)
+        type: str
     snapshot_age:
         description:
             - Specify the age of the snapshot to match.
@@ -52,14 +52,18 @@ options:
             - latest
             - oldest
         default: latest
-        type: string
+        type: str
 extends_documentation_fragment:
+    - action_common_attributes
     - morpheus.core.instance_filter_base
 attributes:
     check_mode:
         support: full
     diff_mode:
         support: full
+    platform:
+        platforms:
+            - httpapi
 '''
 
 EXAMPLES = r'''
@@ -102,6 +106,7 @@ RETURN = r'''
 snapshot_results:
     description:
         - List of results of each action performed against each instance and/or snapshot.
+    type: list
     returned: always
     sample:
         "snapshot_results": [
@@ -275,11 +280,11 @@ def snapshot_revert(module_params: dict, morpheus_api: MorpheusApi, instance_sna
 
 def run_module():
     argument_spec = {
-        'id': {'type': 'str'},
+        'id': {'type': 'int'},
         'name': {'type': 'str'},
         'regex_name': {'type': 'bool', 'default': 'false'},
         'match_name': {'type': 'str', 'choices': ['none', 'first', 'last', 'all'], 'default': 'none'},
-        'state': {'type': 'str', 'choices': ['absent', 'present', 'revert', 'remove_all']},
+        'state': {'type': 'str', 'choices': ['absent', 'present', 'revert', 'remove_all'], 'default': 'present'},
         'snapshot_id': {'type': 'int'},
         'snapshot_name': {'type': 'str'},
         'snapshot_description': {'type': 'str'},
@@ -291,8 +296,7 @@ def run_module():
         ('id', 'regex_name'),
         ('id', 'match_name'),
         ('snapshot_id', 'snapshot_name'),
-        ('snapshot_id', 'snapshot_description'),
-        ('snapshot_id', 'match_age')
+        ('snapshot_id', 'snapshot_description')
     ]
 
     required_one_of = [

@@ -1,42 +1,56 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-from ansible.module_utils.basic import to_text
-from ansible.errors import AnsibleConnectionFailure, AnsibleOptionsError, AnsibleAuthenticationFailure
-from ansible.module_utils.six.moves.urllib.error import HTTPError
-from ansible.plugins.httpapi import HttpApiBase
-from ansible.module_utils.connection import ConnectionError
-import json
-import re
-
 DOCUMENTATION = r'''
 ---
-author: James Riach
-httpapi : morpheus
+name: morpheus
+author: James Riach (@McGlovin1337)
 short_description: Httpapi Plugin for Morpheus
 description:
-  - Httpapi plugin to connect to and manage morpheus appliances through the morpheus api
+  - Httpapi plugin to connect to and manage morpheus appliances through the morpheus api.
 version_added: "0.3.0"
 options:
     morpheus_user:
+        description:
+            - A Morpheus Username to Authenticate as.
         type: str
         env:
            - name: ANSIBLE_MORPHEUS_USER
         vars:
            - name: ansible_morpheus_user
     morpheus_password:
+        description:
+            - Password associated with the specified Username.
         type: str
         env:
            - name: ANSIBLE_MORPHEUS_PASSWORD
         vars:
            - name: ansible_morpheus_password
     morpheus_api_token:
+        description:
+            - Specify an API token instead of O(morpheus_user) and O(morpheus_password).
         type: str
         env:
             - name: ANSIBLE_MORPHEUS_TOKEN
         vars:
             - name: ansible_morpheus_token
 '''
+
+from ansible.module_utils.basic import to_text
+from ansible.errors import AnsibleConnectionFailure, AnsibleOptionsError, AnsibleAuthenticationFailure, AnsibleError
+from ansible.module_utils.six.moves.urllib.error import HTTPError
+from ansible.plugins.httpapi import HttpApiBase
+from ansible.module_utils.connection import ConnectionError
+import json
+import re
+
+try:
+    from urllib3 import encode_multipart_formdata
+    from urllib3.fields import RequestField
+except ImportError as imp_exc:
+    URLLIB3_IMPORT_ERROR = imp_exc
+else:
+    URLLIB3_IMPORT_ERROR = None
 
 LOGIN_PATH = '/oauth/token?client_id=morph-api&grant_type=password&scope=write'
 WHOAMI_PATH = '/api/whoami'
@@ -49,6 +63,9 @@ BASE_HEADERS = {
 
 class HttpApi(HttpApiBase):
     def __init__(self, connection):
+        if URLLIB3_IMPORT_ERROR:
+            raise AnsibleError('urllib3 must be installed to use this httpapi plugin') from URLLIB3_IMPORT_ERROR
+
         super(HttpApi, self).__init__(connection)
         self.headers = BASE_HEADERS
         self.access_token = None
@@ -112,7 +129,10 @@ class HttpApi(HttpApiBase):
         method = kwargs.pop('method', 'GET')
         headers = kwargs.pop('headers', self.headers)
 
-        if headers['Content-Type'] != 'application/x-www-form-urlencoded':
+        if 'Authorization' not in headers and self.access_token is not None:
+            headers['Authorization'] = 'Bearer {0}'.format(self.access_token)
+
+        if headers['Content-Type'].split(';')[0] not in ['application/x-www-form-urlencoded', 'application/octet-stream', 'multipart/form-data']:
             data = json.dumps(data) if data is not None else None
 
         try:
@@ -127,6 +147,46 @@ class HttpApi(HttpApiBase):
 
         response_value = self._get_response_value(response_data)
         return dict(code=response.getcode(), contents=self._response_to_json(response_value))
+
+    def multipart_upload(self, uri_path: str, file_data: list[dict]) -> dict:
+        """Takes a list of files for multipart/form-data file uploads.
+
+        Args:
+            uri_path (str): Send request to this path.
+            file_data (list[dict]): List of dictionaries containing files to upload.
+             The dictionary should be in the format of {'name': 'name for the body param', 'file_path': 'path/to/file'}
+
+        Returns:
+            dict: Dictionary containing response code and any returned data.
+        """
+        request_fields = []
+        for item in file_data:
+            with open(item['file_path'], 'rb') as file_item:
+                rf = RequestField(
+                    name=item['name'],
+                    data=file_item.read(),
+                    filename=file_item.name.split('/')[-1])
+                rf.make_multipart()
+                request_fields.append(rf)
+
+        body, content_type = encode_multipart_formdata(request_fields)
+        headers = self.headers.copy()
+        headers['Content-Type'] = content_type
+        headers['Content-Length'] = len(body)
+
+        try:
+            response, response_data = self.connection.send(uri_path, body, method='POST', headers=headers)
+        except HTTPError as exc:
+            try:
+                exc_data = self._response_to_json(exc.read())
+            except ConnectionError:
+                exc_data = exc.read()
+
+            return dict(code=exc.code, contents=exc_data, path=uri_path)
+
+        response_value = self._get_response_value(response_data)
+        contents = self._response_to_json(response_value)
+        return dict(code=response.getcode(), contents=contents)
 
     def _get_response_value(self, response_data):
         return to_text(response_data.getvalue())
