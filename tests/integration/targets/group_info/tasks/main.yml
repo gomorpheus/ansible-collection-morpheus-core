@@ -1,0 +1,23 @@
+---
+
+- name: Fetch Summary Info for all Groups
+  morpheus.core.group_info:
+    detail: summary
+  register: result
+
+- name: Assert no change
+  ansible.builtin.assert:
+    that:
+      - result is not changed
+
+- name: Assert 'groups' Key in result
+  ansible.builtin.assert:
+    that:
+      - "'groups' in result"
+
+- name: Assert 'groups' Key is a list
+  ansible.builtin.assert:
+    that:
+      - result['groups'] is not string
+      - result['groups'] is not mapping
+      - result['groups'] is iterable
