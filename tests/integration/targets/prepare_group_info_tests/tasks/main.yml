@@ -1,0 +1,9 @@
+---
+
+- name: Prepare Test Group
+  morpheus.core.group:
+    state: present
+    name: Ansible Integration Test Group
+    code: ansible_int_test
+    location: Earth
+  notify: Remove Test Group
