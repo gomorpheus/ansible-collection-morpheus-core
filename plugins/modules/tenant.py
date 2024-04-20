@@ -172,7 +172,7 @@ def create_update_tenant(module: AnsibleModule, morpheus_api: MorpheusApi, exist
     action = {
         'False': partial(morpheus_api.common_create, path=ApiPath.TENANTS_PATH, api_params=api_params),
         'True': partial(morpheus_api.common_set, path=ApiPath.TENANTS_PATH, item_id=api_params.pop('id'), api_params=api_params),
-        'Check': partial(parse_check_mode, state=module.params['state'], existing_tenant=existing_tenant)
+        'Check': partial(parse_check_mode, api_params=api_params, state=module.params['state'], existing_tenant=existing_tenant)
     }.get(str('id' in existing_tenant) if not module.check_mode else 'Check')
 
     action_result = action()
@@ -268,14 +268,17 @@ def parse_check_mode(state: str, api_params: dict, existing_tenant: dict):
     if state == 'absent':
         return {'success': True, 'msg': ''}
 
-    updated_tenant = existing_tenant.copy()
+    updated_tenant = existing_tenant.copy() if len(existing_tenant) > 0 else MOCK_TENANT
 
     if 'id' not in existing_tenant:
         existing_tenant = MOCK_TENANT
 
     for k, v in api_params.items():
-        if k in existing_tenant and v is not None:
+        if k in existing_tenant and k != 'role' and v is not None:
             updated_tenant[k] = v
+
+    if api_params['role']['id'] is not None:
+        existing_tenant['role']['id'] = api_params['role']['id']
 
     return updated_tenant
 
