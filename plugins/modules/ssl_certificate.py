@@ -150,7 +150,7 @@ def create_update_cert(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict
     action = {
         0: partial(morpheus_api.common_create, path=ApiPath.SSL_CERTIFICATES_PATH, api_params=api_params),
         1: partial(morpheus_api.common_set, path=ApiPath.SSL_CERTIFICATES_PATH, item_id=api_params.pop('id'), api_params=api_params),
-        2: partial(parse_check_mode, state=module.params['state'], api_params=api_params, cert=cert)
+        2: partial(parse_check_mode, state=module.params['state'], api_params=api_params, existing_cert=cert)
     }.get('id' in cert if not module.check_mode else 2)
 
     action_result = action()
@@ -217,20 +217,22 @@ def module_to_api_params(module_params: dict) -> dict:
     return api_params
 
 
-def parse_check_mode(state: str, api_params: dict = None, cert: dict = None) -> dict:
+def parse_check_mode(state: str, api_params: dict = None, existing_cert: dict = None) -> dict:
     if state == 'absent':
         return {'success': True, 'msg': ''}
 
-    if 'id' not in cert:
-        cert = MOCK_SSL_CERT
+    updated_cert = existing_cert.copy()
+
+    if 'id' not in updated_cert:
+        updated_cert = MOCK_SSL_CERT
 
     api_params = mf.dict_keys_to_camel_case(api_params)
 
     for k, v in api_params.items():
-        if k in cert:
-            cert[k] = v
+        if k in updated_cert and v is not None:
+            updated_cert[k] = v
 
-    return cert
+    return updated_cert
 
 
 def remove_cert(module: AnsibleModule, morpheus_api: MorpheusApi) -> dict:
