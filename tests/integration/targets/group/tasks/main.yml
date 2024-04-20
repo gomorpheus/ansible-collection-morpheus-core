@@ -1,0 +1,168 @@
+---
+
+- name: Create Group with Check Mode
+  morpheus.core.group:
+    state: present
+    name: Ansible Integration Test Group
+    code: ansible_int_test
+    location: Earth
+  check_mode: true
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Query Test Group
+  morpheus.core.group_info:
+    name: Ansible Integration Test Group
+    detail: full
+  register: lookup_result
+
+- name: Assert Group Not Created
+  ansible.builtin.assert:
+    that:
+      - lookup_result['groups'] | length == 0
+
+- name: Create Group
+  morpheus.core.group:
+    state: present
+    name: Ansible Integration Test Group
+    code: ansible_int_test
+    location: Earth
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Assert result matches specified parameters
+  ansible.builtin.assert:
+    that:
+      - result['group']['name'] == 'Ansible Integration Test Group'
+      - result['group']['code'] == 'ansible_int_test'
+      - result['group']['location'] == 'Earth'
+
+- name: Update Group without Changes in Check Mode
+  morpheus.core.group:
+    state: present
+    name: Ansible Integration Test Group
+    code: ansible_int_test
+    location: Earth
+  check_mode: true
+  diff: true
+  register: result
+
+- name: Assert result is not changed
+  ansible.builtin.assert:
+    that:
+      - result is not changed
+
+- name: Update Group with Changes in Check Mode
+  morpheus.core.group:
+    state: present
+    name: Ansible Integration Test Group
+    code: ansible_int_test
+    location: Milky Way
+  check_mode: true
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Update Group with Changes
+  morpheus.core.group:
+    state: present
+    name: Ansible Integration Test Group
+    code: ansible_int_test
+    location: Milky Way
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Query Test Group
+  morpheus.core.group_info:
+    name: Ansible Integration Test Group
+    detail: full
+  register: lookup_result
+
+- name: Assert Change actually made
+  ansible.builtin.assert:
+    that:
+      - lookup_result['groups'][0]['location'] == result['group']['location']
+
+- name: Rename Group with Id Parameter
+  morpheus.core.group:
+    state: present
+    id: "{{ lookup_result['groups'][0]['id'] }}"
+    name: Ansible Integration Test Group Rename
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Query Test Group
+  morpheus.core.group_info:
+    name: Ansible Integration Test Group Rename
+    detail: full
+  register: lookup_result
+
+- name: Assert Change actually made
+  ansible.builtin.assert:
+    that:
+      - lookup_result['groups'][0]['name'] == 'Ansible Integration Test Group Rename'
+
+- name: Remove Group in Check Mode
+  morpheus.core.group:
+    state: absent
+    name: Ansible Integration Test Group Rename
+  check_mode: true
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Query Test Group
+  morpheus.core.group_info:
+    name: Ansible Integration Test Group Rename
+    detail: full
+  register: lookup_result
+
+- name: Assert Group not Removed
+  ansible.builtin.assert:
+    that:
+      - lookup_result['groups'] | length == 1
+      - lookup_result['groups'][0]['name'] == 'Ansible Integration Test Group Rename'
+
+- name: Remove Group
+  morpheus.core.group:
+    state: absent
+    name: Ansible Integration Test Group Rename
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Query Test Group
+  morpheus.core.group_info:
+    name: Ansible Integration Test Group Rename
+    detail: full
+  register: lookup_result
+
+- name: Assert Group Removed
+  ansible.builtin.assert:
+    that:
+      - lookup_result['groups'] | length == 0
