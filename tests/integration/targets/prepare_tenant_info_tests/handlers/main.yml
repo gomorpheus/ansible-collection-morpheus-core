@@ -1,0 +1,6 @@
+---
+
+- name: Remove Test Tenant
+  morpheus.core.tenant:
+    state: absent
+    name: Ansible Integration Test Tenant

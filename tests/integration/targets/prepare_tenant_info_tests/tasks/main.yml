@@ -1,0 +1,18 @@
+---
+
+- name: Lookup Tenant Role
+  morpheus.core.role_info:
+    role_type: tenant
+  register: tenant_roles
+
+- name: Create Test Tenant
+  morpheus.core.tenant:
+    state: present
+    name: Ansible Integration Test Tenant
+    description: Ansible Integration Test Tenant for tenant_info module
+    account_name: account_name_TEST
+    account_number: account_number_TEST
+    customer_number: customer_number_TEST
+    currency: GBP
+    role: "{{ tenant_roles['roles'][0]['id'] }}"
+  notify: Remove Test Tenant
