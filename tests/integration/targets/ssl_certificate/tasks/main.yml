@@ -5,8 +5,8 @@
     state: present
     name: Ansible Integration Test Certificate
     domain_name: www.domain.local
-    certificate: "{{ q('ansible.builtin.file', '/tmp/ssl_cert_integration_test.crt') }}"
-    key: "{{ q('ansible.builtin.file', '/tmp/ssl_cert_integration_test_key.pem') }}"
+    certificate: "{{ q('ansible.builtin.file', '/tmp/ssl_cert_integration_test.crt')[0] }}"
+    key: "{{ q('ansible.builtin.file', '/tmp/ssl_cert_integration_test_key.pem')[0] }}"
   check_mode: true
   register: result
 
@@ -30,8 +30,8 @@
     state: present
     name: Ansible Integration Test Certificate
     domain_name: www.domain.local
-    certificate: "{{ q('ansible.builtin.file', '/tmp/ssl_cert_integration_test.crt') }}"
-    key: "{{ q('ansible.builtin.file', '/tmp/ssl_cert_integration_test_key.pem') }}"
+    certificate: "{{ q('ansible.builtin.file', '/tmp/ssl_cert_integration_test.crt')[0] }}"
+    key: "{{ q('ansible.builtin.file', '/tmp/ssl_cert_integration_test_key.pem')[0] }}"
   register: add_result
 
 - name: Assert result is changed

@@ -1,0 +1,6 @@
+---
+
+- name: Remove SSL Certifcate
+  morpheus.core.ssl_certificate:
+    state: absent
+    name: Ansible Integration Test Certifcate

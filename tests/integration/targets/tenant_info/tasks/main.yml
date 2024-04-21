@@ -47,7 +47,7 @@
     regex_name: true
   register: result
 
-- name: Assert Exact Match Found
+- name: Assert Regex Match Found
   ansible.builtin.assert:
     that:
       - result['tenants'] | length == 1
