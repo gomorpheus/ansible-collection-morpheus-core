@@ -1,0 +1,49 @@
+---
+
+- name: Retrieve all Key Pairs
+  morpheus.core.key_pair_info:
+  register: result
+
+- name: Assert result returns 'key_pairs' key
+  ansible.builtin.assert:
+    that:
+      - "'key_pairs' in result"
+
+- name: Assert 'key_pairs' key is a list
+  ansible.builtin.assert:
+    that:
+      - result['key_pairs'] is not string
+      - result['key_pairs'] is not mapping
+      - result['key_pairs'] is iterable
+
+- name: Assert each item in 'key_pairs' list is a Dictionary
+  ansible.builtin.assert:
+    that:
+      - key_pair is not string
+      - key_pair is mapping
+  loop: "{{ result['key_pairs'] }}"
+  loop_control:
+    loop_var: key_pair
+
+- name: Lookup Test Key Pair with Exact Name
+  morpheus.core.key_pair_info:
+    name: Ansible Integration Key Pair Test
+  register: result
+
+- name: Assert Test Key Pair Found
+  ansible.builtin.assert:
+    that:
+      - result['key_pairs'] | length == 1
+      - result['key_pairs'][0]['name'] == 'Ansible Integration Key Pair Test'
+
+- name: Lookup Test Key Pair with Regex
+  morpheus.core.key_pair_info:
+    name: ^Ansible Integration.*$
+    regex_name: true
+  register: result
+
+- name: Assert Test Key Pair Found
+  ansible.builtin.assert:
+    that:
+      - result['key_pairs'] | length == 1
+      - result['key_pairs'][0]['name'] == 'Ansible Integration Key Pair Test'
