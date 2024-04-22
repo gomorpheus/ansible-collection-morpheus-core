@@ -1,0 +1,73 @@
+---
+
+- name: Retrieve All Cypher Items
+  morpheus.core.cypher_info:
+  register: result
+
+- name: Assert result not changed
+  ansible.builtin.assert:
+    that:
+      - result is not changed
+
+- name: Assert result contains 'cyphers' key
+  ansible.builtin.assert:
+    that:
+      - "'cyphers' in result"
+
+- name: Assert 'cyphers' key is a list
+  ansible.builtin.assert:
+    that:
+      - result['cyphers'] is not string
+      - result['cyphers'] is not mapping
+      - result['cyphers'] is iterable
+
+- name: Assert each item in 'cyphers' list is a Dictionary
+  ansible.builtin.assert:
+    that:
+      - cypher is not string
+      - cypher is mapping
+  loop: "{{ result['cyphers'] }}"
+  loop_control:
+    loop_var: cypher
+
+- name: Assert no returned cypher has decrypted data
+  ansible.builtin.assert:
+    that:
+      - "'data' not in cypher"
+  loop: "{{ result['cyphers'] }}"
+  loop_control:
+    loop_var: cypher
+
+- name: Find Test Secret with Exact Match
+  morpheus.core.cypher_info:
+    cypher_path: secret/AnsibleIntegration_TestSecret
+  register: result
+
+- name: Assert Secret Found
+  ansible.builtin.assert:
+    that:
+      - result['cyphers'] | length == 1
+      - result['cyphers'][0]['item_key'] == 'secret/AnsibleIntegration_TestSecret'
+
+- name: Assert Secret not decrypted
+  ansible.builtin.assert:
+    that:
+      - "'data' not in result['cyphers'][0]"
+
+- name: Find Test Secret with Regex Match and Decrypt Result
+  morpheus.core.cypher_info:
+    cypher_path: ^secret/AnsibleIntegration_.*$
+    regex_match: true
+    decrypt: true
+  register: result
+
+- name: Assert Secret Found
+  ansible.builtin.assert:
+    that:
+      - result['cyphers'] | length == 1
+      - result['cyphers'][0]['item_key'] == 'secret/AnsibleIntegration_TestSecret'
+
+- name: Assert Secret Decrypted
+  ansible.builtin.assert:
+    that:
+      - result['cyphers'][0]['data']['cypher']['value'] == 'AnsibleSecret123'
