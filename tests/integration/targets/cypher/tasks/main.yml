@@ -1,0 +1,139 @@
+---
+
+- name: Generate a Password using 'mount', 'length', 'name' Parameters
+  morpheus.core.cypher:
+    state: present
+    mount: password
+    length: 14
+    name: AnsibleIntegration_TestPassword
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Assert result has 'cypher' key
+  ansible.builtin.assert:
+    that:
+      - "'cypher' in result"
+
+- name: Assert 'cypher' key is a Dictionary
+  ansible.builtin.assert:
+    that:
+      - result['cypher'] is not string
+      - result['cypher'] is mapping
+
+- name: Remove Generated Password using path
+  morpheus.core.cypher:
+    state: absent
+    cypher_path: password/14/AnsibleIntegration_TestPassword
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Generate a 4096bit Key using 'cypher_path' Parameter
+  morpheus.core.cypher:
+    state: present
+    cypher_path: key/4096/AnsibleIntegration_TestKey
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Assert result has 'cypher' key
+  ansible.builtin.assert:
+    that:
+      - "'cypher' in result"
+
+- name: Assert 'cypher' key is a Dictionary
+  ansible.builtin.assert:
+    that:
+      - result['cypher'] is not string
+      - result['cypher'] is mapping
+
+- name: Remove Generated Key using mount
+  morpheus.core.cypher:
+    state: absent
+    mount: key
+    length: 4096
+    name: AnsibleIntegration_TestKey
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Generate a UUID
+  morpheus.core.cypher:
+    state: present
+    cypher_path: uuid/AnsibleIntegration_TestUUID
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Assert result has 'cypher' key
+  ansible.builtin.assert:
+    that:
+      - "'cypher' in result"
+
+- name: Assert 'cypher' key is a Dictionary
+  ansible.builtin.assert:
+    that:
+      - result['cypher'] is not string
+      - result['cypher'] is mapping
+
+- name: Remove Generated UUID
+  morpheus.core.cypher:
+    state: absent
+    cypher_path: uuid/AnsibleIntegration_TestUUID
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Add Secret with Lease
+  morpheus.core.cypher:
+    state: present
+    mount: secret
+    name: AnsibleIntegration_TestSecret
+    value: AnsibleTest
+    ttl: 7d
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Assert result has 'cypher' key
+  ansible.builtin.assert:
+    that:
+      - "'cypher' in result"
+
+- name: Assert 'cypher' key is a Dictionary
+  ansible.builtin.assert:
+    that:
+      - result['cypher'] is not string
+      - result['cypher'] is mapping
+
+- name: Remove Secret
+  morpheus.core.cypher:
+    state: absent
+    cypher_path: secret/AnsibleIntegration_TestSecret
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
