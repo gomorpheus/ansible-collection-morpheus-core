@@ -1,0 +1,42 @@
+---
+
+- name: Retrieve all Cloud Types
+  morpheus.core.cloud_type_info:
+    detail: summary
+  register: result
+
+- name: Assert result not changed
+  ansible.builtin.assert:
+    that:
+      - result is not changed
+
+- name: Assert result contains 'cloud_types' key
+  ansible.builtin.assert:
+    that:
+      - "'cloud_types' in result"
+
+- name: Assert 'cloud_types' key is a list
+  ansible.builtin.assert:
+    that:
+      - result['cloud_types'] is not string
+      - result['cloud_types'] is not mapping
+      - result['cloud_types'] is iterable
+
+- name: Assert each 'cloud_types' item is Dictionary
+  ansible.builtin.assert:
+    that:
+      - cloud_type is not string
+      - cloud_type is mapping
+  loop: "{{ result['cloud_types'] }}"
+  loop_control:
+    loop_var: cloud_type
+
+- name: Retrieve full details of Cloud Types
+  morpheus.core.cloud_type_info:
+    detail: full
+  register: full_result
+
+- name: Assert full result contains more keys than summary
+  ansible.builtin.assert:
+    that:
+      - result['cloud_types'][0] | length < full_result['cloud_types'][0] | length
