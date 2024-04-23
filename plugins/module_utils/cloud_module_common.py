@@ -1,6 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+import copy
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
 from functools import partial
@@ -188,14 +189,21 @@ def parse_check_mode(
     if state == 'absent':
         return {'success': True, 'msg': ''}
 
-    updated_cloud = existing_cloud.copy()
+    updated_cloud = copy.deepcopy(existing_cloud)
 
     if 'id' not in existing_cloud:
-        updated_cloud = mock_cloud
+        updated_cloud = mf.dict_keys_to_snake_case(mock_cloud)
+
+    if api_params['zone_type']['code'] == updated_cloud['zone_type']['code']:
+        api_params['zone_type'] = updated_cloud['zone_type']
 
     for k, v in api_params.items():
-        if k in existing_cloud:
+        if k in existing_cloud and k != 'config' and v is not None:
             updated_cloud[k] = v
+
+    for k, v in api_params['config'].items():
+        if v is not None:
+            updated_cloud['config'][k] = v
 
     return updated_cloud
 
