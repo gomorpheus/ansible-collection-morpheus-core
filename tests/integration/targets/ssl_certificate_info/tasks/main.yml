@@ -1,0 +1,49 @@
+---
+
+- name: Retrieve all SSL Certificates
+  morpheus.core.ssl_certificate_info:
+  register: result
+
+- name: Assert result returns 'certificates' key
+  ansible.builtin.assert:
+    that:
+      - "'certificates' in result"
+
+- name: Assert 'certificates' key is a list
+  ansible.builtin.assert:
+    that:
+      - result['certificates'] is not string
+      - result['certificates'] is not mapping
+      - result['certificates'] is iterable
+
+- name: Assert each item in 'certificates' list is a Dictionary
+  ansible.builtin.assert:
+    that:
+      - cert is not string
+      - cert is mapping
+  loop: "{{ result['certificates'] }}"
+  loop_control:
+    loop_var: cert
+
+- name: Lookup Test Certificate with Exact Name
+  morpheus.core.ssl_certificate_info:
+    name: Ansible Integration Test Certifcate
+  register: result
+
+- name: Assert Test Certifcate Found
+  ansible.builtin.assert:
+    that:
+      - result['certificates'] | length == 1
+      - result['certificates'][0]['name'] == 'Ansible Integration Test Certifcate'
+
+- name: Lookup Test Certificate with Regex
+  morpheus.core.ssl_certificate_info:
+    name: ^Ansible Integration.*$
+    regex_name: true
+  register: result
+
+- name: Assert Test Certifcate Found
+  ansible.builtin.assert:
+    that:
+      - result['certificates'] | length == 1
+      - result['certificates'][0]['name'] == 'Ansible Integration Test Certifcate'

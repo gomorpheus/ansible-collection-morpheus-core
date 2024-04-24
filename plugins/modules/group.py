@@ -231,7 +231,7 @@ def create_update_group(module: AnsibleModule, morpheus_api: MorpheusApi, existi
     action = {
         'False': partial(morpheus_api.common_create, path=ApiPath.GROUPS_PATH, api_params=api_params),
         'True': partial(morpheus_api.common_set, path=ApiPath.GROUPS_PATH, item_id=api_params.pop('id'), api_params=api_params),
-        'Check': partial(parse_check_mode, state=module.params['state'], existing_group=existing_group)
+        'Check': partial(parse_check_mode, state=module.params['state'], api_params=api_params, existing_group=existing_group)
     }.get(str('id' in existing_group) if not module.check_mode else 'Check')
 
     action_result = action()
@@ -365,14 +365,18 @@ def parse_check_mode(state: str, api_params: dict, existing_group: dict) -> dict
     if state == 'absent':
         return {'success': True, 'msg': ''}
 
-    updated_group = existing_group.copy()
+    updated_group = existing_group.copy() if len(existing_group) > 0 else MOCK_GROUP
 
     if 'id' not in existing_group:
         existing_group = MOCK_GROUP
 
     for k, v in api_params.items():
-        if k in existing_group and v is not None:
+        if k in existing_group and k != 'config' and v is not None:
             updated_group[k] = v
+
+    for k, v in api_params['config'].items():
+        if v is not None:
+            updated_group['config'][k] = v
 
     return updated_group
 

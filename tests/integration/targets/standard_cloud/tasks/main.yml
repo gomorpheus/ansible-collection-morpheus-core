@@ -1,0 +1,191 @@
+---
+
+- name: Create Standard Cloud in Check Mode
+  morpheus.core.standard_cloud:
+    state: present
+    name: Ansible Integration Test Cloud
+    description: Ansible Integration Test
+    code: AnsibleStdCloud
+    location: Earth
+  check_mode: true
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Lookup Cloud
+  morpheus.core.cloud_info:
+    name: Ansible Integration Test Cloud
+    detail: full
+  register: lookup_result
+
+- name: Assert Cloud not Created
+  ansible.builtin.assert:
+    that:
+      - lookup_result['clouds'] | length == 0
+
+- name: Create Standard Cloud
+  morpheus.core.standard_cloud:
+    state: present
+    name: Ansible Integration Test Cloud
+    description: Ansible Integration Test
+    code: AnsibleStdTestCloud
+    location: Earth
+    auto_recover_power_state: false
+    guidance_mode: 'off'
+    costing_mode: 'off'
+    timezone: Europe/London
+    import_existing: false
+    enable_network_type_selection: false
+    agent_mode: ssh
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Assert result contains 'cloud' key
+  ansible.builtin.assert:
+    that:
+      - "'cloud' in result"
+
+- name: Assert result contains expected configuration
+  ansible.builtin.assert:
+    that:
+      - result['cloud']['name'] == 'Ansible Integration Test Cloud'
+      - result['cloud']['code'] == 'AnsibleStdTestCloud'
+      - result['cloud']['location'] == 'Earth'
+      - not result['cloud']['auto_recover_power_state'] | bool
+      - result['cloud']['costing_mode'] == 'off'
+      - result['cloud']['guidance_mode'] == 'off'
+      - result['cloud']['timezone'] == 'Europe/London'
+      - result['cloud']['agent_mode'] == 'ssh'
+
+- name: Update Cloud in Check Mode with no changes
+  morpheus.core.standard_cloud:
+    state: present
+    name: Ansible Integration Test Cloud
+    description: Ansible Integration Test
+    code: AnsibleStdTestCloud
+    location: Earth
+    auto_recover_power_state: false
+    guidance_mode: 'off'
+    costing_mode: 'off'
+    timezone: Europe/London
+    import_existing: false
+    enable_network_type_selection: false
+    agent_mode: ssh
+  check_mode: true
+  diff: true
+  register: result
+
+- name: Assert result is not changed
+  ansible.builtin.assert:
+    that:
+      - result is not changed
+
+- name: Update Cloud in Check Mode
+  morpheus.core.standard_cloud:
+    name: Ansible Integration Test Cloud
+    costing_mode: costing
+    location: Milky Way
+  check_mode: true
+  diff: true
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Lookup Cloud
+  morpheus.core.cloud_info:
+    name: Ansible Integration Test Cloud
+    detail: full
+  register: lookup_result
+
+- name: Assert Cloud not changed
+  ansible.builtin.assert:
+    that:
+      - lookup_result['clouds'][0]['costing_mode'] == 'off'
+      - lookup_result['clouds'][0]['location'] == 'Earth'
+
+- name: Update Cloud
+  morpheus.core.standard_cloud:
+    name: Ansible Integration Test Cloud
+    costing_mode: costing
+    location: Milky Way
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Lookup Cloud
+  morpheus.core.cloud_info:
+    name: Ansible Integration Test Cloud
+    detail: full
+  register: lookup_result
+
+- name: Assert Cloud is changed
+  ansible.builtin.assert:
+    that:
+      - lookup_result['clouds'][0]['costing_mode'] == 'costing'
+      - lookup_result['clouds'][0]['location'] == 'Milky Way'
+
+- name: Remove Cloud in Check Mode
+  morpheus.core.standard_cloud:
+    state: absent
+    name: Ansible Integration Test Cloud
+  check_mode: true
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Wait for removal (though not expected)
+  ansible.builtin.wait_for:
+    timeout: 30
+
+- name: Lookup Cloud
+  morpheus.core.cloud_info:
+    name: Ansible Integration Test Cloud
+    detail: full
+  register: lookup_result
+
+- name: Assert Cloud not removed
+  ansible.builtin.assert:
+    that:
+      - lookup_result['clouds'] | length == 1
+
+- name: Remove Cloud
+  morpheus.core.standard_cloud:
+    state: absent
+    name: Ansible Integration Test Cloud
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Wait for removal
+  ansible.builtin.wait_for:
+    timeout: 30
+
+- name: Lookup Cloud
+  morpheus.core.cloud_info:
+    name: Ansible Integration Test Cloud
+    detail: full
+  register: lookup_result
+
+- name: Assert Cloud removed
+  ansible.builtin.assert:
+    that:
+      - lookup_result['clouds'] | length == 0

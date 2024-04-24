@@ -1,0 +1,39 @@
+---
+
+- name: Gather All Facts
+  morpheus.core.appliance_facts:
+
+- name: Assert All Subsets Gathered
+  ansible.builtin.assert:
+    that:
+      - "'morpheus_database' in ansible_facts"
+      - "'morpheus_elastic' in ansible_facts"
+      - "'morpheus_license' in ansible_facts"
+      - "'morpheus_rabbitmq' in ansible_facts"
+      - "'morpheus_settings' in ansible_facts"
+      - "'morpheus_system' in ansible_facts"
+      - "'morpheus_threads' in ansible_facts"
+
+- name: Clear Facts
+  ansible.builtin.meta: clear_facts
+
+- name: Assert Facts Cleared
+  ansible.builtin.assert:
+    that:
+      - ansible_facts | length == 0
+
+- name: Gather Minimum Subset
+  morpheus.core.appliance_facts:
+    gather_subset:
+      - "!all"
+
+- name: Assert Minimum Subset Gathered
+  ansible.builtin.assert:
+    that:
+      - "'morpheus_database' not in ansible_facts"
+      - "'morpheus_elastic' not in ansible_facts"
+      - "'morpheus_license' in ansible_facts"
+      - "'morpheus_rabbitmq' not in ansible_facts"
+      - "'morpheus_settings' in ansible_facts"
+      - "'morpheus_system' in ansible_facts"
+      - "'morpheus_threads' not in ansible_facts"

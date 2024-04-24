@@ -1,0 +1,210 @@
+---
+
+- name: Lookup a Tenant Role
+  morpheus.core.role_info:
+    role_type: tenant
+  register: tenant_role
+
+- name: Create Tenant with Check Mode
+  morpheus.core.tenant:
+    state: present
+    name: Ansible Integration Test Tenant
+    description: Morpheus.Core Ansible Collection Testing
+    role: "{{ tenant_role['roles'][0]['id'] }}"
+  check_mode: true
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Query Tenants
+  morpheus.core.tenant_info:
+    name: Ansible Integration Test Tenant
+  register: lookup_result
+
+- name: Assert Tenant Not Created
+  ansible.builtin.assert:
+    that:
+      - lookup_result['tenants'] | length == 0
+
+- name: Create Tenant without specifying a role
+  morpheus.core.tenant:
+    state: present
+    name: Ansible Integration Test Tenant
+    description: Morpheus.Core Ansible Collection Testing
+  register: result
+  ignore_errors: true
+
+- name: Assert result not changed
+  ansible.builtin.assert:
+    that:
+      - result is not changed
+
+- name: Assert result failed
+  ansible.builtin.assert:
+    that:
+      - result is failed
+
+- name: Lookup a User Role
+  morpheus.core.role_info:
+    role_type: user
+  register: user_role
+
+- name: Create Tenant specifying a user role
+  morpheus.core.tenant:
+    state: present
+    name: Ansible Integration Test Tenant
+    description: Morpheus.Core Ansible Collection Testing
+    role: "{{ user_role['roles'][0]['id'] }}"
+  register: result
+  ignore_errors: true
+
+- name: Assert result not changed
+  ansible.builtin.assert:
+    that:
+      - result is not changed
+
+- name: Assert result failed
+  ansible.builtin.assert:
+    that:
+      - result is failed
+
+- name: Create Tenant
+  morpheus.core.tenant:
+    state: present
+    name: Ansible Integration Test Tenant
+    description: Morpheus.Core Ansible Collection Testing
+    role: "{{ tenant_role['roles'][0]['id'] }}"
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Assert result matches specified parameters
+  ansible.builtin.assert:
+    that:
+      - result['tenant']['name'] == 'Ansible Integration Test Tenant'
+      - result['tenant']['description'] == 'Morpheus.Core Ansible Collection Testing'
+
+- name: Update Tenant without Changes in Check Mode
+  morpheus.core.tenant:
+    state: present
+    name: Ansible Integration Test Tenant
+    description: Morpheus.Core Ansible Collection Testing
+  check_mode: true
+  diff: true
+  register: result
+
+- name: Assert result is not changed
+  ansible.builtin.assert:
+    that:
+      - result is not changed
+
+- name: Update Tenant with Changes in Check Mode
+  morpheus.core.tenant:
+    state: present
+    name: Ansible Integration Test Tenant
+    customer_number: TEST
+  check_mode: true
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Update Tenant with Changes
+  morpheus.core.tenant:
+    state: present
+    name: Ansible Integration Test Tenant
+    customer_number: TEST
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Query Test Tenant
+  morpheus.core.tenant_info:
+    name: Ansible Integration Test Tenant
+  register: lookup_result
+
+- name: Assert Change actually made
+  ansible.builtin.assert:
+    that:
+      - lookup_result['tenants'][0]['customer_number'] == result['tenant']['customer_number']
+
+- name: Rename Tenant with Id Parameter
+  morpheus.core.tenant:
+    state: present
+    id: "{{ lookup_result['tenants'][0]['id'] }}"
+    name: Ansible Integration Test Tenant Rename
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Query Test Tenant
+  morpheus.core.tenant_info:
+    name: Ansible Integration Test Tenant Rename
+  register: lookup_result
+
+- name: Assert Change actually made
+  ansible.builtin.assert:
+    that:
+      - lookup_result['tenants'][0]['name'] == 'Ansible Integration Test Tenant Rename'
+
+- name: Remove Tenant in Check Mode
+  morpheus.core.tenant:
+    state: absent
+    name: Ansible Integration Test Tenant Rename
+  check_mode: true
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Query Test Tenant
+  morpheus.core.tenant_info:
+    name: Ansible Integration Test Tenant Rename
+  register: lookup_result
+
+- name: Assert Tenant not Removed
+  ansible.builtin.assert:
+    that:
+      - lookup_result['tenants'] | length == 1
+      - lookup_result['tenants'][0]['name'] == 'Ansible Integration Test Tenant Rename'
+
+- name: Remove Tenant
+  morpheus.core.tenant:
+    state: absent
+    name: Ansible Integration Test Tenant Rename
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Allow time (30s) for Tenant removal
+  ansible.builtin.wait_for:
+    timeout: 30
+
+- name: Query Test Tenant
+  morpheus.core.tenant_info:
+    name: Ansible Integration Test Tenant Rename
+  register: lookup_result
+
+- name: Assert Tenant Removed
+  ansible.builtin.assert:
+    that:
+      - lookup_result['tenants'] | length == 0

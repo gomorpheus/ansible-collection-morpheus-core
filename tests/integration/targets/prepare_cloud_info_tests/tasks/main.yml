@@ -1,0 +1,12 @@
+---
+
+- name: Create Standard (morpheus) Test Cloud
+  morpheus.core.standard_cloud:
+    state: present
+    name: Ansible Integration Test Cloud
+    description: Ansible Integration Testing Cloud
+    location: Earth
+    agent_mode: ssh
+    enabled: false
+    timezone: Europe/London
+  notify: Remove Test Cloud

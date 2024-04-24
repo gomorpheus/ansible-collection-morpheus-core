@@ -1,0 +1,12 @@
+---
+
+- name: Remove Certificate Files
+  ansible.builtin.file:
+    state: absent
+    path: "/tmp/{{ cert_file }}"
+  loop:
+    - ssl_cert_integration_test.crt
+    - ssl_cert_integration_test.csr
+    - ssl_cert_integration_test_key.pem
+  loop_control:
+    loop_var: cert_file

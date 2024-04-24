@@ -1,0 +1,84 @@
+---
+
+- name: Fetch All Tenants
+  morpheus.core.tenant_info:
+  register: result
+
+- name: Assert No Changes
+  ansible.builtin.assert:
+    that:
+      - result is not changed
+
+- name: Assert Result contains Tenants Key
+  ansible.builtin.assert:
+    that:
+      - "'tenants' in result"
+
+- name: Assert Tenants Key is List
+  ansible.builtin.assert:
+    that:
+      - result['tenants'] is not string
+      - result['tenants'] is not mapping
+      - result['tenants'] is iterable
+
+- name: Assert each item in 'tenants' list is a Dictionary
+  ansible.builtin.assert:
+    that:
+      - tenant is not string
+      - tenant is mapping
+  loop: "{{ result['tenants'] }}"
+  loop_control:
+    loop_var: tenant
+
+- name: Lookup Test Tenant with Exact Name
+  morpheus.core.tenant_info:
+    name: Ansible Integration Test Tenant
+  register: result
+
+- name: Assert Exact Match Found
+  ansible.builtin.assert:
+    that:
+      - result['tenants'] | length == 1
+      - result['tenants'][0]['name'] == 'Ansible Integration Test Tenant'
+
+- name: Lookup Test Tenant with Regex
+  morpheus.core.tenant_info:
+    name: ^Ansible Integration.*$
+    regex_name: true
+  register: result
+
+- name: Assert Regex Match Found
+  ansible.builtin.assert:
+    that:
+      - result['tenants'] | length == 1
+      - result['tenants'][0]['name'] == 'Ansible Integration Test Tenant'
+
+- name: Lookup Tenants with 'account_name'
+  morpheus.core.tenant_info:
+    account_name: account_name_TEST
+  register: result
+
+- name: Assert 'account_name' Found
+  ansible.builtin.assert:
+    that:
+      - result['tenants'] | length > 0
+
+- name: Lookup Tenants with 'account_number'
+  morpheus.core.tenant_info:
+    account_number: account_number_TEST
+  register: result
+
+- name: Assert 'account_number' Found
+  ansible.builtin.assert:
+    that:
+      - result['tenants'] | length > 0
+
+- name: Lookup Tenants with 'customer_number'
+  morpheus.core.tenant_info:
+    customer_number: customer_number_TEST
+  register: result
+
+- name: Assert 'customer_number' Found
+  ansible.builtin.assert:
+    that:
+      - result['tenants'] | length > 0

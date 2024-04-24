@@ -1,0 +1,6 @@
+---
+
+- name: Remove Test Secret
+  morpheus.core.cypher:
+    state: absent
+    cypher_path: secret/AnsibleIntegration_TestSecret

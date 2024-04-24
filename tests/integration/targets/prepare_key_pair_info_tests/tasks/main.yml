@@ -1,0 +1,8 @@
+---
+
+- name: Generate a Key Pair
+  morpheus.core.key_pair:
+    state: present
+    name: Ansible Integration Key Pair Test
+  register: generated_kp
+  notify: Remove Key Pair

@@ -1,0 +1,90 @@
+---
+
+- name: Generate a Key Pair
+  morpheus.core.key_pair:
+    state: present
+    name: Ansible Integration Test Generated Key Pair
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Lookup Generated Key Pair
+  morpheus.core.key_pair_info:
+    name: Ansible Integration Test Generated Key Pair
+  register: lookup_result
+
+- name: Assert Key Pair Created
+  ansible.builtin.assert:
+    that:
+      - lookup_result['key_pairs'] | length == 1
+      - lookup_result['key_pairs'][0]['name'] == 'Ansible Integration Test Generated Key Pair'
+
+- name: Remove Generated Key Pair
+  morpheus.core.key_pair:
+    state: absent
+    id: "{{ lookup_result['key_pairs'][0]['id'] }}"
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Lookup Generated Key Pair
+  morpheus.core.key_pair_info:
+    name: Ansible Integration Test Generated Key Pair
+  register: lookup_result
+
+- name: Assert Key Pair Removed
+  ansible.builtin.assert:
+    that:
+      - lookup_result['key_pairs'] | length == 0
+
+- name: Add Supplied Key Pair
+  morpheus.core.key_pair:
+    state: present
+    name: Ansible Integration Test Supplied Key Pair
+    private_key: "{{ q('ansible.builtin.file', '/tmp/ansible_key_pair_test_ssh_rsa')[0] }}"
+    public_key: "{{ q('ansible.builtin.file', '/tmp/ansible_key_pair_test_ssh_rsa.pub')[0] }}"
+    passphrase: Password123
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Lookup Supplied Key Pair
+  morpheus.core.key_pair_info:
+    name: Ansible Integration Test Supplied Key Pair
+  register: lookup_result
+
+- name: Assert Key Pair Added
+  ansible.builtin.assert:
+    that:
+      - lookup_result['key_pairs'] | length == 1
+      - lookup_result['key_pairs'][0]['name'] == 'Ansible Integration Test Supplied Key Pair'
+
+- name: Remove Supplied Key Pair
+  morpheus.core.key_pair:
+    state: absent
+    id: "{{ lookup_result['key_pairs'][0]['id'] }}"
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Lookup Supplied Key Pair
+  morpheus.core.key_pair_info:
+    name: Ansible Integration Test Supplied Key Pair
+  register: lookup_result
+
+- name: Assert Key Pair Removed
+  ansible.builtin.assert:
+    that:
+      - lookup_result['key_pairs'] | length == 0
