@@ -47,7 +47,7 @@ import re
 try:
     from urllib3 import encode_multipart_formdata
     from urllib3.fields import RequestField
-except ImportError as imp_exc:
+except (ImportError, ModuleNotFoundError) as imp_exc:
     URLLIB3_IMPORT_ERROR = imp_exc
 else:
     URLLIB3_IMPORT_ERROR = None

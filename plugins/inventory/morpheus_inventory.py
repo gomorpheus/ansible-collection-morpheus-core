@@ -1,20 +1,10 @@
 # morpheus_inventory.py
 
 from __future__ import (absolute_import, division, print_function)
-import requests
-import os
-import yaml
-import sys
-from builtins import str
-from packaging import version
-from ansible.plugins.inventory import BaseInventoryPlugin
-from ansible.errors import AnsibleParserError
-
 __metaclass__ = type
 
 DOCUMENTATION = r'''
     name: morpheus_inventory
-    plugin_type: inventory
     short_description: Returns Ansible inventory from Morpheus
     description: Returns Ansible inventory from Morpheus
     options:
@@ -39,11 +29,47 @@ DOCUMENTATION = r'''
             required: false
 '''
 
+import os
+import sys
+from builtins import str
+from ansible.plugins.inventory import BaseInventoryPlugin
+from ansible.errors import AnsibleError, AnsibleParserError
+
+try:
+    from packaging import version
+except (ImportError, ModuleNotFoundError) as imp_exc:
+    PACKAGING_IMPORT_ERROR = imp_exc
+else:
+    PACKAGING_IMPORT_ERROR = None
+
+try:
+    import requests
+except (ImportError, ModuleNotFoundError) as imp_exc:
+    REQUESTS_IMPORT_ERROR = imp_exc
+else:
+    REQUESTS_IMPORT_ERROR = None
+
+try:
+    import yaml
+except (ImportError, ModuleNotFoundError) as imp_exc:
+    YAML_IMPORT_ERROR = imp_exc
+else:
+    YAML_IMPORT_ERROR = None
+
 
 class InventoryModule(BaseInventoryPlugin):
     NAME = 'morpheus_inventory'
 
     def __init__(self):
+        if PACKAGING_IMPORT_ERROR:
+            raise AnsibleError('packaging must be installed to use this inventory plugin') from PACKAGING_IMPORT_ERROR
+
+        if REQUESTS_IMPORT_ERROR:
+            raise AnsibleError('requests must be installed to use this inventory plugin') from REQUESTS_IMPORT_ERROR
+
+        if YAML_IMPORT_ERROR:
+            raise AnsibleError('pyyaml must be installed to use this inventory plugin') from YAML_IMPORT_ERROR
+
         self.morpheus_env = False
         self.morpheus_url = ""
         self.morpheus_api = ""
@@ -201,7 +227,7 @@ class InventoryModule(BaseInventoryPlugin):
             self.inventory.add_group(group)
             self.inventory.add_group(tiergroup)
             self.inventory.add_child(group, tiergroup)
-            group=tiergroup
+            group = tiergroup
         container_hostname = container['externalHostname']
         self.inventory.add_host(
             host=container_hostname,
@@ -246,8 +272,7 @@ class InventoryModule(BaseInventoryPlugin):
                     if file.startswith("private-"):
                         self.morpheusprivatekeyfile = self.workspace + file
             except Exception as e:
-                e = e
-                raise AnsibleParserError("Cannot find morpheus private key in workspace directory")
+                raise AnsibleParserError("Cannot find morpheus private key in workspace directory") from e
         if searchtype == "label":
             for instance in rawresponse['instances']:
                 if version.parse(self.morpheus_version) > version.parse("5.0"):
@@ -272,14 +297,17 @@ class InventoryModule(BaseInventoryPlugin):
                     for apptier in app['appTiers']:
                         if searchstring['apptier'] in apptier['tier']['name']:
                             for instance in apptier['appInstances']:
-                                self.print_verbose_message("Matched %s in app %s and tier %s, adding to group %s" % (instance['instance']['name'], app['name'], apptier['tier']['name'], group))
+                                self.print_verbose_message(
+                                    "Matched %s in app %s and tier %s, adding to group %s" %
+                                    (instance['instance']['name'], app['name'], apptier['tier']['name'], group))
                                 self._add_morpheus_instance(group, instance['instance'])
         elif searchtype == "all_apps":
             for app in rawresponse['apps']:
                 if app['appStatus'] in ['running', 'completed']:
                     for apptier in app['appTiers']:
                         for instance in apptier['appInstances']:
-                            self.print_verbose_message("Matched %s in app %s and tier %s, adding to group" % (instance['instance']['name'], app['name'], apptier['tier']['name']))
+                            self.print_verbose_message(
+                                "Matched %s in app %s and tier %s, adding to group" % (instance['instance']['name'], app['name'], apptier['tier']['name']))
                             self._add_morpheus_instance(app['name'], instance['instance'], app_tier=apptier['tier']['name'])
         elif searchtype == "cloud":
             for instance in rawresponse['instances']:
@@ -332,7 +360,7 @@ class InventoryModule(BaseInventoryPlugin):
                     self.print_verbose_message("Using ephemeral Morpheus token from Morpheus task")
                     self.morpheus_token = self.extravars['morpheus']['morpheus']['apiAccessToken']
                 else:
-                    raise AnsibleParserError("Morpheus token not found in ephemeral task vars or inventory file")                    
+                    raise AnsibleParserError("Morpheus token not found in ephemeral task vars or inventory file")
             else:
                 if 'morpheus_url' in config_data:
                     self.print_verbose_message("Using Morpheus URL from inventory file")
