@@ -383,7 +383,7 @@ To view the list of available test targets:
 ```shell
 ansible-test integration --list-targets
 ```
-**NOTE**: Some of the `_info` module tests rely on non `_info` modules creating resources. Therefore it would be recommended to test the non `_info` modules first to confirm they operate as expected.
+**NOTE**: Some of the `_info` module tests rely on non `_info` modules creating resources. Therefore it would be recommended to test the non `_info` modules first to confirm they operate as expected. However, you can of course, run all tests in order by not specifying a specific target.
 
 Example Integration Test Execution:
 ```shell
