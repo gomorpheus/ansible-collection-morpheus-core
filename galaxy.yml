@@ -1,7 +1,7 @@
 namespace: "morpheus"
 name: "core"
 description: Ansible collection for interacting with Morpheus
-version: "0.7.0"
+version: "0.7.1"
 readme: "README.md"
 authors:
     - "Nick Celebic (https://www.github.com/tryfan)"

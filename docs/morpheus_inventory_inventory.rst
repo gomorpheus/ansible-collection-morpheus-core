@@ -23,7 +23,7 @@ morpheus.core.morpheus_inventory inventory -- Returns Ansible inventory from Mor
 .. Collection note
 
 .. note::
-    This inventory plugin is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
+    This inventory plugin is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.

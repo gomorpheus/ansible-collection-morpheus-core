@@ -9,7 +9,7 @@
 Morpheus.Core
 =============
 
-Collection version 0.7.0
+Collection version 0.7.1
 
 .. contents::
    :local:

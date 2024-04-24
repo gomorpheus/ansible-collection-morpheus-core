@@ -23,7 +23,7 @@ morpheus.core.morpheus httpapi -- Httpapi Plugin for Morpheus
 .. Collection note
 
 .. note::
-    This httpapi plugin is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.0).
+    This httpapi plugin is part of the `morpheus.core collection <https://galaxy.ansible.com/ui/repo/published/morpheus/core/>`_ (version 0.7.1).
 
     It is not included in ``ansible-core``.
     To check whether it is installed, run :code:`ansible-galaxy collection list`.
