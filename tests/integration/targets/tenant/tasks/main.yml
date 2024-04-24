@@ -1,10 +1,16 @@
 ---
 
+- name: Lookup a Tenant Role
+  morpheus.core.role_info:
+    role_type: tenant
+  register: tenant_role
+
 - name: Create Tenant with Check Mode
   morpheus.core.tenant:
     state: present
     name: Ansible Integration Test Tenant
     description: Morpheus.Core Ansible Collection Testing
+    role: "{{ tenant_role['roles'][0]['id'] }}"
   check_mode: true
   register: result
 
@@ -23,10 +29,47 @@
     that:
       - lookup_result['tenants'] | length == 0
 
-- name: Get a Tenant Role
+- name: Create Tenant without specifying a role
+  morpheus.core.tenant:
+    state: present
+    name: Ansible Integration Test Tenant
+    description: Morpheus.Core Ansible Collection Testing
+  register: result
+  ignore_errors: true
+
+- name: Assert result not changed
+  ansible.builtin.assert:
+    that:
+      - result is not changed
+
+- name: Assert result failed
+  ansible.builtin.assert:
+    that:
+      - result is failed
+
+- name: Lookup a User Role
   morpheus.core.role_info:
-    role_type: tenant
-  register: tenant_role
+    role_type: user
+  register: user_role
+
+- name: Create Tenant specifying a user role
+  morpheus.core.tenant:
+    state: present
+    name: Ansible Integration Test Tenant
+    description: Morpheus.Core Ansible Collection Testing
+    role: "{{ user_role['roles'][0]['id'] }}"
+  register: result
+  ignore_errors: true
+
+- name: Assert result not changed
+  ansible.builtin.assert:
+    that:
+      - result is not changed
+
+- name: Assert result failed
+  ansible.builtin.assert:
+    that:
+      - result is failed
 
 - name: Create Tenant
   morpheus.core.tenant:
@@ -64,7 +107,7 @@
 - name: Update Tenant with Changes in Check Mode
   morpheus.core.tenant:
     state: present
-    name: Ansible Integration Test Group
+    name: Ansible Integration Test Tenant
     customer_number: TEST
   check_mode: true
   register: result
