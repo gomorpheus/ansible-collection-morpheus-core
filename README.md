@@ -364,6 +364,32 @@ Individual Module Documentation can be found included with the module and can be
 |[virtual_image_info](docs/virtual_image_info_module.rst)|Gather information about Virtual Images|
 |[virtual_image](docs/virtual_image_module.rst)|Create, Update and Remove Virtual Images and Virtual Image Files|
 
+## Testing
+The collection includes ignore files for running `ansible-test sanity` without error.
+
+A number of Integration Tests exist for modules that can be run using `ansible-test`
+
+### WARNING
+The Integration Tests require access to a Morpheus Appliance, and they **WILL** make changes. It is **NOT** recommended to run these against a Production environment!
+
+### Integration Test Execution
+Enter the directory the collection is installed, e.g.
+```shell
+cd ~/.ansible/collections/ansible_collections/morpheus/core
+```
+Edit the file `integration_config.yml` and supply the hostname/address for the `ansible_host` variable as well as either `ansible_morpheus_user` and `ansible_morpheus_password` or `ansible_morpheus_token`.
+
+To view the list of available test targets:
+```shell
+ansible-test integration --list-targets
+```
+**NOTE**: Some of the `_info` module tests rely on non `_info` modules creating resources. Therefore it would be recommended to test the non `_info` modules first to confirm they operate as expected. However, you can of course, run all tests in order by not specifying a specific target.
+
+Example Integration Test Execution:
+```shell
+ansible-test integration group --local -vvv
+```
+
 ## Support Expectations
 
 Please refer to the [Morpheus Open Source Code Support Policy](https://support.morpheusdata.com/s/article/Morpheus-Open-Source-Code-Support-Policy)

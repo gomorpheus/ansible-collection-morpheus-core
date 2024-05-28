@@ -164,6 +164,17 @@ def create_update_tenant(module: AnsibleModule, morpheus_api: MorpheusApi, exist
     Returns:
         dict: Result Dictionary
     """
+    if module.params['role'] is not None:
+        if not validate_role(module.params['role'], morpheus_api):
+            module.fail_json(
+                msg='Invalid role specified'
+            )
+
+    if 'id' not in existing_tenant and module.params['role'] is None:
+        module.fail_json(
+            msg='role parameter required when creating a new Tenant'
+        )
+
     api_params = module_to_api_params(module.params)
 
     if 'id' in existing_tenant and api_params['id'] is None:
@@ -172,7 +183,7 @@ def create_update_tenant(module: AnsibleModule, morpheus_api: MorpheusApi, exist
     action = {
         'False': partial(morpheus_api.common_create, path=ApiPath.TENANTS_PATH, api_params=api_params),
         'True': partial(morpheus_api.common_set, path=ApiPath.TENANTS_PATH, item_id=api_params.pop('id'), api_params=api_params),
-        'Check': partial(parse_check_mode, state=module.params['state'], existing_tenant=existing_tenant)
+        'Check': partial(parse_check_mode, api_params=api_params, state=module.params['state'], existing_tenant=existing_tenant)
     }.get(str('id' in existing_tenant) if not module.check_mode else 'Check')
 
     action_result = action()
@@ -268,14 +279,17 @@ def parse_check_mode(state: str, api_params: dict, existing_tenant: dict):
     if state == 'absent':
         return {'success': True, 'msg': ''}
 
-    updated_tenant = existing_tenant.copy()
+    updated_tenant = existing_tenant.copy() if len(existing_tenant) > 0 else MOCK_TENANT
 
     if 'id' not in existing_tenant:
         existing_tenant = MOCK_TENANT
 
     for k, v in api_params.items():
-        if k in existing_tenant and v is not None:
+        if k in existing_tenant and k != 'role' and v is not None:
             updated_tenant[k] = v
+
+    if api_params['role']['id'] is not None:
+        updated_tenant['role']['id'] = api_params['role']['id']
 
     return updated_tenant
 
@@ -317,6 +331,29 @@ def remove_tenant(module: AnsibleModule, morpheus_api: MorpheusApi, existing_ten
         }
 
     return result
+
+
+def validate_role(role_id: int, morpheus_api: MorpheusApi) -> bool:
+    """Validate if the given role_id is a tenant role.
+
+    Args:
+        role_id (int): The Id of the role.
+        morpheus_api (MorpheusApi): An instantiated MorpheusApi Class.
+
+    Returns:
+        bool: True if role is valid, otherwise False.
+    """
+    role = morpheus_api.common_get(
+        ApiPath.ROLES_PATH,
+        {'id': role_id}
+    )
+
+    role = mf.dict_keys_to_snake_case(role)
+
+    if 'role_type' not in role or role['role_type'] != 'account':
+        return False
+
+    return True
 
 
 def run_module():

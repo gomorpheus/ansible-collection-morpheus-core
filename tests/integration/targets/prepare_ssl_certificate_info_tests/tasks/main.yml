@@ -1,0 +1,10 @@
+---
+
+- name: Add SSL Certifcate
+  morpheus.core.ssl_certificate:
+    state: present
+    name: Ansible Integration Test Certifcate
+    domain_name: www.domain.local
+    certificate: "{{ q('ansible.builtin.file', '/tmp/ssl_cert_integration_test.crt')[0] }}"
+    key: "{{ q('ansible.builtin.file', '/tmp/ssl_cert_integration_test_key.pem')[0] }}"
+  notify: Remove SSL Certifcate

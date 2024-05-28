@@ -1,0 +1,6 @@
+---
+
+- name: Remove Key Pair
+  morpheus.core.key_pair:
+    state: absent
+    id: "{{ generated_kp['key_pair']['id'] }}"

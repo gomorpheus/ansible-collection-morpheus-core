@@ -1,0 +1,72 @@
+---
+
+- name: Fetch Summary Info for all Groups
+  morpheus.core.group_info:
+    detail: summary
+  register: summary_result
+
+- name: Fetch Full Info for all Groups
+  morpheus.core.group_info:
+    detail: full
+  register: full_result
+
+- name: Fetch Test Group
+  morpheus.core.group_info:
+    detail: full
+    name: Ansible Integration Test Group
+  register: name_result
+
+- name: Fetch Test Group using regex
+  morpheus.core.group_info:
+    detail: summary
+    name: ^Ansible Integration .{4} Group$
+    regex_name: true
+  register: regex_result
+
+- name: Assert no change
+  ansible.builtin.assert:
+    that:
+      - summary_result is not changed
+      - full_result is not changed
+
+- name: Assert 'groups' Key in results
+  ansible.builtin.assert:
+    that:
+      - "'groups' in summary_result"
+      - "'groups' in full_result"
+
+- name: Assert 'groups' Key is a list
+  ansible.builtin.assert:
+    that:
+      - summary_result['groups'] is not string
+      - summary_result['groups'] is not mapping
+      - summary_result['groups'] is iterable
+      - full_result['groups'] is not string
+      - full_result['groups'] is not mapping
+      - full_result['groups'] is iterable
+
+- name: Assert Each Return Item is a Dictionary
+  ansible.builtin.assert:
+    that:
+      - group_item is not string
+      - group_item is mapping
+  loop: "{{ summary_result['groups'] }}"
+  loop_control:
+    loop_var: group_item
+
+- name: Assert Summary returns fewer result keys
+  ansible.builtin.assert:
+    that:
+      - summary_result['groups'][0] | length < full_result['groups'][0] | length
+
+- name: Assert Exact Match Found
+  ansible.builtin.assert:
+    that:
+      - name_result['groups'] | length == 1
+      - name_result['groups'][0]['code'] == 'ansible_int_test'
+      - name_result['groups'][0]['location'] == 'Earth'
+
+- name: Assert Regex Match Found
+  ansible.builtin.assert:
+    that:
+      - regex_result['groups'] | length > 0

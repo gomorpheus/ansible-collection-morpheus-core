@@ -1,0 +1,6 @@
+---
+
+- name: Remove Test Group
+  morpheus.core.group:
+    state: absent
+    name: Ansible Integration Test Group

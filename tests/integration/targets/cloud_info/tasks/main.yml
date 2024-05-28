@@ -1,0 +1,67 @@
+---
+
+- name: Retrieve all Clouds
+  morpheus.core.cloud_info:
+    detail: summary
+  register: result
+
+- name: Assert result is not changed
+  ansible.builtin.assert:
+    that:
+      - result is not changed
+
+- name: Assert result contains 'clouds' key
+  ansible.builtin.assert:
+    that:
+      - "'clouds' in result"
+
+- name: Assert 'clouds' key is a list
+  ansible.builtin.assert:
+    that:
+      - result['clouds'] is not string
+      - result['clouds'] is not mapping
+      - result['clouds'] is iterable
+
+- name: Assert each list item is a Dictionary
+  ansible.builtin.assert:
+    that:
+      - cloud is not string
+      - cloud is mapping
+  loop: "{{ result['clouds'] }}"
+  loop_control:
+    loop_var: cloud
+
+- name: Retrieve full detail for all clouds
+  morpheus.core.cloud_info:
+    detail: full
+  register: full_result
+
+- name: Assert full detail has more keys than summary
+  ansible.builtin.assert:
+    that:
+      - result['clouds'][0] | length < full_result['clouds'][0] | length
+
+- name: Lookup Standard Clouds by Code
+  morpheus.core.cloud_info:
+    type: standard
+    detail: full
+  register: result
+
+- name: Assert all matches of right type
+  ansible.builtin.assert:
+    that:
+      - cloud['zone_type']['code'] == 'standard'
+  loop: "{{ result['clouds'] }}"
+  loop_control:
+    loop_var: cloud
+
+- name: Lookup Cloud by Regex
+  morpheus.core.cloud_info:
+    name: ^Ansible.*Test.*$
+    regex_name: true
+  register: result
+
+- name: Assert Cloud Found
+  ansible.builtin.assert:
+    that:
+      - result['clouds'] | length == 1

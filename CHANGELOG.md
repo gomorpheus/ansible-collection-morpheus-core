@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.7.1
+- Added Integration Tests for numerous modules
+- Fixed exceptions when running some modules in `check_mode`
+- Improved change prediction accuracy when running some modules in `check_mode`
+- Add validation for `role` parameter in `tenant` module
+- Fix cloud_datastore module exception when `resource_permissions` and/or `tenant_permissions` options were not specified
+
 ## v0.7.0
 - Added `azure_cloud` module
 - Added `cloud_datastore_info` module

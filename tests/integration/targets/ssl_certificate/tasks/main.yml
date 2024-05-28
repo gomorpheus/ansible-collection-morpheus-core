@@ -1,0 +1,167 @@
+---
+
+- name: Add a new Certificate in Check Mode
+  morpheus.core.ssl_certificate:
+    state: present
+    name: Ansible Integration Test Certificate
+    domain_name: www.domain.local
+    certificate: "{{ q('ansible.builtin.file', '/tmp/ssl_cert_integration_test.crt')[0] }}"
+    key: "{{ q('ansible.builtin.file', '/tmp/ssl_cert_integration_test_key.pem')[0] }}"
+  check_mode: true
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Lookup Certificate
+  morpheus.core.ssl_certificate_info:
+    name: Ansible Integration Test Certificate
+  register: lookup_result
+
+- name: Assert Certificate not added
+  ansible.builtin.assert:
+    that:
+      - lookup_result['certificates'] | length == 0
+
+- name: Add a new Certificate
+  morpheus.core.ssl_certificate:
+    state: present
+    name: Ansible Integration Test Certificate
+    domain_name: www.domain.local
+    certificate: "{{ q('ansible.builtin.file', '/tmp/ssl_cert_integration_test.crt')[0] }}"
+    key: "{{ q('ansible.builtin.file', '/tmp/ssl_cert_integration_test_key.pem')[0] }}"
+  register: add_result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - add_result is changed
+
+- name: Lookup Certificate
+  morpheus.core.ssl_certificate_info:
+    name: Ansible Integration Test Certificate
+  register: lookup_result
+
+- name: Assert Certificate Added
+  ansible.builtin.assert:
+    that:
+      - lookup_result['certificates'] | length == 1
+      - lookup_result['certificates'][0]['name'] == 'Ansible Integration Test Certificate'
+
+- name: Update Certificate without changes in Check Mode
+  morpheus.core.ssl_certificate:
+    state: present
+    id: "{{ add_result['certificate']['id'] }}"
+    name: Ansible Integration Test Certificate
+  check_mode: true
+  diff: true
+  register: result
+
+- name: Assert no change
+  ansible.builtin.assert:
+    that:
+      - result is not changed
+
+- name: Update Certificate without changes
+  morpheus.core.ssl_certificate:
+    state: present
+    id: "{{ add_result['certificate']['id'] }}"
+    name: Ansible Integration Test Certificate
+  diff: true
+  register: result
+
+- name: Assert no change
+  ansible.builtin.assert:
+    that:
+      - result is not changed
+
+- name: Update Certificate Name in Check Mode
+  morpheus.core.ssl_certificate:
+    state: present
+    id: "{{ add_result['certificate']['id'] }}"
+    name: Ansible Integration Test Certificate Rename
+  check_mode: true
+  diff: true
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Lookup Certificate
+  morpheus.core.ssl_certificate_info:
+    id: "{{ add_result['certificate']['id'] }}"
+  register: lookup_result
+
+- name: Assert Name not Changed
+  ansible.builtin.assert:
+    that:
+      - lookup_result['certificates'][0]['name'] == 'Ansible Integration Test Certificate'
+
+- name: Update Certificate Name
+  morpheus.core.ssl_certificate:
+    state: present
+    id: "{{ add_result['certificate']['id'] }}"
+    name: Ansible Integration Test Certificate Rename
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Lookup Certificate
+  morpheus.core.ssl_certificate_info:
+    id: "{{ add_result['certificate']['id'] }}"
+  register: lookup_result
+
+- name: Assert Name Changed
+  ansible.builtin.assert:
+    that:
+      - lookup_result['certificates'][0]['name'] == 'Ansible Integration Test Certificate Rename'
+
+- name: Remove Certificate in Check Mode
+  morpheus.core.ssl_certificate:
+    state: absent
+    name: Ansible Integration Test Certificate Rename
+  check_mode: true
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Lookup Certificate
+  morpheus.core.ssl_certificate_info:
+    name: Ansible Integration Test Certificate Rename
+  register: lookup_result
+
+- name: Assert Certificate not Removed
+  ansible.builtin.assert:
+    that:
+      - lookup_result['certificates'] | length == 1
+
+- name: Remove Certificate
+  morpheus.core.ssl_certificate:
+    state: absent
+    name: Ansible Integration Test Certificate Rename
+  register: result
+
+- name: Assert result is changed
+  ansible.builtin.assert:
+    that:
+      - result is changed
+
+- name: Lookup Certificate
+  morpheus.core.ssl_certificate_info:
+    name: Ansible Integration Test Certificate Rename
+  register: lookup_result
+
+- name: Assert Certificate not Removed
+  ansible.builtin.assert:
+    that:
+      - lookup_result['certificates'] | length == 0

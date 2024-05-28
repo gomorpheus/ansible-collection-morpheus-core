@@ -1,0 +1,9 @@
+---
+
+- name: Add Test Secret
+  morpheus.core.cypher:
+    state: present
+    mount: secret
+    name: AnsibleIntegration_TestSecret
+    value: AnsibleSecret123
+  notify: Remove Test Secret

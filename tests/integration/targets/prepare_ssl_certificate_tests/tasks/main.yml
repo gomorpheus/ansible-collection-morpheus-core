@@ -1,0 +1,21 @@
+---
+
+- name: Generate Certificate Private Key
+  community.crypto.openssl_privatekey:
+    state: present
+    path: /tmp/ssl_cert_integration_test_key.pem
+
+- name: Generate Certificate Signing Request
+  community.crypto.openssl_csr:
+    state: present
+    path: /tmp/ssl_cert_integration_test.csr
+    privatekey_path: /tmp/ssl_cert_integration_test_key.pem
+    common_name: www.domain.local
+
+- name: Generate Self-Signed Certificate
+  community.crypto.x509_certificate:
+    path: /tmp/ssl_cert_integration_test.crt
+    privatekey_path: /tmp/ssl_cert_integration_test_key.pem
+    csr_path: /tmp/ssl_cert_integration_test.csr
+    provider: selfsigned
+  notify: Remove Certificate Files

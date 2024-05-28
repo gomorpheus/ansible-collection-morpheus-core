@@ -1,0 +1,6 @@
+---
+
+- name: Remove OpenSSH Key Pair
+  community.crypto.openssh_keypair:
+    state: absent
+    path: /tmp/ansible_key_pair_test_ssh_rsa

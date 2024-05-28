@@ -1,0 +1,6 @@
+---
+
+- name: Remove Test Cloud
+  morpheus.core.standard_cloud:
+    state: absent
+    name: Ansible Integration Test Cloud
